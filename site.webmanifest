@@ -1,0 +1,15 @@
+{
+  "name": "BucharestUA — Bucharest City Community",
+  "short_name": "BucharestUA",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f8fc",
+  "theme_color": "#10244a",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
