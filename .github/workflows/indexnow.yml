@@ -1,9 +1,11 @@
 name: Notify IndexNow after GitHub Pages deployment
 
 on:
-  workflow_run:
-    workflows: ["pages build and deployment"]
-    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - '**/*.html'
+      - '.github/workflows/indexnow.yml'
   workflow_dispatch:
     inputs:
       send_all:
@@ -16,13 +18,13 @@ permissions:
 
 jobs:
   notify:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out published source
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 2
 
       - name: Submit newly published or changed HTML URLs
