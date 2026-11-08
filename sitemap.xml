@@ -1,35 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://dbc44mys4b-glitch.github.io/</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/about.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/banking.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/business.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/cars.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/children.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/dentists.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/documents.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/emergencies.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/en.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/events.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/family-doctor.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/guides.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/health.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/housing.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/jobs.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/kindergartens.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/marketplace.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/moving.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/neighborhoods.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/pediatrician.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/pets.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/pharmacies.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/questions.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/restaurants.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/ro.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/romanian-language.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/schools.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/services.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/sports.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/transport.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://dbc44mys4b-glitch.github.io/uk.html</loc><lastmod>2026-11-08</lastmod><changefreq>monthly</changefreq></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/about.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/banking.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/business.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/cars.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/children.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/dentists.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/documents.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/emergencies.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/en.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/events.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/family-doctor.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/guides.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/health.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/housing.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/jobs.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/kindergartens.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/marketplace.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/moving.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/neighborhoods.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/pediatrician.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/pets.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/pharmacies.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/questions.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/restaurants.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/ro.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/romanian-language.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/schools.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/services.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/sports.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/transport.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/uk.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/articles.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/temporary-protection-checklist.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/cnp-ukrainians-romania.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/change-address-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/rent-contract-bucharest-checklist.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/rental-scams-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/utilities-bucharest-rent.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/jobs-without-romanian-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/cv-romania-ukrainian.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/work-contract-romania.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/insurance-health-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/family-doctor-bucharest-registration.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/medicines-pharmacies-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/ua-protection-romania.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/ua-rent-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/ua-jobs-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
+<url><loc>https://dbc44mys4b-glitch.github.io/ua-family-doctor-bucharest.html</loc><lastmod>2026-11-08</lastmod></url>
 </urlset>
