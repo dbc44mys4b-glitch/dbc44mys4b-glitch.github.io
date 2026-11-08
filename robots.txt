@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://dbc44mys4b-glitch.github.io/sitemap.xml
+Sitemap: https://dbc44mys4b-glitch.github.io/sitemap.txt
