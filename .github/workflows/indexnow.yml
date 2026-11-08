@@ -46,6 +46,10 @@ jobs:
           else:
               names = sorted({x for x in changed if x.endswith(".html") and "/" not in x})
           urls = [f"https://{HOST}/" if name == "index.html" else f"https://{HOST}/{name}" for name in names]
+          # Send only genuine content URLs listed in the public sitemap.
+          import xml.etree.ElementTree as ET
+          listed = {node.text for node in ET.parse("sitemap.xml").getroot().iter() if node.tag.endswith("loc") and node.text}
+          urls = [url for url in urls if url in listed]
           if not urls:
               print("No changed pages to submit.")
               raise SystemExit(0)
