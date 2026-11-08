@@ -1,0 +1,76 @@
+name: Notify IndexNow after GitHub Pages deployment
+
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      send_all:
+        description: "Submit all current pages once (initial setup)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out published source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 2
+
+      - name: Submit newly published or changed HTML URLs
+        env:
+          SEND_ALL: ${{ inputs.send_all }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess, time, urllib.request, urllib.error
+          HOST = "dbc44mys4b-glitch.github.io"
+          KEY = "280d3d922bd148fcafaece9f079754b3"
+          KEY_LOCATION = f"https://{HOST}/{KEY}.txt"
+          changed = subprocess.run(
+              ["git", "diff", "--name-only", "HEAD^", "HEAD"],
+              capture_output=True, text=True, check=False
+          ).stdout.splitlines()
+          initial = ".github/workflows/indexnow.yml" in changed
+          if os.environ.get("SEND_ALL") == "true" or initial:
+              names = sorted(x.name for x in pathlib.Path(".").glob("*.html"))
+          else:
+              names = sorted({x for x in changed if x.endswith(".html") and "/" not in x})
+          urls = [f"https://{HOST}/" if name == "index.html" else f"https://{HOST}/{name}" for name in names]
+          if not urls:
+              print("No changed pages to submit.")
+              raise SystemExit(0)
+          # Wait until the public verification key is visible following deployment.
+          for attempt in range(12):
+              try:
+                  with urllib.request.urlopen(KEY_LOCATION, timeout=15) as resp:
+                      if resp.read().decode("utf-8").strip() == KEY:
+                          break
+              except Exception as error:
+                  print(f"Verification key not visible yet: {error}")
+              time.sleep(10)
+          else:
+              raise SystemExit("IndexNow key is not publicly accessible; submission skipped.")
+          data = json.dumps({
+              "host": HOST, "key": KEY, "keyLocation": KEY_LOCATION, "urlList": urls
+          }).encode("utf-8")
+          request = urllib.request.Request(
+              "https://api.indexnow.org/indexnow",
+              data=data,
+              headers={"Content-Type": "application/json; charset=utf-8"},
+              method="POST"
+          )
+          try:
+              with urllib.request.urlopen(request, timeout=30) as resp:
+                  print(f"IndexNow HTTP {resp.status}: submitted {len(urls)} URLs")
+          except urllib.error.HTTPError as error:
+              print(f"IndexNow HTTP {error.code}: {error.read().decode('utf-8', errors='replace')}")
+              raise
+          PY
