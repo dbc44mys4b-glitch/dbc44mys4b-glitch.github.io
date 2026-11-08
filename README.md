@@ -1,11 +1,6 @@
-# BucharestUA — SEO/GEO for the existing GitHub repository
+# BucharestUA — SEO/GEO for the requested exact domain
 
-This ZIP is configured for the existing repository:
-`https://github.com/dmitriydizdar2020-cyber/dbc44mys4b-glitch.github.io`
+This ZIP is configured for https://dbc44mys4b-glitch.github.io/ ONLY if a GitHub user named `dbc44mys4b-glitch` owns a PUBLIC repository named `dbc44mys4b-glitch.github.io`.
 
-**Expected project URL after enabling Pages:** `https://dmitriydizdar2020-cyber.github.io/dbc44mys4b-glitch.github.io/`
-
-The exact hostname `https://dbc44mys4b-glitch.github.io/` belongs to the GitHub login `dbc44mys4b-glitch`, which is a DIFFERENT account.
-
-Upload all extracted files into the repository root, enable Settings -> Pages -> main /(root). Once live, use the included Russian publication guide.
+It cannot serve that hostname from the different account `dmitriydizdar2020-cyber`. Unpack all files and upload to the correct repository; enable GitHub Pages from main root.
 
