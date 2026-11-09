@@ -66,6 +66,8 @@ def build_page(entry):
     for sec in entry["sections"]:
         parts.append('<section class="guide-panel"><h2>' + text(sec["heading"]) + '</h2>')
         for p in sec.get("paragraphs", []):
+            if p.strip() == entry["intro"].strip():
+                continue
             parts.append('<p>' + text(p) + '</p>')
         bullets = sec.get("bullets", [])
         if bullets:
@@ -208,11 +210,11 @@ def main():
         '</div></main><footer><div class="wrap footer-inner"><strong>BucharestUA</strong>',
         '<a href="index.html">Главная</a></div></footer></body></html>'
     ]
-    (ROOT / "city-needs.html").write_text("\\n".join(body) + "\\n", encoding="utf-8")
+    (ROOT / "city-needs.html").write_text("\n".join(body) + "\n", encoding="utf-8")
     sitemap_text = sitemap.read_text(encoding="utf-8")
     url = BASE + "city-needs.html"
     if "<loc>" + url + "</loc>" not in sitemap_text:
-        sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\\n</urlset>")
+        sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\n</urlset>")
         ET.fromstring(sitemap_text)
         sitemap.write_text(sitemap_text, encoding="utf-8")
     print("Published: " + ", ".join(new_pages))
