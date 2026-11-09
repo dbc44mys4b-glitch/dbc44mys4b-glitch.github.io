@@ -1,12 +1,10 @@
 {
-  "checked_at_utc": "2026-11-09T09:41:36.684332+00:00",
+  "checked_at_utc": "2026-11-09T09:43:52.914682+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
   "html_pages": 72,
   "sitemap_urls": 72,
   "issues": [],
-  "warnings": [
-    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/auto-service-bucharest.html (404)"
-  ],
+  "warnings": [],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
@@ -30,8 +28,8 @@
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/auto-service-bucharest.html",
-      "http_status": 404,
-      "ok": false
+      "http_status": 200,
+      "ok": true
     }
   ],
   "page_metadata": {
