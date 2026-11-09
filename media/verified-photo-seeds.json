@@ -96,6 +96,38 @@
       "license": "CC0 1.0",
       "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
       "alt": "Теннисные корты, иллюстративное фото (снято вне Бухареста)"
+    },
+    {
+      "key": "antipa",
+      "file": "RO B Muzeul Național de Istorie Naturală Grigore Antipa (82).jpg",
+      "author": "Țetcu Mircea Rareș",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Музей естественной истории Григоре Антипа в Бухаресте, реальная фотография"
+    },
+    {
+      "key": "cismigiu",
+      "file": "Bucharest - evening in Grădinile Cișmigiu.jpg",
+      "author": "Joe Mabel",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Парк Чишмиджиу в Бухаресте вечером, реальная фотография"
+    },
+    {
+      "key": "tineretului",
+      "file": "Parcul Tineretului, București.jpg",
+      "author": "NicolaeSfetcu",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Парк Тинеретулуй в Бухаресте, реальная фотография"
+    },
+    {
+      "key": "village",
+      "file": "Muzeul Satului Bucuresti 123.jpg",
+      "author": "Camelia.boban",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Ветряная мельница в Музее села в Бухаресте, реальная фотография"
     }
   ]
 }
