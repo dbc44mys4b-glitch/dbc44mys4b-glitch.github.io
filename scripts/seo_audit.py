@@ -179,16 +179,47 @@ def main():
         BASE + "sitemap.xml",
         BASE + "russian-speaking-chat-bucharest.html",
         BASE + "city-needs.html",
+        BASE + "explore-bucharest.html",
     ]
     queue_path = ROOT / "content-queue" / "articles.json"
     if queue_path.is_file():
         try:
-            for item in json.loads(queue_path.read_text(encoding="utf-8")):
-                filename = item["slug"] + ".html"
-                if (ROOT / filename).is_file():
-                    urls_to_check.append(BASE + filename)
-        except (ValueError, KeyError) as e:
-            warnings.append(f"Could not read scheduled editorial queue: {e}")
+            entries = json.loads(queue_path.read_text(encoding="utf-8"))
+            slugs = [item["slug"] for item in entries]
+            for slug, count in Counter(slugs).items():
+                if count > 1:
+                    issues.append(f"Duplicate slug in editorial queue: {slug}")
+            for title, count in Counter(item["title"] for item in entries).items():
+                if count > 1:
+                    issues.append(f"Duplicate headline in editorial queue: {title}")
+            for date, count in Counter(item["publish_date"] for item in entries).items():
+                if count < 2 or count > 3:
+                    warnings.append(f"Editorial calendar has {count} entries on {date}, expected 2–3")
+            for item in entries:
+                slug = item["slug"]
+                sections = item.get("sections", [])
+                if not sections or len(sections) < 3:
+                    warnings.append(f"{slug}: fewer than 3 content sections")
+                if len(item.get("intro", "")) < 100:
+                    warnings.append(f"{slug}: editorial introduction too short")
+                if len(item.get("description", "")) > 170:
+                    warnings.append(f"{slug}: meta description longer than 170 characters")
+                if item["publish_date"] >= "2026-12-09" and not item.get("sources"):
+                    warnings.append(f"{slug}: no linked research source")
+                for source in item.get("sources", []):
+                    if not source.get("url", "").startswith("https://"):
+                        issues.append(f"{slug}: non-HTTPS source URL")
+            # Keep HTTP monitoring bounded as the library grows: core URLs
+            # and the 12 most recently published entries, not every article.
+            live_entries = [
+                item for item in entries
+                if (ROOT / (item["slug"] + ".html")).is_file()
+            ]
+            latest = sorted(live_entries, key=lambda item: (item["publish_date"], item["slug"]), reverse=True)[:12]
+            for item in latest:
+                urls_to_check.append(BASE + item["slug"] + ".html")
+        except (ValueError, KeyError, TypeError) as e:
+            issues.append(f"Could not validate scheduled editorial queue: {e}")
     web_checks = [check_web(url) for url in dict.fromkeys(urls_to_check)]
     for c in web_checks:
         if not c["ok"]:
