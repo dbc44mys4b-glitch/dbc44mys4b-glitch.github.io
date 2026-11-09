@@ -1,24 +1,10 @@
 {
-  "checked_at_utc": "2026-11-09T08:49:05.011597+00:00",
+  "checked_at_utc": "2026-11-09T08:49:43.888406+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
-  "html_pages": 72,
+  "html_pages": 70,
   "sitemap_urls": 70,
-  "issues": [
-    "google-site-verification: googlef5a4fa95e388d88a.html: missing title",
-    "googlef5a4fa95e388d88a.html: missing title"
-  ],
-  "warnings": [
-    "google-site-verification: googlef5a4fa95e388d88a.html: absent from sitemap",
-    "google-site-verification: googlef5a4fa95e388d88a.html: expected one H1; found 0",
-    "google-site-verification: googlef5a4fa95e388d88a.html: missing HTML lang",
-    "google-site-verification: googlef5a4fa95e388d88a.html: missing canonical URL",
-    "google-site-verification: googlef5a4fa95e388d88a.html: missing meta description",
-    "googlef5a4fa95e388d88a.html: absent from sitemap",
-    "googlef5a4fa95e388d88a.html: expected one H1; found 0",
-    "googlef5a4fa95e388d88a.html: missing HTML lang",
-    "googlef5a4fa95e388d88a.html: missing canonical URL",
-    "googlef5a4fa95e388d88a.html: missing meta description"
-  ],
+  "issues": [],
+  "warnings": [],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
@@ -197,20 +183,6 @@
       "canonical": "https://dbc44mys4b-glitch.github.io/family-doctor.html",
       "h1_count": 1,
       "language": "ru"
-    },
-    "google-site-verification: googlef5a4fa95e388d88a.html": {
-      "title": "",
-      "description": null,
-      "canonical": null,
-      "h1_count": 0,
-      "language": null
-    },
-    "googlef5a4fa95e388d88a.html": {
-      "title": "",
-      "description": null,
-      "canonical": null,
-      "h1_count": 0,
-      "language": null
     },
     "guides.html": {
       "title": "Справочник Бухареста: жильё, врачи, работа, дети, документы | BucharestUA",
