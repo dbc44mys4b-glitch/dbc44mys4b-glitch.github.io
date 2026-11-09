@@ -1,10 +1,10 @@
 # BucharestUA daily SEO audit
 
-- UTC: 2026-11-09T10:10:53.955929+00:00
-- HTML pages: **72**
+- UTC: 2026-11-09T10:11:27.099403+00:00
+- HTML pages: **73**
 - Sitemap URLs: **72**
 - Critical issues: **0**
-- Warnings: **0**
+- Warnings: **1**
 
 ## Public HTTP checks
 - OK: https://dbc44mys4b-glitch.github.io/ — 200
@@ -18,4 +18,4 @@
 - None
 
 ## Warnings (first 60)
-- None
+- explore-bucharest.html: absent from sitemap

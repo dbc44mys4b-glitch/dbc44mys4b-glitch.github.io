@@ -1,10 +1,12 @@
 {
-  "checked_at_utc": "2026-11-09T10:10:53.955929+00:00",
+  "checked_at_utc": "2026-11-09T10:11:27.099403+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
-  "html_pages": 72,
+  "html_pages": 73,
   "sitemap_urls": 72,
   "issues": [],
-  "warnings": [],
+  "warnings": [
+    "explore-bucharest.html: absent from sitemap"
+  ],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
@@ -189,6 +191,13 @@
       "title": "Мероприятия и встречи в Бухаресте — советы и общение | BucharestUA",
       "description": "Концерты, выставки, встречи, афиша города. Telegram-сообщество BucharestUA.",
       "canonical": "https://dbc44mys4b-glitch.github.io/events.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "explore-bucharest.html": {
+      "title": "Что посмотреть в Бухаресте: прогулки и выходные | BucharestUA",
+      "description": "Оригинальные гиды по Бухаресту: достопримечательности, прогулки, музеи, парки, семейный отдых и идеи поездок по Румынии.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/explore-bucharest.html",
       "h1_count": 1,
       "language": "ru"
     },
