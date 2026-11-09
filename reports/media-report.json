@@ -1,19 +1,16 @@
 {
   "checked": "2026-11-09",
   "new_photo_covers": [],
-  "articles_enriched": [
-    "auto-service-bucharest",
-    "sports-partners-bucharest"
-  ],
+  "articles_enriched": [],
   "photo_count": 0,
   "warnings": [
     {
       "slug": "auto-service-bucharest",
-      "problem": "Verified Commons seed not available through image API: Mechanic works on car engine performing routine maintenance and inspections on vehicle parts.jpg"
+      "problem": "Commons metadata unavailable for Mechanic works on car engine performing routine maintenance and inspections on vehicle parts.jpg / [('File:Mechanic works on car engine performing "
     },
     {
       "slug": "sports-partners-bucharest",
-      "problem": "Verified Commons seed not available through image API: Tennis courts.jpg"
+      "problem": "Commons metadata unavailable for Tennis courts.jpg / [('File:Tennis courts.jpg', 'image/jpeg', 4608, 'https://thumb.wikimedia.org/wikipedia/co')]"
     }
   ],
   "note": "An article without a verified photo is published without an image; never substitute unlicensed material."
