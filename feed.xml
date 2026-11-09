@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>BucharestUA — городской журнал</title>
+    <link>https://dbc44mys4b-glitch.github.io/</link>
+    <description>Полезные и интересные истории о жизни, культуре и прогулках в Бухаресте</description>
+    <language>ru-RO</language>
+    <generator>BucharestUA original editorial queue</generator>
+    <item>
+      <title>С кем заниматься спортом в Бухаресте: теннис, бег, фитнес и новые знакомства</title>
+      <link>https://dbc44mys4b-glitch.github.io/sports-partners-bucharest.html</link>
+      <guid isPermaLink="true">https://dbc44mys4b-glitch.github.io/sports-partners-bucharest.html</guid>
+      <description>Как найти партнёров для тенниса, бега и тренировок в Бухаресте: где спрашивать, что указать в сообщении и как безопасно договориться о встрече.</description>
+      <pubDate>Mon, 09 Nov 2026 00:00:00 +0000</pubDate>
+      <category>Отдых и знакомства</category>
+    </item>
+    <item>
+      <title>СТО в Бухаресте: как найти автосервис и не переплатить</title>
+      <link>https://dbc44mys4b-glitch.github.io/auto-service-bucharest.html</link>
+      <guid isPermaLink="true">https://dbc44mys4b-glitch.github.io/auto-service-bucharest.html</guid>
+      <description>Машина начала шуметь, загорелась ошибка или нужен плановый сервис? Главное — не выбирать первое объявление по самой низкой цене: сперва разделите диагностику</description>
+      <pubDate>Mon, 09 Nov 2026 00:00:00 +0000</pubDate>
+      <category>Автомобили и транспорт</category>
+    </item>
+  </channel>
+</rss>
