@@ -1,4 +1,4 @@
-name: BucharestUA daily SEO monitoring
+name: BucharestUA daily SEO and editorial cycle
 on:
   push:
     branches: [main]
@@ -7,30 +7,57 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  pages: write
+
+concurrency:
+  group: bucharestua-seo-main
+  cancel-in-progress: false
 
 jobs:
-  seo-monitor:
+  grow-and-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 18
     steps:
-      - name: Get source
+      - name: Get website source
         uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Check technical SEO and site availability
+      - name: Publish due prewritten editorial guides
+        run: python scripts/publish_queue.py
+      - name: Save published guides to main
+        id: publication
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' sitemap.xml
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No editorial changes due."
+          else
+            git commit -m "Editorial: publish scheduled BucharestUA community guide"
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Request Pages rebuild for branch-based Pages
+        if: steps.publication.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/${{ github.repository }}/pages/builds"             && echo "Requested Pages rebuild."             || echo "Pages rebuild request unavailable. Check GitHub Pages publishing source."
+      - name: Audit SEO and public URLs
         run: python scripts/seo_audit.py
-      - name: Show summary
+      - name: Report results
         if: always()
         run: |
           if [ -f reports/seo-audit.md ]; then
             cat reports/seo-audit.md >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'Audit did not produce a report.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'SEO audit did not produce a report; inspect logs.' >> "$GITHUB_STEP_SUMMARY"
           fi
-      - name: Store SEO audit report
+      - name: Store daily report
         if: always()
         uses: actions/upload-artifact@v4
         with:
