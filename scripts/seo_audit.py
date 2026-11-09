@@ -180,6 +180,8 @@ def main():
         BASE + "russian-speaking-chat-bucharest.html",
         BASE + "city-needs.html",
         BASE + "explore-bucharest.html",
+        BASE + "community.html",
+        BASE + "assets/covers/community.jpg",
     ]
     queue_path = ROOT / "content-queue" / "articles.json"
     if queue_path.is_file():
