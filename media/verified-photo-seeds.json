@@ -1,0 +1,85 @@
+{
+  "description": "Individually reviewed Wikimedia Commons photographs; verify metadata again before re-use; filenames unchanged; credit on each article.",
+  "photos": [
+    {
+      "key": "athenaeum",
+      "file": "2017 Romanian Athenaeum.jpg",
+      "author": "Babu",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Румынский Атенеум в центре Бухареста"
+    },
+    {
+      "key": "oldtown",
+      "file": "Bucharest - Old Town.jpg",
+      "author": "Tiia Monto",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Улица Lipscani в Старом городе Бухареста"
+    },
+    {
+      "key": "herastrau",
+      "file": "Parcul Herastrau park lake Bucharest Bucuresti Romania.JPG",
+      "author": "Crislia",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Озеро и зелёные аллеи парка Herăstrău в Бухаресте"
+    },
+    {
+      "key": "peles",
+      "file": "Peles Castle 001.jpg",
+      "author": "Dieglop",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Замок Пелеш в Синае"
+    },
+    {
+      "key": "bran",
+      "file": "BranCastle.jpg",
+      "author": "Snowkite ro",
+      "license": "CC BY-SA 3.0 RO",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/ro/",
+      "alt": "Замок Бран в Румынии"
+    },
+    {
+      "key": "parliament",
+      "file": "Palace of the Parliament in Bucharest (51878975552).jpg",
+      "author": "William John Gauthier",
+      "license": "CC BY-SA 2.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+      "alt": "Дворец парламента в Бухаресте"
+    },
+    {
+      "key": "victoriei",
+      "file": "Calea Victoriei in Bukarest.jpg",
+      "author": "ChrisMinga",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Прогулочная улица Calea Victoriei в Бухаресте"
+    },
+    {
+      "key": "stavropoleos",
+      "file": "Strada Stavropoleos.jpg",
+      "author": "Korinna",
+      "license": "CC BY-SA 3.0 RO",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/ro/",
+      "alt": "Историческая улица Stavropoleos в Бухаресте"
+    },
+    {
+      "key": "lipscani",
+      "file": "Bucharest - young people hanging out on Strada Lipscani.jpg",
+      "author": "Joe Mabel",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Люди на улице Lipscani в центре Бухареста"
+    },
+    {
+      "key": "northpark",
+      "file": "Parcul Herastrau park Bucharest Bucuresti Romania.JPG",
+      "author": "Crislia",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "alt": "Зелёный парк King Michael I в северном Бухаресте"
+    }
+  ]
+}
