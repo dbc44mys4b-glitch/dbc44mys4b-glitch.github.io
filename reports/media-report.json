@@ -2,7 +2,16 @@
   "checked": "2026-11-09",
   "new_photo_covers": [],
   "articles_enriched": [],
-  "photo_count": 2,
-  "warnings": [],
+  "photo_count": 0,
+  "warnings": [
+    {
+      "slug": "auto-service-bucharest",
+      "problem": "No verified relevant freely licensed photo"
+    },
+    {
+      "slug": "sports-partners-bucharest",
+      "problem": "No verified relevant freely licensed photo"
+    }
+  ],
   "note": "An article without a verified photo is published without an image; never substitute unlicensed material."
 }
