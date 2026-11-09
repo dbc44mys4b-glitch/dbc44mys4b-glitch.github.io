@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-09T09:49:46.157349+00:00",
+  "checked_at_utc": "2026-11-09T09:50:26.455169+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
   "html_pages": 72,
   "sitemap_urls": 72,
@@ -18,6 +18,11 @@
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/russian-speaking-chat-bucharest.html",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/city-needs.html",
       "http_status": 200,
       "ok": true
     },
