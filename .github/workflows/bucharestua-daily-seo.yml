@@ -49,6 +49,20 @@ jobs:
           gh api --method POST "repos/${{ github.repository }}/pages/builds"             && echo "Requested Pages rebuild."             || echo "Pages rebuild request unavailable. Check GitHub Pages publishing source."
       - name: Audit SEO and public URLs
         run: python scripts/seo_audit.py
+      - name: Save dated SEO audit results in repository
+        if: always()
+        run: |
+          if [ -f reports/seo-audit.json ] && [ -f reports/seo-audit.md ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -f reports/seo-audit.json reports/seo-audit.md
+            if ! git diff --cached --quiet; then
+              git commit -m "Monitoring: update BucharestUA daily SEO status"
+              git push origin HEAD:main
+            fi
+          else
+            echo "Audit result unavailable; see job logs."
+          fi
       - name: Report results
         if: always()
         run: |
