@@ -1,6 +1,52 @@
-# BucharestUA — SEO/GEO for the requested exact domain
+# BucharestUA — городской портал и Telegram-сообщество
 
-This ZIP is configured for https://dbc44mys4b-glitch.github.io/ ONLY if a GitHub user named `dbc44mys4b-glitch` owns a PUBLIC repository named `dbc44mys4b-glitch.github.io`.
+**Сайт:** https://dbc44mys4b-glitch.github.io/  
+**Сообщество:** https://t.me/bucharest_info
 
-It cannot serve that hostname from the different account `dmitriydizdar2020-cyber`. Unpack all files and upload to the correct repository; enable GitHub Pages from main root.
+Публичный информационный проект о жизни в Бухаресте для украинцев, русскоязычных и других жителей города. Сайт содержит справочник и статьи и направляет заинтересованных читателей в городской Telegram-чат.
 
+## Автоматическая работа без открытого ChatGPT
+
+В GitHub настроен workflow [BucharestUA daily SEO and editorial cycle](.github/workflows/bucharestua-daily-seo.yml):
+
+- Ежедневный запуск GitHub Actions по расписанию **09:15 UTC** (в ноябре и декабре — 11:15 в Бухаресте).
+- Дополнительный запуск при изменениях ветки `main`; есть ручной запуск `workflow_dispatch`.
+- Публикация **только предварительно подготовленных** материалов из `content-queue/articles.json`, начиная с дат `publish_date`.
+- Автоматическое создание HTML, обновление `articles.html` и `sitemap.xml`; повторный запуск не дублирует страницы.
+- Попытка инициировать Pages build при появлении новых файлов (фактический деплой зависит от настроек GitHub Pages).
+- Технический аудит: наличие HTML Title, H1, meta description, canonical, ссылки внутри сайта, XML Sitemap, робот-файл, Telegram-ссылка, Bing-метатег и HTTP-доступность сайта.
+- Публикация проверяемых отчётов в [reports/seo-audit.md](reports/seo-audit.md) и [reports/seo-audit.json](reports/seo-audit.json), также как workflow artifacts.
+
+**Результат GitHub Actions и результат индексации поисковыми системами — разные вещи.** Успешный запуск означает, что процесс выполнился; это не гарантирует ранжирование в Google или упоминания в AI-поиске.
+
+## Где что находится
+
+- `index.html` — главная страница.
+- `guides.html`, `articles.html` — каталог информации.
+- `sitemap.xml`, `robots.txt` — технические SEO-файлы.
+- `content-queue/articles.json` — редакционный график из оригинальных материалов; публиковать только после содержательной проверки.
+- `scripts/publish_queue.py` — идемпотентная публикация материалов, дата не раньше запланированной.
+- `scripts/seo_audit.py` — аудит репозитория и доступности сайта.
+- `reports/` — актуальные технические отчёты.
+
+## Как проверить работу
+
+Откройте вкладку [Actions](https://github.com/dbc44mys4b-glitch/dbc44mys4b-glitch.github.io/actions) и workflow **BucharestUA daily SEO and editorial cycle**. В отчёте должно быть видно, какие публикации появились, какие URL отвечают HTTP 200 и где обнаружены ошибки. При необходимости проверки локально в корне репозитория:
+
+```bash
+python3 scripts/publish_queue.py
+python3 scripts/seo_audit.py
+```
+
+Для автоматического размещения требуются включённые GitHub Actions и подходящие права `GITHUB_TOKEN` на запись. Публичная доступность страниц зависит от GitHub Pages.
+
+## Правила безопасности и качества
+
+- Не менять основной Telegram-адрес `https://t.me/bucharest_info` без явного решения владельца.
+- Сохранять Bing verification tag и служебные Google verification HTML-файлы.
+- Не публиковать вымышленные цены, вакансии, законы, расписания и медицинские советы.
+- Не генерировать множество однотипных страниц исключительно ради ключевых слов.
+- Не размещать рекламные или спам-ссылки автоматически на сторонних сайтах.
+- Не выдавать публикацию, HTTP 200 или запрос на индексирование за доказательство высоких позиций в поиске.
+
+Цель — устойчивый рост полезного городского ресурса и реальных переходов в сообщество.
