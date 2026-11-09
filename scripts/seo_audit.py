@@ -174,11 +174,21 @@ def main():
     if "sitemap.xml" not in (ROOT / "robots.txt").read_text(encoding="utf-8"):
         warnings.append("robots.txt does not advertise sitemap.xml")
 
-    web_checks = [
-        check_web(BASE),
-        check_web(BASE + "sitemap.xml"),
-        check_web(BASE + "russian-speaking-chat-bucharest.html"),
+    urls_to_check = [
+        BASE,
+        BASE + "sitemap.xml",
+        BASE + "russian-speaking-chat-bucharest.html",
     ]
+    queue_path = ROOT / "content-queue" / "articles.json"
+    if queue_path.is_file():
+        try:
+            for item in json.loads(queue_path.read_text(encoding="utf-8")):
+                filename = item["slug"] + ".html"
+                if (ROOT / filename).is_file():
+                    urls_to_check.append(BASE + filename)
+        except (ValueError, KeyError) as e:
+            warnings.append(f"Could not read scheduled editorial queue: {e}")
+    web_checks = [check_web(url) for url in dict.fromkeys(urls_to_check)]
     for c in web_checks:
         if not c["ok"]:
             warnings.append(f"Public URL unavailable during check: {c['url']} ({c.get('http_status', c.get('error', 'unknown'))})")
