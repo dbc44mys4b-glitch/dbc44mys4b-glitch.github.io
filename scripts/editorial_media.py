@@ -173,7 +173,7 @@ def pick(entry, seeds, used_titles):
                     "author": pinned["author"], "license": pinned["license"],
                     "license_url": pinned["license_url"], "src": image_url
                 }, pinned["alt"]
-        raise ValueError("Verified Commons seed not available through image API: " + pinned["file"])
+        raise ValueError("Commons metadata unavailable for " + pinned["file"] + " / " + repr([(x.get("title"), x.get("mime"), x.get("width"), (x.get("thumburl") or x.get("url") or "")[:40]) for x in results])[:250])
     else:
         results = search_files(photo_query(entry))
     # Unknown image licenses or subjects are rejected.
