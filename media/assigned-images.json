@@ -1,1 +1,20 @@
-{}
+{
+  "auto-service-bucharest": {
+    "alt": "Автомеханик проверяет двигатель автомобиля в мастерской, иллюстративный снимок",
+    "author": "Shixart1985",
+    "license": "CC BY 2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "commons_title": "File:Mechanic works on car engine performing routine maintenance and inspections on vehicle parts.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Mechanic_works_on_car_engine_performing_routine_maintenance_and_inspections_on_vehicle_parts.jpg",
+    "bytes": 142264
+  },
+  "sports-partners-bucharest": {
+    "alt": "Теннисные корты, иллюстративное фото (снято вне Бухареста)",
+    "author": "Kurt Kaiser",
+    "license": "CC0 1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "commons_title": "File:Tennis courts.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Tennis_courts.jpg",
+    "bytes": 208456
+  }
+}
