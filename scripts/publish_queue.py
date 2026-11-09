@@ -224,6 +224,73 @@ def main():
         sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\n</urlset>")
         ET.fromstring(sitemap_text)
         sitemap.write_text(sitemap_text, encoding="utf-8")
+
+    # Maintain a dedicated leisure directory from actually published guides.
+    # Future scheduled articles must never appear as broken links.
+    leisure_categories = [
+        "Маршруты", "Куда сходить", "Музеи и история",
+        "Семья и дети", "Отдых за городом", "Еда и культура"
+    ]
+    leisure = [e for e in live if e.get("category") in leisure_categories]
+    explore_parts = [
+        '<!doctype html><html lang="ru"><head><meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width,initial-scale=1">',
+        '<title>Что посмотреть в Бухаресте: маршруты, места и выходные | BucharestUA</title>',
+        '<meta name="description" content="Бухарест для своих: прогулки на день и выходные, музеи, парки, отдых с детьми, поездки в горы и рестораны. Оригинальные маршруты и советы жителей.">',
+        '<link rel="canonical" href="' + BASE + 'explore-bucharest.html">',
+        '<meta property="og:type" content="website">',
+        '<meta property="og:title" content="Бухарест: куда сходить и чем заняться | BucharestUA">',
+        '<meta property="og:url" content="' + BASE + 'explore-bucharest.html">',
+        '<link rel="stylesheet" href="styles.css"><link rel="icon" href="favicon.svg">',
+        '</head><body><header class="site-header"><nav class="wrap nav">',
+        '<a class="logo" href="index.html"><span class="brand-icon">✦</span> BUCHARESTUA</a>',
+        '<div class="navlinks"><a href="city-needs.html">Услуги и районы</a>',
+        '<a href="articles.html">Все статьи</a><a href="index.html">Главная</a></div>',
+        '<a class="cta-small" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Telegram ↗</a></nav></header>',
+        '<main><div class="wrap guide-layout"><div class="guide-hero">',
+        '<span class="kicker">BUCHARESTUA · ПРОГУЛКИ И ОТКРЫТИЯ</span>',
+        '<h1>Бухарест, в котором хочется задержаться</h1>',
+        '<p>Не очередной список красивых фасадов: маршруты по настроению, небольшие музеи, выходные с детьми, гастрономия и поездки по Румынии. Выбирайте программу, учитывайте сезон и делитесь опытом с городским сообществом.</p>',
+        '<a class="btn btn-primary" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Спросить местных в Telegram ↗</a>',
+        '</div>',
+        '<section class="guide-panel"><h2>С чего начать знакомство с городом</h2>',
+        '<p>Если у вас только день, начните с исторического центра и Calea Victoriei. С детьми выберите музей или ближайший парк; для взрослой компании оставьте время на архитектуру и разговор. У музеев есть собственные расписания — проверяйте их перед визитом.</p>',
+        '<div class="guide-links"><a class="guide-link" href="family-activities-bucharest.html"><strong>Куда пойти с ребёнком →</strong><span>Простой семейный план, который можно изменить под погоду</span></a>',
+        '<a class="guide-link" href="sports.html"><strong>Спорт и прогулки →</strong><span>Город для активного досуга</span></a>',
+        '<a class="guide-link" href="events.html"><strong>Городские события →</strong><span>Где искать актуальную афишу и встречи</span></a></div></section>'
+    ]
+    for category in leisure_categories:
+        section = sorted(
+            [e for e in leisure if e.get("category") == category],
+            key=lambda e: (e["publish_date"], e["title"]), reverse=True
+        )
+        if not section:
+            continue
+        explore_parts.append('<section class="guide-panel"><h2>' + text(category) + '</h2>')
+        explore_parts.append('<div class="guide-links">')
+        for e in section:
+            explore_parts.append(
+                '<a class="guide-link" href="' + text(e["slug"]) + '.html">'
+                '<strong>' + text(e["title"]) + ' →</strong>'
+                '<span>' + text(e["description"]) + '</span></a>'
+            )
+        explore_parts.append('</div></section>')
+    explore_parts += [
+        '<section class="guide-panel"><h2>Не нашли подходящую идею?</h2>',
+        '<p>Спросите у жителей Бухареста, куда они ходят сами, а не только водят туристов. Перед поездкой проверяйте билеты, транспорт и время работы по официальным источникам.</p>',
+        '<a class="btn btn-primary" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Обсудить выходные в BucharestUA ↗</a>',
+        '</section></div></main><footer><div class="wrap footer-inner">',
+        '<strong>BucharestUA · независимое городское сообщество</strong>',
+        '<a href="' + TELEGRAM + '">Telegram ↗</a></div></footer></body></html>'
+    ]
+    (ROOT / "explore-bucharest.html").write_text("\n".join(explore_parts) + "\n", encoding="utf-8")
+    sitemap_text = sitemap.read_text(encoding="utf-8")
+    url = BASE + "explore-bucharest.html"
+    if "<loc>" + url + "</loc>" not in sitemap_text:
+        sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\n</urlset>")
+        ET.fromstring(sitemap_text)
+        sitemap.write_text(sitemap_text, encoding="utf-8")
+
     print("Published: " + ", ".join(new_pages))
 
 
