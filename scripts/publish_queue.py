@@ -4,7 +4,8 @@
 This script uses no paid services, no LLM API, and never overwrites existing
 articles. Safe to rerun: no publish, sitemap or index changes when up-to-date.
 """
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from html import escape
 from pathlib import Path
 from urllib.parse import urlparse
@@ -120,7 +121,7 @@ def main():
     dates = [e["publish_date"] for e in entries]
     for d in dates:
         datetime.strptime(d, "%Y-%m-%d")
-    today = datetime.now(timezone.utc).date().isoformat()
+    today = datetime.now(ZoneInfo("Europe/Bucharest")).date().isoformat()
     new_pages = []
     for entry in sorted(entries, key=lambda x: x["publish_date"]):
         slug = entry["slug"]
