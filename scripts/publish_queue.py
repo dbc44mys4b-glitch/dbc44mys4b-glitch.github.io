@@ -82,8 +82,15 @@ def build_page(entry):
         if not re.fullmatch(r"[a-z0-9-]+\.html", href):
             raise ValueError("Only internal .html links are permitted in related")
         if not (ROOT / href).is_file():
-            raise ValueError("Related page does not exist: " + href)
+            continue  # a future article must not become a broken link
         parts.append('<li><a href="' + text(href) + '">' + text(item["text"]) + '</a></li>')
+    if entry.get("sources"):
+        parts.append('</ul></section><section class="guide-panel"><h2>Где проверить актуальные сведения</h2><ul>')
+        for source in entry["sources"]:
+            address = source.get("url", "")
+            if not address.startswith("https://"):
+                raise ValueError("Sources must use HTTPS URLs")
+            parts.append('<li><a href="' + text(address) + '" rel="noopener noreferrer" target="_blank">' + text(source["label"]) + '</a></li>')
     parts += [
         '</ul></section><section class="guide-panel"><h2>Спросить жителей Бухареста</h2>',
         '<p>В BucharestUA обсуждают вопросы города и делятся личным опытом. Уточняйте условия, цены и рекомендации самостоятельно; не размещайте паспортные, банковские и другие чувствительные данные.</p>',
@@ -99,6 +106,12 @@ def build_page(entry):
 
 def main():
     entries = json.loads(QUEUE.read_text(encoding="utf-8"))
+    slugs = [e["slug"] for e in entries]
+    if len(slugs) != len(set(slugs)):
+        raise ValueError("Editorial queue contains duplicate slugs")
+    dates = [e["publish_date"] for e in entries]
+    for d in dates:
+        datetime.strptime(d, "%Y-%m-%d")
     today = datetime.now(timezone.utc).date().isoformat()
     new_pages = []
     for entry in sorted(entries, key=lambda x: x["publish_date"]):
@@ -151,6 +164,57 @@ def main():
             raise ValueError("Could not find insertion anchor in articles.html")
         current = current.replace(anchor, block + anchor, 1)
     catalog.write_text(current, encoding="utf-8")
+
+    # A topical directory makes actual published guides discoverable without
+    # exposing scheduled pages that do not exist yet.
+    categories = {
+        "Районы и соседи": [], "Автомобили и транспорт": [],
+        "Врачи и здоровье": [], "Семья и дети": [],
+        "Техника, покупки и связь": [], "Дом и бытовые услуги": [],
+        "Работа, документы и деньги": [], "Отдых и знакомства": []
+    }
+    for e in live:
+        cat = e.get("category", "Отдых и знакомства")
+        categories.setdefault(cat, []).append(e)
+    body = [
+        '<!doctype html><html lang="ru"><head><meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width,initial-scale=1">',
+        '<title>Услуги и жизнь в Бухаресте: городской справочник | BucharestUA</title>',
+        '<meta name="description" content="Где найти врача, СТО, мастера, кружок, сервис телефона и соседей в Бухаресте: тематический справочник с вопросами и подсказками.">',
+        '<link rel="canonical" href="' + BASE + 'city-needs.html">',
+        '<link rel="stylesheet" href="styles.css"><link rel="icon" href="favicon.svg">',
+        '</head><body><header class="site-header"><nav class="wrap nav">',
+        '<a class="logo" href="index.html"><span class="brand-icon">✦</span> BUCHARESTUA</a>',
+        '<div class="navlinks"><a href="guides.html">Справочник</a><a href="articles.html">Статьи</a></div>',
+        '<a class="cta-small" href="' + TELEGRAM + '">Наш Telegram ↗</a></nav></header>',
+        '<main><div class="wrap guide-layout"><div class="guide-hero">',
+        '<span class="kicker">ГОРОДСКАЯ ЖИЗНЬ · БУХАРЕСТ И ИЛФОВ</span>',
+        '<h1>Нужен врач, мастер, ремонт авто или компания по району?</h1>',
+        '<p>Собрали практические путеводители по повседневным запросам. Выбирайте тему, проверяйте варианты и спрашивайте жителей города в BucharestUA. Мы не продаём услуги и не гарантируем рекомендации участников.</p>',
+        '<a class="btn btn-primary" href="' + TELEGRAM + '">Задать вопрос в Telegram ↗</a>',
+        '</div>'
+    ]
+    for category, items in categories.items():
+        if not items:
+            continue
+        body.append('<section class="guide-panel"><h2>' + text(category) + '</h2><div class="guide-links">')
+        for e in sorted(items, key=lambda x: x["title"]):
+            body.append('<a class="guide-link" href="' + text(e["slug"]) + '.html"><strong>' + text(e["title"]) + ' →</strong><span>' + text(e["description"]) + '</span></a>')
+        body.append('</div></section>')
+    body += [
+        '<section class="guide-panel"><h2>Не нашли тему?</h2>',
+        '<p>Уточните район, бюджет и желаемый язык общения. Для медицинских, юридических и других важных решений проверяйте квалификацию и первоисточники.</p>',
+        '<a class="btn btn-primary" href="' + TELEGRAM + '">Спросить жителей Бухареста ↗</a></section>',
+        '</div></main><footer><div class="wrap footer-inner"><strong>BucharestUA</strong>',
+        '<a href="index.html">Главная</a></div></footer></body></html>'
+    ]
+    (ROOT / "city-needs.html").write_text("\\n".join(body) + "\\n", encoding="utf-8")
+    sitemap_text = sitemap.read_text(encoding="utf-8")
+    url = BASE + "city-needs.html"
+    if "<loc>" + url + "</loc>" not in sitemap_text:
+        sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\\n</urlset>")
+        ET.fromstring(sitemap_text)
+        sitemap.write_text(sitemap_text, encoding="utf-8")
     print("Published: " + ", ".join(new_pages))
 
 
