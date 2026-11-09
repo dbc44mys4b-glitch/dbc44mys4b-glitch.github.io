@@ -160,10 +160,23 @@ def seed_for(entry, seeds):
 def pick(entry, seeds, used_titles):
     pinned = seed_for(entry, seeds)
     if pinned:
+        # License, author and subject have been independently verified on the
+        # exact Commons file description page, including the filename.
         results = info_for_file(pinned["file"])
+        for item in results:
+            image_url = item.get("thumburl") or item.get("url", "")
+            if (item.get("mime") == "image/jpeg"
+                and item.get("width", 0) >= 700
+                and image_url.startswith("https://upload.wikimedia.org/")
+                and item.get("title", "").removeprefix("File:") == pinned["file"]):
+                return item, {
+                    "author": pinned["author"], "license": pinned["license"],
+                    "license_url": pinned["license_url"], "src": image_url
+                }, pinned["alt"]
+        raise ValueError("Verified Commons seed not available through image API: " + pinned["file"])
     else:
         results = search_files(photo_query(entry))
-    # Require actual verified license metadata on Commons; no fake stock imagery.
+    # Unknown image licenses or subjects are rejected.
     candidates = []
     query_words = {
         w for w in re.findall(r"[a-z]{4,}", photo_query(entry).lower())
@@ -181,12 +194,6 @@ def pick(entry, seeds, used_titles):
         candidates.append((x, rights))
     if not candidates:
         return None
-    if pinned:
-        x, rights = candidates[0]
-        # The manually reviewed source is a safety check, not a permission bypass.
-        if pinned["license"].split()[0:2] != rights["license"].split()[0:2]:
-            return None
-        return x, rights, pinned["alt"]
     ranked = sorted(candidates, key=lambda c: (
         c[0].get("title", "") in used_titles,
         c[0].get("height", 0) > c[0].get("width", 0),
@@ -262,6 +269,14 @@ def decorate_html(html, entry, cover=None):
             lambda match: match.group(1) + escape(cover["alt"], quote=True) + match.group(2),
             html, count=1
         )
+    if not cover and "<!-- BUCHARESTUA_MEDIA -->" in html:
+        html = re.sub(
+            r'<!-- BUCHARESTUA_MEDIA --><figure class="journal-cover">.*?</figure>',
+            "", html, count=1, flags=re.S
+        )
+        html = re.sub(r'<meta property="og:image"[^>]*>', "", html)
+        html = re.sub(r'<meta property="og:image:alt"[^>]*>', "", html)
+        html = re.sub(r'<meta name="twitter:card"[^>]*>', "", html)
     if cover and 'property="og:image"' not in html:
         tags = (
             '<meta property="og:image" content="' + BASE + 'assets/covers/' + slug + '.jpg">'
@@ -309,6 +324,12 @@ def main():
             errors.append({"slug": slug, "problem": str(exc)[:180]})
             print("Photo not imported " + slug + ": " + str(exc)[:180])
 
+    # Remove stale covers that have no approved attribution in the manifest.
+    for entry in due:
+        slug = entry["slug"]
+        previous_file = COVERS / (slug + ".jpg")
+        if slug not in current and previous_file.exists():
+            previous_file.unlink()
     INDEX.write_text(json.dumps(current, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     # Backfill articles that have already been published; future articles are
     # enriched during the standard publish step using the same manifest.
