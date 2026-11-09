@@ -135,7 +135,19 @@ def main():
         path = ROOT / (slug + ".html")
         if path.exists():
             continue
-        html = decorate_html(build_page(entry), entry, photos.get(slug))
+        # Quality gate: a new magazine article must have a licensed,
+        # downloaded image with a valid attribution manifest. If Commons
+        # does not deliver, keep the article queued rather than publish a
+        # misleading photo-less placeholder.
+        cover = photos.get(slug)
+        image_file = ROOT / "assets" / "covers" / (slug + ".jpg")
+        if not cover or not image_file.is_file() or image_file.stat().st_size < 8000:
+            print("HOLD: licensed cover not available for " + slug)
+            continue
+        if not all(cover.get(k) for k in ("author", "license", "license_url", "source_url", "alt")):
+            print("HOLD: incomplete photo attribution for " + slug)
+            continue
+        html = decorate_html(build_page(entry), entry, cover)
         path.write_text(html, encoding="utf-8")
         new_pages.append(path.name)
     if not new_pages:
