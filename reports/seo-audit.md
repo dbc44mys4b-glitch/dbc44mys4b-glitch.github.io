@@ -1,10 +1,10 @@
 # BucharestUA daily SEO audit
 
-- UTC: 2026-11-09T11:15:13.984903+00:00
+- UTC: 2026-11-09T11:17:12.851016+00:00
 - HTML pages: **73**
 - Sitemap URLs: **73**
 - Critical issues: **0**
-- Warnings: **0**
+- Warnings: **1**
 
 ## Public HTTP checks
 - OK: https://dbc44mys4b-glitch.github.io/ — 200
@@ -19,4 +19,4 @@
 - None
 
 ## Warnings (first 60)
-- None
+- Editorial calendar has 1 entries on 2027-01-16, expected 2–3
