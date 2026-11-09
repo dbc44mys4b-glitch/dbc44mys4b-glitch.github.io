@@ -56,7 +56,8 @@
         "href": "events.html",
         "text": "Городские мероприятия и встречи"
       }
-    ]
+    ],
+    "category": "Отдых и знакомства"
   },
   {
     "publish_date": "2026-11-13",
@@ -118,7 +119,8 @@
         "href": "russian-speaking-chat-bucharest.html",
         "text": "Городской Telegram-чат"
       }
-    ]
+    ],
+    "category": "Семья и дети"
   },
   {
     "publish_date": "2026-11-18",
@@ -182,7 +184,8 @@
         "href": "rent-contract-bucharest-checklist.html",
         "text": "Проверка договора аренды"
       }
-    ]
+    ],
+    "category": "Дом и бытовые услуги"
   },
   {
     "publish_date": "2026-11-24",
@@ -248,7 +251,8 @@
         "href": "russian-speaking-chat-bucharest.html",
         "text": "Городской чат BucharestUA"
       }
-    ]
+    ],
+    "category": "Дом и бытовые услуги"
   },
   {
     "publish_date": "2026-11-30",
@@ -306,7 +310,8 @@
         "href": "russian-speaking-chat-bucharest.html",
         "text": "Городской Telegram-чат"
       }
-    ]
+    ],
+    "category": "Отдых и знакомства"
   },
   {
     "publish_date": "2026-11-09",
@@ -360,6 +365,11 @@
         "label": "Registrul Auto Român — авторизованные сервисы и ITP",
         "url": "https://www.rarom.ro/"
       }
+    ],
+    "romanian_terms": [
+      "service auto București",
+      "reparații auto",
+      "diagnoză auto"
     ]
   },
   {
@@ -414,6 +424,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "medic endocrinolog București",
+      "programare endocrinologie"
     ]
   },
   {
@@ -468,6 +482,10 @@
         "label": "ANPC — защита прав покупателей и клиентов",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "reparații telefoane București",
+      "service telefoane"
     ]
   },
   {
@@ -522,6 +540,10 @@
         "label": "ANPC — защита прав покупателей и клиентов",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "magazin telefoane București",
+      "telefon second-hand"
     ]
   },
   {
@@ -576,6 +598,11 @@
         "label": "Официальный сайт аэропортов Бухареста",
         "url": "https://bucharestairports.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Aeroportul Henri Coandă",
+      "Otopeni OTP",
+      "transport aeroport"
     ]
   },
   {
@@ -630,6 +657,11 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "spital București",
+      "ambulatoriu",
+      "programare consultație"
     ]
   },
   {
@@ -679,7 +711,12 @@
         "text": "Детские сады и занятия"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "activități copii București",
+      "cursuri copii",
+      "cluburi pentru copii"
+    ]
   },
   {
     "publish_date": "2026-11-12",
@@ -728,7 +765,11 @@
         "text": "Как найти семейного врача"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "masaj București",
+      "masaj terapeutic"
+    ]
   },
   {
     "publish_date": "2026-11-13",
@@ -782,6 +823,11 @@
         "label": "Registrul Auto Român — авторизованные сервисы и ITP",
         "url": "https://www.rarom.ro/"
       }
+    ],
+    "romanian_terms": [
+      "vulcanizare București",
+      "schimb anvelope",
+      "echilibrare roți"
     ]
   },
   {
@@ -831,7 +877,11 @@
         "text": "Услуги и специалисты"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "asigurare RCA",
+      "poliță RCA"
+    ]
   },
   {
     "publish_date": "2026-11-14",
@@ -885,6 +935,10 @@
         "label": "Registrul Auto Român — авторизованные сервисы и ITP",
         "url": "https://www.rarom.ro/"
       }
+    ],
+    "romanian_terms": [
+      "stație ITP București",
+      "inspecție tehnică periodică"
     ]
   },
   {
@@ -939,6 +993,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "stomatolog București",
+      "urgență stomatologică"
     ]
   },
   {
@@ -993,6 +1051,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "medic pediatru București",
+      "consultație pediatrie"
     ]
   },
   {
@@ -1047,6 +1109,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "dermatolog București",
+      "consultație dermatologie"
     ]
   },
   {
@@ -1101,6 +1167,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "cardiolog București",
+      "consultație cardiologie"
     ]
   },
   {
@@ -1155,6 +1225,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "analize medicale București",
+      "laborator analize"
     ]
   },
   {
@@ -1209,6 +1283,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "kinetoterapie București",
+      "recuperare medicală"
     ]
   },
   {
@@ -1258,7 +1336,11 @@
         "text": "Как найти семейного врача"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "psiholog București",
+      "psihoterapie"
+    ]
   },
   {
     "publish_date": "2026-11-17",
@@ -1312,6 +1394,10 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "farmacie non-stop București",
+      "farmacie de gardă"
     ]
   },
   {
@@ -1366,6 +1452,11 @@
         "label": "CNAS — страхование и медицинские услуги",
         "url": "https://cnas.ro/"
       }
+    ],
+    "romanian_terms": [
+      "asigurare de sănătate",
+      "CNAS",
+      "bilet de trimitere"
     ]
   },
   {
@@ -1420,6 +1511,11 @@
         "label": "Официальный сайт аэропортов Бухареста",
         "url": "https://bucharestairports.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Aeroportul Băneasa",
+      "Aurel Vlaicu",
+      "BBU"
     ]
   },
   {
@@ -1474,6 +1570,10 @@
         "label": "Официальный сайт аэропортов Бухареста",
         "url": "https://bucharestairports.ro/"
       }
+    ],
+    "romanian_terms": [
+      "bagaj pierdut",
+      "bagaj întârziat"
     ]
   },
   {
@@ -1528,6 +1628,11 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Sectorul 1 București",
+      "Băneasa",
+      "Aviației"
     ]
   },
   {
@@ -1582,6 +1687,11 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Sectorul 2 București",
+      "Obor",
+      "Colentina"
     ]
   },
   {
@@ -1636,6 +1746,11 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Sectorul 3 București",
+      "Titan",
+      "Dristor"
     ]
   },
   {
@@ -1690,6 +1805,11 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Sectorul 4 București",
+      "Berceni",
+      "Tineretului"
     ]
   },
   {
@@ -1744,6 +1864,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Sectorul 5 București",
+      "Rahova"
     ]
   },
   {
@@ -1798,6 +1922,11 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Sectorul 6 București",
+      "Militari",
+      "Drumul Taberei"
     ]
   },
   {
@@ -1856,6 +1985,11 @@
         "label": "Местная администрация — адреса учреждений",
         "url": "https://primariastefanesti.ro/contact/date-contact/"
       }
+    ],
+    "romanian_terms": [
+      "Cosmopolis",
+      "Ștefăneștii de Jos",
+      "județul Ilfov"
     ]
   },
   {
@@ -1910,6 +2044,10 @@
         "label": "Закон Румынии: Бухарест состоит из шести секторов",
         "url": "https://legislatie.just.ro/Public/DetaliiDocumentAfis/258994"
       }
+    ],
+    "romanian_terms": [
+      "sectoarele Bucureștiului",
+      "Sectorul 1–6"
     ]
   },
   {
@@ -1964,6 +2102,11 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Pipera",
+      "Voluntari",
+      "metrou Pipera"
     ]
   },
   {
@@ -2018,6 +2161,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Voluntari",
+      "județul Ilfov"
     ]
   },
   {
@@ -2072,6 +2219,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "orașul Otopeni",
+      "Ilfov"
     ]
   },
   {
@@ -2126,6 +2277,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Popești-Leordeni",
+      "județul Ilfov"
     ]
   },
   {
@@ -2180,6 +2335,11 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Militari Residence",
+      "Chiajna",
+      "Ilfov"
     ]
   },
   {
@@ -2234,6 +2394,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Drumul Taberei",
+      "Sectorul 6"
     ]
   },
   {
@@ -2288,6 +2452,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Titan București",
+      "Sectorul 3"
     ]
   },
   {
@@ -2342,6 +2510,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Berceni București",
+      "Sectorul 4"
     ]
   },
   {
@@ -2396,6 +2568,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Obor București",
+      "Sectorul 2"
     ]
   },
   {
@@ -2450,6 +2626,10 @@
         "label": "Муниципалитет Бухареста — официальная информация",
         "url": "https://www.pmb.ro/"
       }
+    ],
+    "romanian_terms": [
+      "Colentina București",
+      "Sectorul 2"
     ]
   },
   {
@@ -2504,6 +2684,10 @@
         "label": "Закон Румынии: Бухарест состоит из шести секторов",
         "url": "https://legislatie.just.ro/Public/DetaliiDocumentAfis/258994"
       }
+    ],
+    "romanian_terms": [
+      "București",
+      "județul Ilfov"
     ]
   },
   {
@@ -2558,6 +2742,10 @@
         "label": "ANPC — защита прав потребителей",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "instalator sanitar București",
+      "reparații instalații"
     ]
   },
   {
@@ -2612,6 +2800,10 @@
         "label": "ANPC — защита прав потребителей",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "electrician București",
+      "instalații electrice"
     ]
   },
   {
@@ -2666,6 +2858,10 @@
         "label": "ANPC — защита прав потребителей",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "reparații electrocasnice",
+      "service mașini de spălat"
     ]
   },
   {
@@ -2715,7 +2911,11 @@
         "text": "Аренда квартиры"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "montaj mobilă București",
+      "asamblare mobilă"
+    ]
   },
   {
     "publish_date": "2026-11-30",
@@ -2769,6 +2969,10 @@
         "label": "ANPC — защита прав потребителей",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "curățenie apartament București",
+      "firmă de curățenie"
     ]
   },
   {
@@ -2818,7 +3022,11 @@
         "text": "Аренда квартиры"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "reparații termopane",
+      "reglaj ferestre"
+    ]
   },
   {
     "publish_date": "2026-12-01",
@@ -2867,7 +3075,11 @@
         "text": "Аренда квартиры"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "mutări București",
+      "transport mobilă"
+    ]
   },
   {
     "publish_date": "2026-12-01",
@@ -2916,7 +3128,12 @@
         "text": "Аренда квартиры"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "lăcătuș București",
+      "deblocare uși",
+      "schimbare yală"
+    ]
   },
   {
     "publish_date": "2026-12-02",
@@ -2970,6 +3187,10 @@
         "label": "ANPC — защита прав потребителей",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "service laptop București",
+      "reparații laptop"
     ]
   },
   {
@@ -3024,6 +3245,10 @@
         "label": "ANPC — защита прав потребителей",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "internet fix București",
+      "fibră optică"
     ]
   },
   {
@@ -3073,7 +3298,11 @@
         "text": "Аренда квартиры"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "curier București",
+      "livrare colet"
+    ]
   },
   {
     "publish_date": "2026-12-03",
@@ -3127,6 +3356,10 @@
         "label": "ANPC — защита прав потребителей",
         "url": "https://anpc.ro/"
       }
+    ],
+    "romanian_terms": [
+      "mobilă second-hand București",
+      "mobilă la mâna a doua"
     ]
   },
   {
@@ -3176,7 +3409,11 @@
         "text": "Школы Бухареста"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "cursuri înot copii București",
+      "instructor înot"
+    ]
   },
   {
     "publish_date": "2026-12-04",
@@ -3225,7 +3462,11 @@
         "text": "Школы Бухареста"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "cursuri dans copii București",
+      "gimnastică copii"
+    ]
   },
   {
     "publish_date": "2026-12-04",
@@ -3274,7 +3515,11 @@
         "text": "Школы Бухареста"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "robotică copii București",
+      "cursuri programare copii"
+    ]
   },
   {
     "publish_date": "2026-12-05",
@@ -3323,7 +3568,11 @@
         "text": "Школы Бухареста"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "bonă București",
+      "îngrijire copii"
+    ]
   },
   {
     "publish_date": "2026-12-05",
@@ -3372,7 +3621,11 @@
         "text": "Школы Бухареста"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "meditații limba română",
+      "profesor engleză copii"
+    ]
   },
   {
     "publish_date": "2026-12-06",
@@ -3421,7 +3674,11 @@
         "text": "Домашние животные"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "cabinet veterinar București",
+      "medic veterinar"
+    ]
   },
   {
     "publish_date": "2026-12-06",
@@ -3470,7 +3727,11 @@
         "text": "Домашние животные"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "toaletaj canin București",
+      "salon grooming animale"
+    ]
   },
   {
     "publish_date": "2026-12-07",
@@ -3519,7 +3780,12 @@
         "text": "Общение и вопросы"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "frizerie București",
+      "salon coafură",
+      "barbershop"
+    ]
   },
   {
     "publish_date": "2026-12-07",
@@ -3568,7 +3834,11 @@
         "text": "Общение и вопросы"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "supermarket București",
+      "piață alimentară"
+    ]
   },
   {
     "publish_date": "2026-12-07",
@@ -3617,7 +3887,11 @@
         "text": "Работа и услуги"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "casă de schimb valutar București",
+      "curs schimb"
+    ]
   },
   {
     "publish_date": "2026-12-08",
@@ -3666,7 +3940,11 @@
         "text": "Работа и услуги"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "traduceri autorizate București",
+      "traducător autorizat"
+    ]
   },
   {
     "publish_date": "2026-12-08",
@@ -3715,6 +3993,10 @@
         "text": "Автомобили"
       }
     ],
-    "sources": []
+    "sources": [],
+    "romanian_terms": [
+      "tren București Brașov",
+      "bilete tren"
+    ]
   }
 ]
