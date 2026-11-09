@@ -91,7 +91,7 @@ def license_details(item):
     if item.get("width", 0) < 700 or item.get("height", 0) < 450:
         return None
     link = item.get("thumburl") or item.get("url")
-    if not link or not link.startswith("https://upload.wikimedia.org/"):
+    if not link or not link.startswith(("https://upload.wikimedia.org/", "https://thumb.wikimedia.org/")):
         return None
     author = plain(m.get("Artist", {}).get("value", ""))
     if not author:
@@ -167,7 +167,7 @@ def pick(entry, seeds, used_titles):
             image_url = item.get("thumburl") or item.get("url", "")
             if (item.get("mime") == "image/jpeg"
                 and item.get("width", 0) >= 700
-                and image_url.startswith("https://upload.wikimedia.org/")
+                and image_url.startswith(("https://upload.wikimedia.org/", "https://thumb.wikimedia.org/"))
                 and item.get("title", "").removeprefix("File:") == pinned["file"]):
                 return item, {
                     "author": pinned["author"], "license": pinned["license"],
