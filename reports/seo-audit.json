@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-09T10:12:17.868830+00:00",
+  "checked_at_utc": "2026-11-09T10:14:16.225358+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
   "html_pages": 73,
   "sitemap_urls": 73,
@@ -23,6 +23,11 @@
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/city-needs.html",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/explore-bucharest.html",
       "http_status": 200,
       "ok": true
     },
