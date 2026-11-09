@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 from html import escape
 from pathlib import Path
 from urllib.parse import urlparse
+from editorial_media import decorate_html
 import json
 import re
 import xml.etree.ElementTree as ET
@@ -115,6 +116,8 @@ def build_page(entry):
 
 def main():
     entries = json.loads(QUEUE.read_text(encoding="utf-8"))
+    photo_manifest_path = ROOT / "media/assigned-images.json"
+    photos = json.loads(photo_manifest_path.read_text(encoding="utf-8")) if photo_manifest_path.is_file() else {}
     slugs = [e["slug"] for e in entries]
     if len(slugs) != len(set(slugs)):
         raise ValueError("Editorial queue contains duplicate slugs")
@@ -132,7 +135,7 @@ def main():
         path = ROOT / (slug + ".html")
         if path.exists():
             continue
-        html = build_page(entry)
+        html = decorate_html(build_page(entry), entry, photos.get(slug))
         path.write_text(html, encoding="utf-8")
         new_pages.append(path.name)
     if not new_pages:
