@@ -242,7 +242,9 @@ def decorate_html(html, entry, cover=None):
     title = entry["title"]
     url = BASE + slug + ".html"
     if "<!-- BUCHARESTUA_SHARE -->" not in html:
-        share = "https://t.me/share/url?url=" + quote_url(url, safe="") + "&text=" + quote_url(title + " — BucharestUA", safe="")
+        social_copy = (entry.get("telegram_teaser") or entry.get("description") or title)
+        social_copy = " ".join(social_copy.split())[:180]
+        share = "https://t.me/share/url?url=" + quote_url(url, safe="") + "&text=" + quote_url(social_copy + " — BucharestUA", safe="")
         link = (
             '<!-- BUCHARESTUA_SHARE -->'
             '<div class="journal-sharebar"><span class="journal-label">BUCHARESTUA · ГОРОДСКОЙ ЖУРНАЛ</span>'
