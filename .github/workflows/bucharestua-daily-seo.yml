@@ -1,0 +1,38 @@
+name: BucharestUA daily SEO monitoring
+on:
+  schedule:
+    - cron: '15 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  seo-monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check technical SEO and site availability
+        run: python scripts/seo_audit.py
+      - name: Show summary
+        if: always()
+        run: |
+          if [ -f reports/seo-audit.md ]; then
+            cat reports/seo-audit.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'Audit did not produce a report.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Store SEO audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bucharestua-seo-audit
+          path: reports/
+          retention-days: 30
+          if-no-files-found: warn
