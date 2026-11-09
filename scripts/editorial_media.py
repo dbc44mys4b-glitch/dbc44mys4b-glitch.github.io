@@ -140,6 +140,8 @@ def photo_query(entry):
 def seed_for(entry, seeds):
     s = (entry["slug"] + " " + entry["title"]).lower()
     choices = [
+        (["auto-service-bucharest", "tire-service-bucharest"], "carworkshop"),
+        (["sports-partners-bucharest", "kids-tennis"], "tennis"),
         (["peles", "sinaia"], "peles"),
         (["bran-castle"], "bran"),
         (["parliament"], "parliament"),
@@ -163,10 +165,20 @@ def pick(entry, seeds, used_titles):
         results = search_files(photo_query(entry))
     # Require actual verified license metadata on Commons; no fake stock imagery.
     candidates = []
+    query_words = {
+        w for w in re.findall(r"[a-z]{4,}", photo_query(entry).lower())
+        if w not in {"romania", "bucharest", "city", "image", "photo"}
+    }
     for x in results:
         rights = license_details(x)
-        if rights:
-            candidates.append((x, rights))
+        if not rights:
+            continue
+        if not pinned:
+            filename = x.get("title", "").lower().replace("_", " ")
+            # Commons search can return historical trains or unrelated files.
+            if not any(w in filename for w in query_words):
+                continue
+        candidates.append((x, rights))
     if not candidates:
         return None
     if pinned:
@@ -233,11 +245,23 @@ def decorate_html(html, entry, cover=None):
         marker = '<article class="prose">'
         if marker in html:
             html = html.replace(marker, marker + link, 1)
-    if cover and "<!-- BUCHARESTUA_MEDIA -->" not in html:
+    if cover:
         figure = cover_markup(entry, cover)
-        marker = '<article class="prose">'
-        if marker in html:
-            html = html.replace(marker, figure + marker, 1)
+        if "<!-- BUCHARESTUA_MEDIA -->" in html:
+            html = re.sub(
+                r'<!-- BUCHARESTUA_MEDIA --><figure class="journal-cover">.*?</figure>',
+                lambda match: figure, html, count=1, flags=re.S
+            )
+        else:
+            marker = '<article class="prose">'
+            if marker in html:
+                html = html.replace(marker, figure + marker, 1)
+    if cover and 'property="og:image"' in html:
+        html = re.sub(
+            r'(<meta property="og:image:alt" content=")[^"]*(">)',
+            lambda match: match.group(1) + escape(cover["alt"], quote=True) + match.group(2),
+            html, count=1
+        )
     if cover and 'property="og:image"' not in html:
         tags = (
             '<meta property="og:image" content="' + BASE + 'assets/covers/' + slug + '.jpg">'
