@@ -178,6 +178,7 @@ def main():
         BASE,
         BASE + "sitemap.xml",
         BASE + "russian-speaking-chat-bucharest.html",
+        BASE + "city-needs.html",
     ]
     queue_path = ROOT / "content-queue" / "articles.json"
     if queue_path.is_file():
