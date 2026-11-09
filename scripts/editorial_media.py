@@ -270,6 +270,12 @@ def decorate_html(html, entry, cover=None):
             if marker in html:
                 html = html.replace(marker, figure + marker, 1)
     if cover and 'property="og:image"' in html:
+        local_image_url = BASE + 'assets/covers/' + slug + '.jpg'
+        html = re.sub(
+            r'(<meta property="og:image" content=")[^"]*(">)',
+            lambda match: match.group(1) + local_image_url + match.group(2),
+            html, count=1
+        )
         html = re.sub(
             r'(<meta property="og:image:alt" content=")[^"]*(">)',
             lambda match: match.group(1) + escape(cover["alt"], quote=True) + match.group(2),
@@ -299,6 +305,13 @@ def main():
     seeds = json.loads(SEEDS.read_text(encoding="utf-8"))["photos"]
     current = json.loads(INDEX.read_text(encoding="utf-8")) if INDEX.is_file() else {}
     due = sorted([e for e in entries if e["publish_date"] <= today], key=lambda e: (e["publish_date"], e["slug"]))
+    # Site community hub is not part of the article queue; it still needs
+    # the same Commons attribution and a locally served cover image.
+    if (ROOT / "community.html").is_file():
+        due.append({
+            "slug": "community", "publish_date": "2026-11-09",
+            "title": "Romanian Athenaeum Bucharest community"
+        })
     used = {x.get("commons_title") for x in current.values()}
     changes = []
     errors = []
