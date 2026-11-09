@@ -142,6 +142,10 @@ def seed_for(entry, seeds):
     choices = [
         (["auto-service-bucharest", "tire-service-bucharest"], "carworkshop"),
         (["sports-partners-bucharest", "kids-tennis"], "tennis"),
+        (["antipa-museum", "antipa-short", "antipa-sensory"], "antipa"),
+        (["cismigiu", "cișmigiu"], "cismigiu"),
+        (["tineretului"], "tineretului"),
+        (["village-museum", "muzeul-satului"], "village"),
         (["peles", "sinaia"], "peles"),
         (["bran-castle"], "bran"),
         (["parliament"], "parliament"),
