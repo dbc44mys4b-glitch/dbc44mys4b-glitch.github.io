@@ -80,6 +80,22 @@
       "license": "CC BY-SA 4.0",
       "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
       "alt": "Зелёный парк King Michael I в северном Бухаресте"
+    },
+    {
+      "key": "carworkshop",
+      "file": "Mechanic works on car engine performing routine maintenance and inspections on vehicle parts.jpg",
+      "author": "Shixart1985",
+      "license": "CC BY 2.0",
+      "license_url": "https://creativecommons.org/licenses/by/2.0/",
+      "alt": "Автомеханик проверяет двигатель автомобиля в мастерской, иллюстративный снимок"
+    },
+    {
+      "key": "tennis",
+      "file": "Tennis courts.jpg",
+      "author": "Kurt Kaiser",
+      "license": "CC0 1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "alt": "Теннисные корты, иллюстративное фото (снято вне Бухареста)"
     }
   ]
 }
