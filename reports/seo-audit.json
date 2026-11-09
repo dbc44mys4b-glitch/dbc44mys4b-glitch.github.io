@@ -1,0 +1,545 @@
+{
+  "checked_at_utc": "2026-11-09T08:49:05.011597+00:00",
+  "site": "https://dbc44mys4b-glitch.github.io/",
+  "html_pages": 72,
+  "sitemap_urls": 70,
+  "issues": [
+    "google-site-verification: googlef5a4fa95e388d88a.html: missing title",
+    "googlef5a4fa95e388d88a.html: missing title"
+  ],
+  "warnings": [
+    "google-site-verification: googlef5a4fa95e388d88a.html: absent from sitemap",
+    "google-site-verification: googlef5a4fa95e388d88a.html: expected one H1; found 0",
+    "google-site-verification: googlef5a4fa95e388d88a.html: missing HTML lang",
+    "google-site-verification: googlef5a4fa95e388d88a.html: missing canonical URL",
+    "google-site-verification: googlef5a4fa95e388d88a.html: missing meta description",
+    "googlef5a4fa95e388d88a.html: absent from sitemap",
+    "googlef5a4fa95e388d88a.html: expected one H1; found 0",
+    "googlef5a4fa95e388d88a.html: missing HTML lang",
+    "googlef5a4fa95e388d88a.html: missing canonical URL",
+    "googlef5a4fa95e388d88a.html: missing meta description"
+  ],
+  "public_http_checks": [
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/sitemap.xml",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/russian-speaking-chat-bucharest.html",
+      "http_status": 200,
+      "ok": true
+    }
+  ],
+  "page_metadata": {
+    "about.html": {
+      "title": "О сообществе BucharestUA — городской Telegram-чат Бухареста",
+      "description": "Общение, вопросы новичков, советы жителей. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/about.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "articles.html": {
+      "title": "Статьи для украинцев в Бухаресте — BucharestUA",
+      "description": "Справочник украинцев Бухареста: временная защита, CNP, аренда жилья, работа, семейный врач и другие практические статьи.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/articles.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "bank-account-ukrainians.html": {
+      "title": "Как открыть банковский счёт в Румынии украинцу | BucharestUA",
+      "description": "Документы, карта, комиссии, валюта и онлайн-банкинг в Бухаресте.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/bank-account-ukrainians.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "banking.html": {
+      "title": "Банки, карты и платежи в Бухаресте: что проверить | BucharestUA",
+      "description": "Как сравнить банковские счета, карты, переводы и комиссии в Румынии; документы и безопасность для новых жителей Бухареста.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/banking.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "bucharest-sectors-family.html": {
+      "title": "Как выбрать район и сектор Бухареста для семьи | BucharestUA",
+      "description": "Шесть секторов города: маршрут, школа, детсад, парк и аренда.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/bucharest-sectors-family.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "business-pfa-srl-romania.html": {
+      "title": "PFA или SRL в Румынии: что обсудить с бухгалтером | BucharestUA",
+      "description": "Бизнес, налоги, учёт и документы для предпринимателя-украинца.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/business-pfa-srl-romania.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "business.html": {
+      "title": "Бизнес и нетворкинг в Бухаресте — советы и общение | BucharestUA",
+      "description": "Предприниматели, контакты, услуги, партнёрства. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/business.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "buy-sell-used-bucharest.html": {
+      "title": "Барахолка Бухареста: как безопасно покупать вещи | BucharestUA",
+      "description": "Мебель, детские товары, техника и сделки между частными лицами.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/buy-sell-used-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "cars.html": {
+      "title": "Автомобили в Бухаресте — советы и общение | BucharestUA",
+      "description": "Автосервисы, парковка, покупка и регистрация авто. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/cars.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "change-address-bucharest.html": {
+      "title": "Смена адреса в Бухаресте: что обновить после переезда | BucharestUA",
+      "description": "Что проверить при переезде в другой сектор Бухареста, если у вас временная защита.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/change-address-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "children.html": {
+      "title": "Дети и семьи в Бухаресте — советы и общение | BucharestUA",
+      "description": "Семейный досуг, кружки, секции и общение родителей. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/children.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "cnp-ukrainians-romania.html": {
+      "title": "CNP в Румынии: что это и где найти украинцу | BucharestUA",
+      "description": "Для чего нужен CNP, почему его просят учреждения и как защитить персональный код.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/cnp-ukrainians-romania.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "cost-of-living-bucharest-family.html": {
+      "title": "Стоимость жизни семьи в Бухаресте: как составить бюджет | BucharestUA",
+      "description": "Аренда, депозит, коммунальные, продукты, транспорт, детский сад.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/cost-of-living-bucharest-family.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "cv-romania-ukrainian.html": {
+      "title": "CV для Румынии: как оформить резюме украинцу | BucharestUA",
+      "description": "Пример структуры резюме для работодателей Бухареста: навыки, языки, опыт.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/cv-romania-ukrainian.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "dentists.html": {
+      "title": "Стоматолог в Бухаресте: как выбрать клинику и сравнить условия | BucharestUA",
+      "description": "Рекомендации по выбору стоматологии в Бухаресте: язык, прозрачность цены, план лечения, срочная помощь и отзывы.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/dentists.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "document-translation-bucharest.html": {
+      "title": "Перевод документов и нотариус в Бухаресте | BucharestUA",
+      "description": "Авторизованный перевод, нотариальное заверение, апостиль — вопросы.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/document-translation-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "documents.html": {
+      "title": "Документы и легализация в Бухаресте — советы и общение | BucharestUA",
+      "description": "Проживание, разрешения, регистрации и административные вопросы. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/documents.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "emergencies.html": {
+      "title": "Экстренные ситуации в Бухаресте: 112, помощь и безопасность | BucharestUA",
+      "description": "Что делать при неотложной ситуации в Бухаресте: номер 112, информация диспетчеру, безопасность и различие между чатом и экстренной помощью.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/emergencies.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "en.html": {
+      "title": "BucharestUA — Bucharest Telegram Community | Housing, Jobs, Local Life",
+      "description": "Join the BucharestUA Telegram community in Bucharest, Romania. Explore housing, jobs, relocation, family life, local services, events and new friends.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/en.html",
+      "h1_count": 1,
+      "language": "en"
+    },
+    "events.html": {
+      "title": "Мероприятия и встречи в Бухаресте — советы и общение | BucharestUA",
+      "description": "Концерты, выставки, встречи, афиша города. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/events.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "family-activities-bucharest.html": {
+      "title": "Куда пойти с ребёнком в Бухаресте: план выходного | BucharestUA",
+      "description": "Парки, детские активности, музеи и занятия по возрасту.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/family-activities-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "family-doctor-bucharest-registration.html": {
+      "title": "Как записаться к семейному врачу в Бухаресте | BucharestUA",
+      "description": "Medic de familie: поиск кабинета, новые пациенты, документы и язык.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/family-doctor-bucharest-registration.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "family-doctor.html": {
+      "title": "Семейный врач в Бухаресте: как найти medic de familie | BucharestUA",
+      "description": "Где искать семейного врача в Бухаресте, какие вопросы задать клинике и как уточнить обслуживание по страховке CNAS.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/family-doctor.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "google-site-verification: googlef5a4fa95e388d88a.html": {
+      "title": "",
+      "description": null,
+      "canonical": null,
+      "h1_count": 0,
+      "language": null
+    },
+    "googlef5a4fa95e388d88a.html": {
+      "title": "",
+      "description": null,
+      "canonical": null,
+      "h1_count": 0,
+      "language": null
+    },
+    "guides.html": {
+      "title": "Справочник Бухареста: жильё, врачи, работа, дети, документы | BucharestUA",
+      "description": "Городской справочник BucharestUA: 26 практических тем о жизни в Бухаресте, поиск проверяемых источников и общение жителей.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/guides.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "health.html": {
+      "title": "Медицина и здоровье в Бухаресте — советы и общение | BucharestUA",
+      "description": "Врачи, клиники, аптеки, медицинская страховка. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/health.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "housing.html": {
+      "title": "Аренда жилья в Бухаресте — советы и общение | BucharestUA",
+      "description": "Квартиры, комнаты, аренда, районы и поиск соседей. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/housing.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "index.html": {
+      "title": "BucharestUA — чат Бухареста | Украинцы в Румынии, работа, жильё и общение",
+      "description": "BucharestUA — городской Telegram-чат Бухареста. Общение, работа, аренда жилья, документы, дети, услуги, события и знакомства для жителей Румынии.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "insurance-health-bucharest.html": {
+      "title": "Медицинское страхование украинцев в Бухаресте | BucharestUA",
+      "description": "Как проверить права на помощь, CASMB, направления и условия визита.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/insurance-health-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "jobs-without-romanian-bucharest.html": {
+      "title": "Работа в Бухаресте без румынского: поиск вакансий | BucharestUA",
+      "description": "Где искать вакансии украинцам без румынского, как подготовить CV и проверить работу.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/jobs-without-romanian-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "jobs.html": {
+      "title": "Работа и вакансии в Бухаресте — советы и общение | BucharestUA",
+      "description": "Поиск работы, вакансии, подработки и советы по трудоустройству. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/jobs.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "kindergarten-bucharest-enrolment.html": {
+      "title": "Детский сад в Бухаресте: государственный или частный | BucharestUA",
+      "description": "Запись в сад, возрастные группы, адаптация, язык и стоимость.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/kindergarten-bucharest-enrolment.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "kindergartens.html": {
+      "title": "Детские сады в Бухаресте — советы и общение | BucharestUA",
+      "description": "Частные и государственные детсады, адаптация, языки. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/kindergartens.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "marketplace.html": {
+      "title": "Барахолка и покупки в Бухаресте — советы и общение | BucharestUA",
+      "description": "Купить, продать, обменять, отдать вещи. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/marketplace.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "medicines-pharmacies-bucharest.html": {
+      "title": "Где купить лекарства в Бухаресте: аптеки и рецепты | BucharestUA",
+      "description": "Как искать лекарство по действующему веществу и безопасно уточнять аналоги.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/medicines-pharmacies-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "moving.html": {
+      "title": "Переезд в Бухарест: первые шаги и чек-лист новичка | BucharestUA",
+      "description": "Переезд в Бухарест: жильё, связь, медицинская помощь, транспорт, документы, школа и полезные вопросы местному сообществу.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/moving.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "neighborhoods.html": {
+      "title": "Районы Бухареста в Бухаресте — советы и общение | BucharestUA",
+      "description": "Sector 1–6, выбор района, инфраструктура и жизнь. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/neighborhoods.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "parking-bucharest-guide.html": {
+      "title": "Парковка в Бухаресте: как проверять правила | BucharestUA",
+      "description": "Платные зоны, знаки, парковочное место при аренде и безопасность.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/parking-bucharest-guide.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "pediatrician.html": {
+      "title": "Педиатр и детские клиники Бухареста: памятка родителям | BucharestUA",
+      "description": "Как подобрать педиатра в Бухаресте, уточнить язык общения, запись, прививки и страховое покрытие; безопасные вопросы для сообщества.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/pediatrician.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "pets-ukraine-bucharest.html": {
+      "title": "Переезд с собакой или кошкой в Бухарест: чек-лист | BucharestUA",
+      "description": "Документы питомца, ветеринар, аренда с животным и перевозка.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/pets-ukraine-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "pets.html": {
+      "title": "Животные в Бухаресте: ветеринар, передержка, прогулки | BucharestUA",
+      "description": "Как искать ветеринарную клинику, груминг, передержку и pet-friendly жильё в Бухаресте.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/pets.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "pharmacies.html": {
+      "title": "Аптеки и лекарства в Бухаресте: как искать и что уточнить | BucharestUA",
+      "description": "Практический справочник по аптекам, рецептам и покупке лекарств в Бухаресте: как искать действующее вещество и аптеку в своём районе.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/pharmacies.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "questions.html": {
+      "title": "Вопросы и знакомства в Бухаресте — советы и общение | BucharestUA",
+      "description": "Общение, вопросы новичков, советы жителей. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/questions.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "rent-contract-bucharest-checklist.html": {
+      "title": "Договор аренды в Бухаресте: проверка до подписи | BucharestUA",
+      "description": "Депозит, ремонт, коммунальные платежи и сроки выезда — чек-лист арендатора.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/rent-contract-bucharest-checklist.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "rental-scams-bucharest.html": {
+      "title": "Мошенники при аренде квартиры в Бухаресте: признаки | BucharestUA",
+      "description": "Как проверить объявление, видеопоказ, владельца и просьбу о срочном залоге.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/rental-scams-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "restaurants.html": {
+      "title": "Кафе, рестораны и продукты в Бухаресте: советы жителей | BucharestUA",
+      "description": "Где искать кафе, рестораны, украинские продукты и продуктовые магазины в Бухаресте; что уточнять перед визитом.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/restaurants.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "ro.html": {
+      "title": "BucharestUA — comunitate Telegram București | Locuințe, locuri de muncă și viața în oraș",
+      "description": "Comunitatea BucharestUA din București: chirii, joburi, acte, familie, servicii, evenimente și cunoașterea oamenilor din oraș.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ro.html",
+      "h1_count": 1,
+      "language": "ro"
+    },
+    "romanian-language.html": {
+      "title": "Румынский язык в Бухаресте: курсы, разговорная практика | BucharestUA",
+      "description": "Как искать курсы румынского языка в Бухаресте, сравнивать форматы и задавать вопросы русскоязычному и украинскому сообществу.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/romanian-language.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "romanian-phrases-everyday.html": {
+      "title": "Базовые румынские фразы для жизни в Бухаресте | BucharestUA",
+      "description": "Фразы для магазина, метро, клиники и общения с соседями.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/romanian-phrases-everyday.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "russian-speaking-chat-bucharest.html": {
+      "title": "Русскоязычный чат Бухареста в Telegram: общение и помощь | BucharestUA",
+      "description": "Ищете русскоязычный Telegram-чат Бухареста? Как вступить в BucharestUA, задать вопрос про жильё, работу, детей, врачей и познакомиться с жителями города.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/russian-speaking-chat-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "school-enrolment-ukrainian-child.html": {
+      "title": "Украинский ребёнок в школе Бухареста: как записать | BucharestUA",
+      "description": "Пошаговая подготовка к поступлению в школу, язык и адаптация.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/school-enrolment-ukrainian-child.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "schools.html": {
+      "title": "Школы и обучение в Бухаресте — советы и общение | BucharestUA",
+      "description": "Школы, языковые курсы, университеты, репетиторы. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/schools.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "services.html": {
+      "title": "Услуги и мастера в Бухаресте — советы и общение | BucharestUA",
+      "description": "Ремонт, перевозки, уборка, специалисты и рекомендации. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/services.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "sim-card-bucharest.html": {
+      "title": "SIM-карта и интернет в Бухаресте: что выбрать | BucharestUA",
+      "description": "Prepaid, контракт, eSIM, покрытие, роуминг и безопасность.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/sim-card-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "sports-partners-bucharest.html": {
+      "title": "С кем заниматься спортом в Бухаресте: теннис, бег, фитнес и новые знакомства | BucharestUA",
+      "description": "Как найти партнёров для тенниса, бега и тренировок в Бухаресте: где спрашивать, что указать в сообщении и как безопасно договориться о встрече.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/sports-partners-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "sports.html": {
+      "title": "Спорт и активный отдых в Бухаресте — советы и общение | BucharestUA",
+      "description": "Теннис, фитнес, бассейны, бег, команды. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/sports.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "temporary-protection-checklist.html": {
+      "title": "Временная защита в Румынии: памятка украинцу | BucharestUA",
+      "description": "Как проверить документы, статус, разрешение на проживание и куда обращаться в Бухаресте.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/temporary-protection-checklist.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "transport-card-bucharest.html": {
+      "title": "Метро и автобусы Бухареста: билеты, пересадки, абонементы | BucharestUA",
+      "description": "Как пользоваться STB и Metrorex, не путая билетные системы.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/transport-card-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "transport.html": {
+      "title": "Транспорт и город в Бухаресте — советы и общение | BucharestUA",
+      "description": "Метро, автобусы, такси, аэропорты, маршруты. Telegram-сообщество BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/transport.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "ua-family-doctor-bucharest.html": {
+      "title": "Сімейний лікар у Бухаресті: як знайти medic de familie | BucharestUA",
+      "description": "Пошук лікаря, страховка, запис та підготовка документів.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-family-doctor-bucharest.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ua-jobs-bucharest.html": {
+      "title": "Робота у Бухаресті для українців: пошук та безпека | BucharestUA",
+      "description": "Як шукати вакансії, оформити CV і перевірити трудовий договір.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-jobs-bucharest.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ua-kindergarten-bucharest.html": {
+      "title": "Дитячий садок у Бухаресті: вибір і запис | BucharestUA",
+      "description": "Місця, вік, режим, харчування та адаптація у садку.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-kindergarten-bucharest.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ua-pharmacies-romania.html": {
+      "title": "Аптеки Бухареста: пошук ліків і рецепта | BucharestUA",
+      "description": "Farmacie, діюча речовина, рецепт та безпечна заміна препарату.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-pharmacies-romania.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ua-protection-romania.html": {
+      "title": "Тимчасовий захист у Румунії: що потрібно знати | BucharestUA",
+      "description": "Перевірка посвідки, CNP та офіційних правил для українців.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-protection-romania.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ua-public-transport-bucharest.html": {
+      "title": "Метро й автобуси Бухареста: квитки та пересадки | BucharestUA",
+      "description": "Як орієнтуватися в Metrorex та STB і перевіряти тарифи.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-public-transport-bucharest.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ua-rent-bucharest.html": {
+      "title": "Оренда квартири в Бухаресті: договір і застава | BucharestUA",
+      "description": "Як перевірити житло та уникнути ризикованої передоплати.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-rent-bucharest.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ua-school-bucharest.html": {
+      "title": "Школа у Бухаресті для української дитини: вступ і навчання | BucharestUA",
+      "description": "Запис до школи, документи, румунська мова й адаптація.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ua-school-bucharest.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "uk.html": {
+      "title": "BucharestUA — чат Бухареста | Українці в Румунії, робота, житло, спілкування",
+      "description": "Українська спільнота в Бухаресті: житло, робота, документи, діти, події, послуги та знайомства у Telegram-чаті BucharestUA.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/uk.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "ukrainians-bucharest-community.html": {
+      "title": "Где общаться украинцам в Бухаресте: группы и знакомства | BucharestUA",
+      "description": "Городские чаты, вопросы соседям, встречи и полезные контакты.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ukrainians-bucharest-community.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "utilities-bucharest-rent.html": {
+      "title": "Коммунальные платежи Бухареста: întreținere и счета | BucharestUA",
+      "description": "Что уточнить про коммунальные услуги до аренды квартиры в Румынии.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/utilities-bucharest-rent.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "work-contract-romania.html": {
+      "title": "Трудовой договор в Румынии: важные пункты для украинцев | BucharestUA",
+      "description": "Как проверять зарплату brut/net, график, условия труда и отпуск.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/work-contract-romania.html",
+      "h1_count": 1,
+      "language": "ru"
+    }
+  }
+}
