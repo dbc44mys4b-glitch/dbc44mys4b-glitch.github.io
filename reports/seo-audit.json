@@ -1,10 +1,12 @@
 {
-  "checked_at_utc": "2026-11-09T11:19:58.453483+00:00",
+  "checked_at_utc": "2026-11-09T11:22:31.885837+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
   "html_pages": 73,
   "sitemap_urls": 73,
   "issues": [],
-  "warnings": [],
+  "warnings": [
+    "Editorial calendar has 1 entries on 2027-02-02, expected 2–3"
+  ],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
