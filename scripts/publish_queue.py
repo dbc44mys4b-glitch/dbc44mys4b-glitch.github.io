@@ -76,6 +76,12 @@ def build_page(entry):
                 parts.append('<li>' + text(bullet) + '</li>')
             parts.append('</ul>')
         parts.append('</section>')
+    if entry.get("romanian_terms"):
+        parts.append('<section class="guide-panel"><h2>Как искать эту услугу по-румынски</h2>')
+        parts.append('<p>Для поиска на картах и общения с местными исполнителями могут пригодиться румынские названия. Используйте их вместе с вашим районом или ближайшей станцией метро; это подсказки, а не рейтинг поставщиков услуг.</p><ul>')
+        for term in entry["romanian_terms"]:
+            parts.append('<li lang="ro">' + text(term) + '</li>')
+        parts.append('</ul></section>')
     parts += [
         '<section class="guide-panel"><h2>Полезные материалы по теме</h2><ul>'
     ]
