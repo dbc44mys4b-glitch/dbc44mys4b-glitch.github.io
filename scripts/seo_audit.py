@@ -85,7 +85,14 @@ def check_web(url):
 def main():
     issues = []
     warnings = []
-    pages = sorted(ROOT.glob("*.html"))
+    pages = [
+        p for p in sorted(ROOT.glob("*.html"))
+        if not (
+            p.name.startswith("google")
+            and p.stat().st_size < 512
+            and p.read_text(encoding="utf-8").lstrip().startswith("google-site-verification:")
+        )
+    ]
     info = {}
     titles = Counter()
 
