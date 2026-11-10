@@ -1,10 +1,14 @@
 {
-  "checked_at_utc": "2026-11-09T11:45:50.863863+00:00",
+  "checked_at_utc": "2026-11-10T09:23:53.450055+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
-  "html_pages": 74,
-  "sitemap_urls": 74,
+  "html_pages": 77,
+  "sitemap_urls": 77,
   "issues": [],
-  "warnings": [],
+  "warnings": [
+    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/buy-phone-bucharest.html (404)",
+    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/endocrinologist-bucharest.html (404)",
+    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html (404)"
+  ],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
@@ -40,6 +44,21 @@
       "url": "https://dbc44mys4b-glitch.github.io/assets/covers/community.jpg",
       "http_status": 200,
       "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html",
+      "http_status": 404,
+      "ok": false
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/endocrinologist-bucharest.html",
+      "http_status": 404,
+      "ok": false
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/buy-phone-bucharest.html",
+      "http_status": 404,
+      "ok": false
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/sports-partners-bucharest.html",
@@ -106,6 +125,13 @@
       "title": "Бизнес и нетворкинг в Бухаресте — советы и общение | BucharestUA",
       "description": "Предприниматели, контакты, услуги, партнёрства. Telegram-сообщество BucharestUA.",
       "canonical": "https://dbc44mys4b-glitch.github.io/business.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "buy-phone-bucharest.html": {
+      "title": "Где купить телефон в Бухаресте: новый или б/у без неприятных сюрпризов | BucharestUA",
+      "description": "Покупая смартфон в Румынии, сравните не только цену на витрине: происхождение устройства, чек, условия возврата и реальная гарантия могут оказаться важнее не",
+      "canonical": "https://dbc44mys4b-glitch.github.io/buy-phone-bucharest.html",
       "h1_count": 1,
       "language": "ru"
     },
@@ -207,6 +233,13 @@
       "h1_count": 1,
       "language": "en"
     },
+    "endocrinologist-bucharest.html": {
+      "title": "Эндокринолог в Бухаресте: как выбрать врача и записаться | BucharestUA",
+      "description": "Если нужен эндокринолог, важно найти подходящего специалиста и понять условия приёма: по страховке, направлению или платно. Не назначайте себе анализы и лече",
+      "canonical": "https://dbc44mys4b-glitch.github.io/endocrinologist-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
     "events.html": {
       "title": "Мероприятия и встречи в Бухаресте — советы и общение | BucharestUA",
       "description": "Концерты, выставки, встречи, афиша города. Telegram-сообщество BucharestUA.",
@@ -215,8 +248,8 @@
       "language": "ru"
     },
     "explore-bucharest.html": {
-      "title": "Что посмотреть в Бухаресте: прогулки и выходные | BucharestUA",
-      "description": "Оригинальные гиды по Бухаресту: достопримечательности, прогулки, музеи, парки, семейный отдых и идеи поездок по Румынии.",
+      "title": "Что посмотреть в Бухаресте: маршруты, места и выходные | BucharestUA",
+      "description": "Бухарест для своих: прогулки на день и выходные, музеи, парки, отдых с детьми, поездки в горы и рестораны. Оригинальные маршруты и советы жителей.",
       "canonical": "https://dbc44mys4b-glitch.github.io/explore-bucharest.html",
       "h1_count": 1,
       "language": "ru"
@@ -365,6 +398,13 @@
       "title": "Аптеки и лекарства в Бухаресте: как искать и что уточнить | BucharestUA",
       "description": "Практический справочник по аптекам, рецептам и покупке лекарств в Бухаресте: как искать действующее вещество и аптеку в своём районе.",
       "canonical": "https://dbc44mys4b-glitch.github.io/pharmacies.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "phone-repair-bucharest.html": {
+      "title": "Ремонт телефона в Бухаресте: экран, аккумулятор и диагностика | BucharestUA",
+      "description": "Телефон упал, перестал заряжаться или быстро разряжается? Перед передачей устройства в ремонт важно защитить данные и договориться о цене, а не только о срок",
+      "canonical": "https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html",
       "h1_count": 1,
       "language": "ru"
     },

@@ -1,8 +1,12 @@
 {
-  "checked": "2026-11-09",
-  "new_photo_covers": [],
+  "checked": "2026-11-10",
+  "new_photo_covers": [
+    "buy-phone-bucharest",
+    "endocrinologist-bucharest",
+    "phone-repair-bucharest"
+  ],
   "articles_enriched": [],
-  "photo_count": 3,
+  "photo_count": 6,
   "warnings": [],
   "note": "An article without a verified photo is published without an image; never substitute unlicensed material."
 }
