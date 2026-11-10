@@ -82,6 +82,35 @@ def check_web(url):
         return {"url": url, "error": str(e), "ok": False}
 
 
+def diagnose_public_sitemap():
+    """Check the actual deployed XML, including a Googlebot-like user agent.
+
+    This is not a verified Google crawler and cannot replace the Google
+    Search Console live test.
+    """
+    url = BASE + "sitemap.xml"
+    req = Request(url, headers={
+        "User-Agent": "Googlebot/2.1 (+http://www.google.com/bot.html)",
+        "Accept": "application/xml,text/xml,*/*",
+    })
+    try:
+        with urlopen(req, timeout=18) as response:
+            data = response.read(1_000_000)
+            content_type = response.headers.get("Content-Type", "")
+            root = ET.fromstring(data)
+            found = sum(1 for item in root.iter() if item.tag.endswith("loc"))
+            valid_root = root.tag == "{http://www.sitemaps.org/schemas/sitemap/0.9}urlset"
+            return {
+                "url": url, "http_status": response.status,
+                "content_type": content_type, "bytes": len(data),
+                "remote_xml_valid": bool(valid_root), "remote_urls": found,
+                "ok": 200 <= response.status < 300 and valid_root,
+                "note": "Googlebot-like request; not proof of a real Googlebot crawl."
+            }
+    except (HTTPError, URLError, TimeoutError, OSError, ET.ParseError) as error:
+        return {"url": url, "ok": False, "error": str(error)[:350]}
+
+
 def main():
     issues = []
     warnings = []
@@ -227,6 +256,13 @@ def main():
         if not c["ok"]:
             warnings.append(f"Public URL unavailable during check: {c['url']} ({c.get('http_status', c.get('error', 'unknown'))})")
 
+    # Google Search Console may report a fetch failure even when the local
+    # XML is syntactically valid. Test deployed bytes and content type separately.
+    public_sitemap_diagnostic = diagnose_public_sitemap()
+    if not public_sitemap_diagnostic.get("ok"):
+        warnings.append("Deployed sitemap failed independent XML/Googlebot-like check: " +
+                        str(public_sitemap_diagnostic.get("error", "Unexpected response")))
+
     result = {
         "checked_at_utc": datetime.now(timezone.utc).isoformat(),
         "site": BASE,
@@ -235,6 +271,7 @@ def main():
         "issues": sorted(set(issues)),
         "warnings": sorted(set(warnings)),
         "public_http_checks": web_checks,
+        "public_sitemap_diagnostic": public_sitemap_diagnostic,
         "page_metadata": info,
     }
     (OUT / "seo-audit.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
