@@ -1,14 +1,10 @@
 {
-  "checked_at_utc": "2026-11-10T09:23:53.450055+00:00",
+  "checked_at_utc": "2026-11-10T09:31:52.982936+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
   "html_pages": 77,
   "sitemap_urls": 77,
   "issues": [],
-  "warnings": [
-    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/buy-phone-bucharest.html (404)",
-    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/endocrinologist-bucharest.html (404)",
-    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html (404)"
-  ],
+  "warnings": [],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
@@ -47,18 +43,18 @@
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html",
-      "http_status": 404,
-      "ok": false
+      "http_status": 200,
+      "ok": true
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/endocrinologist-bucharest.html",
-      "http_status": 404,
-      "ok": false
+      "http_status": 200,
+      "ok": true
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/buy-phone-bucharest.html",
-      "http_status": 404,
-      "ok": false
+      "http_status": 200,
+      "ok": true
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/sports-partners-bucharest.html",
@@ -71,6 +67,16 @@
       "ok": true
     }
   ],
+  "public_sitemap_diagnostic": {
+    "url": "https://dbc44mys4b-glitch.github.io/sitemap.xml",
+    "http_status": 200,
+    "content_type": "application/xml",
+    "bytes": 8580,
+    "remote_xml_valid": true,
+    "remote_urls": 77,
+    "ok": true,
+    "note": "Googlebot-like request; not proof of a real Googlebot crawl."
+  },
   "page_metadata": {
     "about.html": {
       "title": "О сообществе BucharestUA — городской Telegram-чат Бухареста",
