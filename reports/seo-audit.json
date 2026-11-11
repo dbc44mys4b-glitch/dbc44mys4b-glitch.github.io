@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-11T23:38:22.530357+00:00",
+  "checked_at_utc": "2026-11-11T23:43:27.645951+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
   "html_pages": 81,
   "sitemap_urls": 81,
@@ -113,8 +113,8 @@
       "language": "ru"
     },
     "articles.html": {
-      "title": "Статьи для украинцев в Бухаресте — BucharestUA",
-      "description": "Справочник украинцев Бухареста: временная защита, CNP, аренда жилья, работа, семейный врач и другие практические статьи.",
+      "title": "Городская лента — статьи и гиды Бухареста | BucharestUA",
+      "description": "Городская лента BucharestUA: интересные статьи, полезные гиды, маршруты, городская жизнь и советы о Бухаресте.",
       "canonical": "https://dbc44mys4b-glitch.github.io/articles.html",
       "h1_count": 1,
       "language": "ru"
@@ -337,8 +337,8 @@
       "language": "ru"
     },
     "index.html": {
-      "title": "BucharestUA — городское медиа о жизни в Бухаресте",
-      "description": "BucharestUA — городской Telegram-чат Бухареста. Общение, работа, аренда жилья, документы, дети, услуги, события и знакомства для жителей Румынии.",
+      "title": "BucharestUA — городское медиа о Бухаресте: истории, места и жизнь",
+      "description": "BucharestUA — независимое городское медиа: Бухарест без скучных инструкций. Истории, маршруты, события, полезные гиды и русскоязычное сообщество.",
       "canonical": "https://dbc44mys4b-glitch.github.io/",
       "h1_count": 1,
       "language": "ru"
