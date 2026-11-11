@@ -1,10 +1,14 @@
 {
-  "checked_at_utc": "2026-11-11T10:02:03.346119+00:00",
+  "checked_at_utc": "2026-11-11T22:28:10.370611+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
-  "html_pages": 78,
-  "sitemap_urls": 78,
+  "html_pages": 81,
+  "sitemap_urls": 81,
   "issues": [],
-  "warnings": [],
+  "warnings": [
+    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/airport-otopeni-guide.html (404)",
+    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/kids-classes-bucharest.html (404)",
+    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/massage-bucharest.html (404)"
+  ],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
@@ -42,9 +46,24 @@
       "ok": true
     },
     {
+      "url": "https://dbc44mys4b-glitch.github.io/massage-bucharest.html",
+      "http_status": 404,
+      "ok": false
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/kids-classes-bucharest.html",
+      "http_status": 404,
+      "ok": false
+    },
+    {
       "url": "https://dbc44mys4b-glitch.github.io/hospital-bucharest.html",
       "http_status": 200,
       "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/airport-otopeni-guide.html",
+      "http_status": 404,
+      "ok": false
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html",
@@ -87,6 +106,13 @@
       "title": "О сообществе BucharestUA — городской Telegram-чат Бухареста",
       "description": "Общение, вопросы новичков, советы жителей. Telegram-сообщество BucharestUA.",
       "canonical": "https://dbc44mys4b-glitch.github.io/about.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "airport-otopeni-guide.html": {
+      "title": "Аэропорт Отопень (OTP): как добраться, встретить пассажира и не опоздать | BucharestUA",
+      "description": "Как добраться в аэропорт Отопень OTP: поезд до Gara de Nord, автобус 100, встреча пассажиров и важные изменения остановок в 2026 году.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/airport-otopeni-guide.html",
       "h1_count": 1,
       "language": "ru"
     },
@@ -342,6 +368,13 @@
       "h1_count": 1,
       "language": "ru"
     },
+    "kids-classes-bucharest.html": {
+      "title": "Детские кружки в Бухаресте: спорт, танцы, творчество и занятия по возрасту | BucharestUA",
+      "description": "Детский кружок должен подходить по возрасту, нагрузке и логистике семьи. Пробное занятие и понятная программа обычно ценнее громких обещаний быстрого результ",
+      "canonical": "https://dbc44mys4b-glitch.github.io/kids-classes-bucharest.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
     "kindergarten-bucharest-enrolment.html": {
       "title": "Детский сад в Бухаресте: государственный или частный | BucharestUA",
       "description": "Запись в сад, возрастные группы, адаптация, язык и стоимость.",
@@ -360,6 +393,13 @@
       "title": "Барахолка и покупки в Бухаресте — советы и общение | BucharestUA",
       "description": "Купить, продать, обменять, отдать вещи. Telegram-сообщество BucharestUA.",
       "canonical": "https://dbc44mys4b-glitch.github.io/marketplace.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "massage-bucharest.html": {
+      "title": "Массаж в Бухаресте: как выбрать массажиста, салон или медицинский массаж | BucharestUA",
+      "description": "Расслабляющий массаж, спортивное восстановление и лечебные процедуры — разные услуги. Прежде чем записываться, уточните цель и квалификацию исполнителя, особ",
+      "canonical": "https://dbc44mys4b-glitch.github.io/massage-bucharest.html",
       "h1_count": 1,
       "language": "ru"
     },

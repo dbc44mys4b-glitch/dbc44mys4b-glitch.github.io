@@ -1,12 +1,11 @@
 {
-  "checked_in_bucharest": "2026-11-11",
+  "checked_in_bucharest": "2026-11-12",
   "queue_size": 200,
-  "published_articles": 6,
-  "approved_photo_assets": 7,
+  "published_articles": 9,
+  "approved_photo_assets": 9,
+  "approved_ai_illustration_assets": 1,
   "community_cover_verified": true,
-  "due_awaiting_review_or_photo": [
-    "airport-otopeni-guide"
-  ],
+  "due_awaiting_review_or_photo": [],
   "critical": [],
   "notices": []
 }
