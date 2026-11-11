@@ -3,6 +3,14 @@
   "telegram": "https://t.me/bucharest_info",
   "posts": [
     {
+      "slug": "hospital-bucharest",
+      "title": "Больницы Бухареста: как найти нужное отделение и обратиться за помощью",
+      "publish_date": "2026-11-11",
+      "url": "https://dbc44mys4b-glitch.github.io/hospital-bucharest.html",
+      "telegram_post": "🗞 Больницы Бухареста: как найти нужное отделение и обратиться за помощью\n\nПоиск больницы зависит от цели: экстренная помощь, плановый специалист, обследование или госпитализация. Первым шагом определите срочность, а не ищите рейтин\n\n🔎 Полная статья: https://dbc44mys4b-glitch.github.io/hospital-bucharest.html\n\n💬 А что вы думаете? Обсудим в BucharestUA: https://t.me/bucharest_info",
+      "has_approved_photo": true
+    },
+    {
       "slug": "phone-repair-bucharest",
       "title": "Ремонт телефона в Бухаресте: экран, аккумулятор и диагностика",
       "publish_date": "2026-11-10",
