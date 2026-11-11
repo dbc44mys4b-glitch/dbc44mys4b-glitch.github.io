@@ -164,13 +164,16 @@ def main():
     catalog = ROOT / "articles.html"
     current = catalog.read_text(encoding="utf-8")
     live = [e for e in entries if (ROOT / (e["slug"] + ".html")).is_file()]
-    links = "".join(
-        '<a class="guide-link" href="' + text(e["slug"]) + '.html"><strong>' +
-        text(e["title"]) + ' →</strong><span>' + text(e["description"]) +
-        '</span></a>' for e in sorted(live, key=lambda x: x["publish_date"], reverse=True)
-    )
-    block = START + '<section class="guide-panel"><h2>Новые темы о жизни и общении в Бухаресте</h2>' + \
-        '<div class="guide-links">' + links + '</div></section>' + END
+    labels = {"airport-otopeni-guide": "ТРАНСПОРТ", "kids-classes-bucharest": "СЕМЬЯ", "sports-partners-bucharest": "СПОРТ", "massage-bucharest": "ГОРОДСКИЕ СЕРВИСЫ", "hospital-bucharest": "ЗДОРОВЬЕ"}
+    def editorial_card(e, index):
+        slug = e["slug"]
+        label = labels.get(slug, e.get("category", "ГОРОД"))
+        visual = ('<span class="m-visual-label">' + text(label) + '</span><span class="m-visual-number">' + str(index + 1).zfill(2) + '</span>')
+        return ('<a class="m-card" href="' + text(slug) + '.html"><div class="m-card-visual m-visual-' + str(index % 5) + '">' + visual + '</div>' +
+                '<div class="m-card-body"><span class="m-meta">' + text(label) + ' · ' + text(e["publish_date"]) + '</span><h3>' + text(e["title"]) + '</h3><p>' + text(e["description"][:145]) + '</p><span class="m-read">Читать историю ↗</span></div></a>')
+    ordered = sorted(live, key=lambda x: (x["publish_date"], x["slug"]), reverse=True)
+    cards = "".join(editorial_card(e, i) for i, e in enumerate(ordered))
+    block = START + '<div class="m-story-grid">' + cards + '</div>' + END
     if START in current and END in current:
         left = current.split(START, 1)[0]
         right = current.split(END, 1)[1]
