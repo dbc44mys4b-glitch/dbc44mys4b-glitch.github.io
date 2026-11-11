@@ -1,6 +1,6 @@
 # BucharestUA daily SEO audit
 
-- UTC: 2026-11-11T23:43:46.763982+00:00
+- UTC: 2026-11-11T23:44:18.911553+00:00
 - HTML pages: **81**
 - Sitemap URLs: **81**
 - Critical issues: **0**
