@@ -66,5 +66,23 @@
     "kind": "ai_illustration",
     "author": "BucharestUA",
     "alt": "Терминал аэропорта Отопень на закате, пассажиры с чемоданами и указатели вылета и прилёта"
+  },
+  "kids-classes-bucharest": {
+    "alt": "Иллюстративное фото по теме: Детские кружки в Бухаресте",
+    "author": "Joe Mabel",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "commons_title": "File:Bucharest - children's playground in Gradina Cișmigiu 01.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Bucharest_-_children%27s_playground_in_Gradina_Ci%C8%99migiu_01.jpg",
+    "bytes": 622528
+  },
+  "massage-bucharest": {
+    "alt": "Иллюстративное фото по теме: Массаж в Бухаресте",
+    "author": "right",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "commons_title": "File:Medical clinic in Shuzayf DVIDS167672.jpg",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Medical_clinic_in_Shuzayf_DVIDS167672.jpg",
+    "bytes": 341855
   }
 }
