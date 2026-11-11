@@ -74,3 +74,7 @@ footer{background:#0d1d36;color:#b2c1d7;padding:42px 0}.footer-inner{display:fle
 .editorial-strip a{font-weight:800;color:#244b8b}
 @media(max-width:850px){.editorial-intro{grid-template-columns:1fr;padding:32px 0 25px;gap:22px}.editorial-community{max-width:none}.editorial-stories{grid-template-columns:1fr}.editorial-photo{height:270px}.editorial-topline{font-size:9px}}
 @media(max-width:540px){.editorial-topline{padding:12px 0;font-size:8px}.editorial-intro h1{font-size:clamp(36px,9.5vw,52px);margin:10px 0 14px}.editorial-intro p{font-size:14px}.editorial-community{padding:17px 19px}.editorial-community strong{font-size:17px}.editorial-stories{gap:18px;padding-top:17px}.editorial-photo{height:215px}.editorial-story-copy{padding:18px}.editorial-story-copy h2{font-size:24px}.editorial-mini-story{grid-template-columns:116px minmax(0,1fr);gap:12px}.editorial-mini-story img{width:116px;height:100px}.editorial-mini-story h3{font-size:15px}.editorial-category{font-size:9px}.editorial-strip{gap:12px}.editorial-strip>span{flex-basis:100%}.editorial-strip a{font-size:11px}}
+
+/* Editorial safety fallback for irrelevant photo */
+.editorial-text-thumbnail{width:155px;height:124px;display:flex;align-items:center;justify-content:center;background:#dfe8e8;color:#1f434c;border-top:4px solid #3c777d;font:800 17px/1.35 Manrope,sans-serif;letter-spacing:.03em;text-align:center}
+@media(max-width:540px){.editorial-text-thumbnail{width:116px;height:100px;font-size:13px}}
