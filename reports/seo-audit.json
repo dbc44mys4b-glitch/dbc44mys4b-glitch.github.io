@@ -1,8 +1,8 @@
 {
-  "checked_at_utc": "2026-11-11T23:56:17.999725+00:00",
+  "checked_at_utc": "2026-11-11T23:57:16.985409+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
-  "html_pages": 81,
-  "sitemap_urls": 81,
+  "html_pages": 84,
+  "sitemap_urls": 84,
   "issues": [],
   "warnings": [],
   "public_http_checks": [
@@ -259,6 +259,13 @@
       "h1_count": 1,
       "language": "ru"
     },
+    "en-airport-otopeni-guide.html": {
+      "title": "Otopeni Airport: getting into Bucharest without the hassle | BucharestUA",
+      "description": "A practical guide to the airport train, bus 100 and arriving at Bucharest Henri Coandă Airport.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/en-airport-otopeni-guide.html",
+      "h1_count": 1,
+      "language": "en"
+    },
     "en.html": {
       "title": "BucharestUA — Bucharest Telegram Community | Housing, Jobs, Local Life",
       "description": "Join the BucharestUA Telegram community in Bucharest, Romania. Explore housing, jobs, relocation, family life, local services, events and new friends.",
@@ -490,6 +497,13 @@
       "h1_count": 1,
       "language": "ru"
     },
+    "ro-airport-otopeni-guide.html": {
+      "title": "Aeroportul Otopeni: cum ajungi în București fără bătăi de cap | BucharestUA",
+      "description": "Trenul spre Gara de Nord, autobuzul 100 și sfaturi utile pentru sosirea pe Aeroportul Henri Coandă.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/ro-airport-otopeni-guide.html",
+      "h1_count": 1,
+      "language": "ro"
+    },
     "ro.html": {
       "title": "BucharestUA — comunitate Telegram București | Locuințe, locuri de muncă și viața în oraș",
       "description": "Comunitatea BucharestUA din București: chirii, joburi, acte, familie, servicii, evenimente și cunoașterea oamenilor din oraș.",
@@ -634,6 +648,13 @@
       "title": "Школа у Бухаресті для української дитини: вступ і навчання | BucharestUA",
       "description": "Запис до школи, документи, румунська мова й адаптація.",
       "canonical": "https://dbc44mys4b-glitch.github.io/ua-school-bucharest.html",
+      "h1_count": 1,
+      "language": "uk"
+    },
+    "uk-airport-otopeni-guide.html": {
+      "title": "Аеропорт Отопень: як дістатися до Бухареста без зайвих витрат | BucharestUA",
+      "description": "Поїзд, автобус 100 і важливі нюанси прибуття до аеропорту Отопень у Бухаресті.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/uk-airport-otopeni-guide.html",
       "h1_count": 1,
       "language": "uk"
     },
