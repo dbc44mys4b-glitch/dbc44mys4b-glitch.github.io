@@ -8,8 +8,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from html import escape
 from pathlib import Path
-from urllib.parse import urlparse
-from editorial_media import decorate_html
+from editorial_media import cover_problem, decorate_html
 import json
 import re
 import xml.etree.ElementTree as ET
@@ -116,8 +115,8 @@ def build_page(entry):
 
 def main():
     entries = json.loads(QUEUE.read_text(encoding="utf-8"))
-    photo_manifest_path = ROOT / "media/assigned-images.json"
-    photos = json.loads(photo_manifest_path.read_text(encoding="utf-8")) if photo_manifest_path.is_file() else {}
+    manifest_path = ROOT / "media/assigned-images.json"
+    covers = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
     slugs = [e["slug"] for e in entries]
     if len(slugs) != len(set(slugs)):
         raise ValueError("Editorial queue contains duplicate slugs")
@@ -135,17 +134,11 @@ def main():
         path = ROOT / (slug + ".html")
         if path.exists():
             continue
-        # Quality gate: a new magazine article must have a licensed,
-        # downloaded image with a valid attribution manifest. If Commons
-        # does not deliver, keep the article queued rather than publish a
-        # misleading photo-less placeholder.
-        cover = photos.get(slug)
-        image_file = ROOT / "assets" / "covers" / (slug + ".jpg")
-        if not cover or not image_file.is_file() or image_file.stat().st_size < 8000:
-            print("HOLD: licensed cover not available for " + slug)
-            continue
-        if not all(cover.get(k) for k in ("author", "license", "license_url", "source_url", "alt")):
-            print("HOLD: incomplete photo attribution for " + slug)
+        # A local cover with verified attribution is required for publication.
+        cover = covers.get(slug)
+        problem = cover_problem(ROOT, slug, cover)
+        if problem:
+            print(f"HOLD: {slug}: {problem}")
             continue
         html = decorate_html(build_page(entry), entry, cover)
         path.write_text(html, encoding="utf-8")

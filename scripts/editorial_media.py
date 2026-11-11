@@ -9,7 +9,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from pathlib import Path
 from urllib.request import Request, urlopen
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, unquote, urlencode, urlsplit
 from html import escape, unescape
 from html.parser import HTMLParser
 import json
@@ -26,6 +26,76 @@ REPORT = ROOT / "reports/media-report.json"
 USER_AGENT = "BucharestUAEditorial/1.0 (https://dbc44mys4b-glitch.github.io/; Wikimedia Commons licensed media)"
 API = "https://commons.wikimedia.org/w/api.php"
 MAX_PER_RUN = 8
+AI_KIND = "ai_illustration"
+AI_CREDIT = "AI-иллюстрация BucharestUA"
+PHOTO_RIGHTS_FIELDS = ("license", "license_url", "source_url", "commons_title")
+JPEG_SIGNATURE = b"\xff\xd8\xff"
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+
+
+def valid_photo_license(name, license_url):
+    match = re.fullmatch(r"CC (BY(?:-SA)?)\s+([234]\.0)(?:\s+(ro|de|fr))?", name.strip(), re.I)
+    if match:
+        code, version, region = match.groups()
+        expected = f"https://creativecommons.org/licenses/{code.lower()}/{version}"
+        if region:
+            expected += "/" + region.lower()
+        return license_url.rstrip("/") == expected
+    public_domain = "https://creativecommons.org/publicdomain/"
+    if name.strip().upper() in {"CC0", "CC0 1.0"}:
+        return license_url.rstrip("/") == public_domain + "zero/1.0"
+    if name.strip().upper() in {"PUBLIC DOMAIN", "PD"}:
+        return license_url.rstrip("/") in {public_domain + "zero/1.0", public_domain + "mark/1.0"}
+    return False
+
+
+def cover_src(slug, cover):
+    extension = ".png" if cover.get("kind") == AI_KIND else ".jpg"
+    return "assets/covers/" + slug + extension
+
+
+def cover_alt(cover):
+    alt = cover["alt"].strip()
+    return "AI-иллюстрация: " + alt if cover.get("kind") == AI_KIND else alt
+
+
+def cover_problem(root, slug, cover):
+    """Return the reason a cover fails editorial requirements, or None."""
+    if not isinstance(cover, dict):
+        return "missing cover assignment"
+    kind = cover.get("kind", "photo")
+    if kind not in ("photo", AI_KIND):
+        return "unknown cover kind"
+    fields = ("author", "alt")
+    if kind == "photo":
+        fields += PHOTO_RIGHTS_FIELDS
+    if not all(isinstance(cover.get(key), str) and cover[key].strip() for key in fields):
+        return "incomplete cover attribution"
+    if kind == AI_KIND:
+        if cover["author"] != "BucharestUA" or any(key in cover for key in PHOTO_RIGHTS_FIELDS):
+            return "AI cover must be an original BucharestUA illustration with no photo attribution"
+    else:
+        if not valid_photo_license(cover["license"], cover["license_url"]):
+            return "unapproved photo license or mismatched license URL"
+        try:
+            source = urlsplit(cover["source_url"])
+        except ValueError:
+            return "invalid Commons photo source URL"
+        title = cover["commons_title"].replace("_", " ")
+        source_title = unquote(source.path.removeprefix("/wiki/")).replace("_", " ")
+        if (source.scheme != "https" or source.netloc != "commons.wikimedia.org"
+                or not source.path.startswith("/wiki/") or not title.startswith("File:")
+                or source_title != title):
+            return "photo source must match the attributed Wikimedia Commons file"
+
+    image_file = root / cover_src(slug, cover)
+    signature = PNG_SIGNATURE if kind == AI_KIND else JPEG_SIGNATURE
+    if not image_file.is_file() or image_file.stat().st_size < 8_000:
+        return "missing or undersized local cover"
+    with image_file.open("rb") as image:
+        if image.read(len(signature)) != signature:
+            return "local cover does not match its image format"
+    return None
 
 
 class StripHTML(HTMLParser):
@@ -77,14 +147,10 @@ def license_details(item):
     m = item.get("extmetadata", {})
     name = m.get("LicenseShortName", {}).get("value", "").strip()
     lic_url = m.get("LicenseUrl", {}).get("value", "").strip()
-    # Fail closed: no unidentified, non-commercial or no-derivatives licenses.
-    allowed = (
-        re.fullmatch(r"CC BY(?:-SA)?\s+[234]\.0(?:\s+(?:ro|de|fr))?", name, re.I)
-        or name.upper() in {"CC0", "CC0 1.0", "PUBLIC DOMAIN", "PD"}
-    )
-    if not allowed:
-        return None
-    if name.upper() not in {"CC0", "CC0 1.0", "PUBLIC DOMAIN", "PD"} and not lic_url.startswith("https://creativecommons.org/licenses/"):
+    # Fail closed for unidentified, non-commercial and no-derivatives licenses.
+    if not lic_url and name.upper() in {"CC0", "CC0 1.0", "PUBLIC DOMAIN", "PD"}:
+        lic_url = "https://creativecommons.org/publicdomain/zero/1.0/"
+    if not valid_photo_license(name, lic_url):
         return None
     if item.get("mime", "") != "image/jpeg":
         return None
@@ -96,7 +162,7 @@ def license_details(item):
     author = plain(m.get("Artist", {}).get("value", ""))
     if not author:
         return None
-    return {"author": author, "license": name, "license_url": lic_url or "https://creativecommons.org/publicdomain/zero/1.0/", "src": link}
+    return {"author": author, "license": name, "license_url": lic_url, "src": link}
 
 
 def photo_query(entry):
@@ -164,6 +230,8 @@ def seed_for(entry, seeds):
 def pick(entry, seeds, used_titles):
     pinned = seed_for(entry, seeds)
     if pinned:
+        if not pinned["author"].strip() or not valid_photo_license(pinned["license"], pinned["license_url"]):
+            raise ValueError("Invalid photo attribution in seed: " + pinned["file"])
         # License, author and subject have been independently verified on the
         # exact Commons file description page, including the filename.
         results = info_for_file(pinned["file"])
@@ -217,7 +285,7 @@ def download(url, path):
     if len(content) > 1_500_000 or len(content) < 8_000:
         raise ValueError("Image too large or too small")
     # Basic JPEG signature check prevents accidental HTML error pages.
-    if not content.startswith(b"\xff\xd8\xff"):
+    if not content.startswith(JPEG_SIGNATURE):
         raise ValueError("Not a JPEG file")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(content)
@@ -225,18 +293,26 @@ def download(url, path):
 
 
 def cover_markup(entry, cover):
-    src = "assets/covers/" + entry["slug"] + ".jpg"
+    src = cover_src(entry["slug"], cover)
+    if cover.get("kind") == AI_KIND:
+        dimensions = ""
+        caption = escape(AI_CREDIT) + "."
+    else:
+        dimensions = 'width="1200" height="750" '
+        caption = (
+            'Фото: <a target="_blank" rel="noopener noreferrer" href="' +
+            escape(cover["source_url"], quote=True) + '">' +
+            escape(cover["author"]) + '</a> · <a target="_blank" rel="license noopener noreferrer" href="' +
+            escape(cover["license_url"], quote=True) + '">' +
+            escape(cover["license"]) + '</a>. Иллюстрация или фрагмент кадра.'
+        )
     return (
         '<!-- BUCHARESTUA_MEDIA -->'
         '<figure class="journal-cover">'
         '<img src="' + escape(src, quote=True) + '" '
-        'width="1200" height="750" loading="eager" decoding="async" '
-        'fetchpriority="high" alt="' + escape(cover["alt"], quote=True) + '">'
-        '<figcaption>Фото: <a target="_blank" rel="noopener noreferrer" href="' +
-        escape(cover["source_url"], quote=True) + '">' +
-        escape(cover["author"]) + '</a> · <a target="_blank" rel="license noopener noreferrer" href="' +
-        escape(cover["license_url"], quote=True) + '">' +
-        escape(cover["license"]) + '</a>. Иллюстрация или фрагмент кадра.</figcaption></figure>'
+        + dimensions + 'loading="eager" decoding="async" '
+        'fetchpriority="high" alt="' + escape(cover_alt(cover), quote=True) + '">'
+        '<figcaption>' + caption + '</figcaption></figure>'
     )
 
 
@@ -269,18 +345,19 @@ def decorate_html(html, entry, cover=None):
             marker = '<article class="prose">'
             if marker in html:
                 html = html.replace(marker, figure + marker, 1)
-    if cover and 'property="og:image"' in html:
-        local_image_url = BASE + 'assets/covers/' + slug + '.jpg'
-        html = re.sub(
-            r'(<meta property="og:image" content=")[^"]*(">)',
-            lambda match: match.group(1) + local_image_url + match.group(2),
-            html, count=1
+    if cover:
+        tags = (
+            ('property="og:image"', BASE + cover_src(slug, cover)),
+            ('property="og:image:alt"', cover_alt(cover)),
+            ('name="twitter:card"', "summary_large_image"),
         )
-        html = re.sub(
-            r'(<meta property="og:image:alt" content=")[^"]*(">)',
-            lambda match: match.group(1) + escape(cover["alt"], quote=True) + match.group(2),
-            html, count=1
-        )
+        for attr, value in tags:
+            tag = '<meta ' + attr + ' content="' + escape(value, quote=True) + '">'
+            pattern = r'<meta ' + attr + r'[^>]*>'
+            if re.search(pattern, html):
+                html = re.sub(pattern, lambda match: tag, html, count=1)
+            else:
+                html = html.replace("</head>", tag + "</head>", 1)
     if not cover and "<!-- BUCHARESTUA_MEDIA -->" in html:
         html = re.sub(
             r'<!-- BUCHARESTUA_MEDIA --><figure class="journal-cover">.*?</figure>',
@@ -289,13 +366,6 @@ def decorate_html(html, entry, cover=None):
         html = re.sub(r'<meta property="og:image"[^>]*>', "", html)
         html = re.sub(r'<meta property="og:image:alt"[^>]*>', "", html)
         html = re.sub(r'<meta name="twitter:card"[^>]*>', "", html)
-    if cover and 'property="og:image"' not in html:
-        tags = (
-            '<meta property="og:image" content="' + BASE + 'assets/covers/' + slug + '.jpg">'
-            '<meta property="og:image:alt" content="' + escape(cover["alt"], quote=True) + '">'
-            '<meta name="twitter:card" content="summary_large_image">'
-        )
-        html = html.replace("</head>", tags + "</head>", 1)
     return html
 
 
@@ -312,11 +382,17 @@ def main():
             "slug": "community", "publish_date": "2026-11-09",
             "title": "Romanian Athenaeum Bucharest community"
         })
-    used = {x.get("commons_title") for x in current.values()}
+    used = {x.get("commons_title") for x in current.values() if isinstance(x, dict)}
     changes = []
     errors = []
     for entry in due:
         slug = entry["slug"]
+        cover = current.get(slug)
+        if slug in current and (not isinstance(cover, dict) or cover.get("kind", "photo") != "photo"):
+            problem = cover_problem(ROOT, slug, cover)
+            if problem:
+                errors.append({"slug": slug, "problem": problem})
+            continue
         path = COVERS / (slug + ".jpg")
         if slug in current and path.is_file():
             continue
@@ -343,31 +419,39 @@ def main():
             errors.append({"slug": slug, "problem": str(exc)[:180]})
             print("Photo not imported " + slug + ": " + str(exc)[:180])
 
-    # Remove stale covers that have no approved attribution in the manifest.
+    # Remove stale files for queued articles that have no cover assignment.
     for entry in due:
         slug = entry["slug"]
         previous_file = COVERS / (slug + ".jpg")
-        if slug not in current and previous_file.exists():
+        if slug not in current and not (ROOT / (slug + ".html")).is_file() and previous_file.exists():
             previous_file.unlink()
     INDEX.write_text(json.dumps(current, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     # Backfill articles that have already been published; future articles are
     # enriched during the standard publish step using the same manifest.
     backfilled = []
     for entry in due:
-        path = ROOT / (entry["slug"] + ".html")
+        slug = entry["slug"]
+        path = ROOT / (slug + ".html")
         if not path.is_file():
             continue
+        cover = current.get(slug)
+        if cover_problem(ROOT, slug, cover):
+            continue
         before = path.read_text(encoding="utf-8")
-        after = decorate_html(before, entry, current.get(entry["slug"]))
+        after = decorate_html(before, entry, cover)
         if after != before:
             path.write_text(after, encoding="utf-8")
-            backfilled.append(entry["slug"])
+            backfilled.append(slug)
     REPORT.parent.mkdir(exist_ok=True)
+    ai_count = sum(isinstance(cover, dict) and cover.get("kind") == AI_KIND for cover in current.values())
+    photo_count = sum(isinstance(cover, dict) and cover.get("kind", "photo") == "photo"
+                      for cover in current.values())
     REPORT.write_text(json.dumps({
         "checked": today, "new_photo_covers": changes,
-        "articles_enriched": backfilled, "photo_count": len(current),
+        "articles_enriched": backfilled, "photo_count": photo_count,
+        "ai_illustration_count": ai_count,
         "warnings": errors[:40],
-        "note": "An article without a verified photo is published without an image; never substitute unlicensed material."
+        "note": "New articles require a licensed photo or a labeled original BucharestUA AI illustration."
     }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Media: new photos=", len(changes), "covered=", len(current),
           "backfilled=", len(backfilled), "warnings=", len(errors))

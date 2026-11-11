@@ -3,7 +3,7 @@
 
 Run after assembling HTML/media, BEFORE GitHub commit/push. Does not make
 network calls or mistake delayed GitHub Pages deployment for a broken page.
-Missing licensed covers hold new articles in the queue; never waive the gate.
+Missing approved covers hold new articles in the queue.
 """
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse, unquote
 from zoneinfo import ZoneInfo
+from editorial_media import AI_CREDIT, AI_KIND, cover_alt, cover_problem, cover_src
 import json
 import re
 import sys
@@ -37,6 +38,11 @@ class HTMLInspector(HTMLParser):
         self.canonical = ""
         self.images = []
         self.links = []
+        self.in_cover = False
+        self.in_cover_caption = False
+        self.cover_images = []
+        self.cover_caption = ""
+        self.cover_caption_links = []
 
     def handle_starttag(self, tag, attributes):
         attrs = dict(attributes)
@@ -55,18 +61,33 @@ class HTMLInspector(HTMLParser):
                 self.meta[attrs["property"].lower()] = attrs.get("content", "")
         elif tag == "link" and attrs.get("rel", "").lower() == "canonical":
             self.canonical = attrs.get("href", "")
+        elif tag == "figure":
+            self.in_cover = "journal-cover" in attrs.get("class", "").split()
+        elif tag == "figcaption" and self.in_cover:
+            self.in_cover_caption = True
         elif tag == "img":
             self.images.append(attrs)
+            if self.in_cover:
+                self.cover_images.append(attrs)
         elif tag == "a":
-            self.links.append(attrs.get("href", ""))
+            href = attrs.get("href", "")
+            self.links.append(href)
+            if self.in_cover_caption:
+                self.cover_caption_links.append(href)
 
     def handle_endtag(self, tag):
         if tag == "title":
             self.in_title = False
+        elif tag == "figcaption":
+            self.in_cover_caption = False
+        elif tag == "figure":
+            self.in_cover = False
 
     def handle_data(self, data):
         if self.in_title:
             self.title_text += data
+        if self.in_cover_caption:
+            self.cover_caption += data
 
 
 def inspect_html(path):
@@ -88,11 +109,30 @@ def local_target(src):
     return ROOT / unquote(value)
 
 
-def jpeg_usable(path):
-    if not path.is_file() or path.stat().st_size < 8_000:
-        return False
-    with path.open("rb") as f:
-        return f.read(3) == b"\xff\xd8\xff"
+def check_cover(parser, slug, cover):
+    problem = cover_problem(ROOT, slug, cover)
+    if problem:
+        return [f"Invalid cover for {slug}: {problem}"]
+
+    errors = []
+    src = cover_src(slug, cover)
+    alt = cover_alt(cover)
+    if (len(parser.cover_images) != 1 or parser.cover_images[0].get("src") != src
+            or parser.cover_images[0].get("alt") != alt):
+        errors.append(f"Visible cover or expected alt missing: {slug}")
+    if parser.meta.get("og:image") != BASE + src or parser.meta.get("og:image:alt") != alt:
+        errors.append(f"Social preview cover or expected alt missing: {slug}")
+
+    caption = parser.cover_caption.strip()
+    if cover.get("kind") == AI_KIND:
+        if caption != AI_CREDIT + "." or parser.cover_caption_links:
+            errors.append(f"AI illustration credit missing or incorrect: {slug}")
+    else:
+        required_links = {cover["source_url"], cover["license_url"]}
+        if (not required_links.issubset(parser.cover_caption_links)
+                or cover["author"] not in caption or cover["license"] not in caption):
+            errors.append(f"Photo attribution/license missing in cover caption: {slug}")
+    return errors
 
 
 def main():
@@ -128,15 +168,8 @@ def main():
                 queued_due.append(slug)
             continue
         published.append(slug)
-        cover = manifests.get(slug)
-        cover_path = ROOT / "assets" / "covers" / (slug + ".jpg")
-        if not cover or not jpeg_usable(cover_path):
-            critical.append(f"Published article missing valid approved JPEG cover: {slug}")
-        elif not all(cover.get(k) for k in ("alt", "author", "license", "license_url", "source_url", "commons_title")):
-            critical.append(f"Missing image rights metadata: {slug}")
-
         parser = inspect_html(path)
-        html = path.read_text(encoding="utf-8")
+        critical.extend(check_cover(parser, slug, manifests.get(slug)))
         expected = BASE + slug + ".html"
         if not parser.title_text.strip() or parser.h1 != 1 or not parser.meta.get("description"):
             critical.append(f"Incomplete title/H1/description: {slug}")
@@ -146,13 +179,6 @@ def main():
             critical.append(f"Wrong canonical: {slug}")
         if parser.html_lang != "ru":
             critical.append(f"Missing or unexpected language: {slug}")
-        if not any(im.get("src") == "assets/covers/" + slug + ".jpg"
-                   and im.get("alt", "").strip() for im in parser.images):
-            critical.append(f"Visible photo or alt missing: {slug}")
-        if parser.meta.get("og:image") != BASE + "assets/covers/" + slug + ".jpg":
-            critical.append(f"Social preview photo missing/incorrect: {slug}")
-        if "creativecommons.org/licenses/" not in html and "creativecommons.org/publicdomain/" not in html:
-            critical.append(f"Photo attribution/license missing in article: {slug}")
         if not any("t.me/share/url?" in link for link in parser.links):
             critical.append(f"Telegram share button missing: {slug}")
         if not any(TG in link for link in parser.links):
@@ -164,28 +190,22 @@ def main():
 
     # The community entry is a standalone hub, not part of queue.
     cfile = ROOT / "community.html"
-    community_img = ROOT / "assets" / "covers" / "community.jpg"
-    if not cfile.is_file() or not jpeg_usable(community_img):
-        critical.append("Community page or local hero image missing")
+    community_cover_verified = False
+    if not cfile.is_file():
+        critical.append("Community page missing")
     else:
-        html = cfile.read_text(encoding="utf-8")
         parser = inspect_html(cfile)
-        if parser.meta.get("og:image") != BASE + "assets/covers/community.jpg":
-            critical.append("Community social preview image missing")
-        if not any(im.get("src") == "assets/covers/community.jpg" and im.get("alt", "")
-                   for im in parser.images):
-            critical.append("Community visible photo or ALT missing")
-        if not all(manifests.get("community", {}).get(k)
-                   for k in ("author", "license", "source_url", "alt")):
-            critical.append("Community photo lacks Commons attribution manifest")
-        if TG not in html or "creativecommons.org/licenses/" not in html:
-            critical.append("Community Telegram/credit missing")
+        cover_errors = check_cover(parser, "community", manifests.get("community"))
+        critical.extend(cover_errors)
+        community_cover_verified = not cover_errors
+        if TG not in parser.links:
+            critical.append("Community Telegram destination missing")
         if BASE + "community.html" not in sitemap_urls:
             critical.append("Community missing from sitemap")
 
     # Validate visible internal image paths and local navigation of current
     # issue pages. Fail before deploying broken links, not after.
-    for slug in published + ["community"]:
+    for slug in published + (["community"] if cfile.is_file() else []):
         path = ROOT / (slug + ".html")
         inspector = inspect_html(path)
         for im in inspector.images:
@@ -209,12 +229,16 @@ def main():
             if href.endswith(".html") and not local.is_file():
                 critical.append(f"Broken internal link: {path.name} -> {href}")
 
+    ai_count = sum(isinstance(cover, dict) and cover.get("kind") == AI_KIND for cover in manifests.values())
+    photo_count = sum(isinstance(cover, dict) and cover.get("kind", "photo") == "photo"
+                      for cover in manifests.values())
     status = {
         "checked_in_bucharest": today,
         "queue_size": len(queue),
         "published_articles": len(published),
-        "approved_photo_assets": len(manifests),
-        "community_cover_verified": jpeg_usable(community_img),
+        "approved_photo_assets": photo_count,
+        "approved_ai_illustration_assets": ai_count,
+        "community_cover_verified": community_cover_verified,
         "due_awaiting_review_or_photo": queued_due,
         "critical": sorted(set(critical)),
         "notices": sorted(set(notices)),
@@ -223,7 +247,7 @@ def main():
         json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     print("Pre-publish QA:", len(published), "articles;",
-          len(manifests), "licensed photo assignments;",
+          len(manifests), "cover assignments;",
           len(critical), "critical failures;",
           len(queued_due), "due articles held")
     if critical:
