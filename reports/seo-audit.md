@@ -1,10 +1,10 @@
 # BucharestUA daily SEO audit
 
-- UTC: 2026-11-10T09:58:01.674690+00:00
-- HTML pages: **77**
-- Sitemap URLs: **77**
+- UTC: 2026-11-11T09:05:53.125710+00:00
+- HTML pages: **78**
+- Sitemap URLs: **78**
 - Critical issues: **0**
-- Warnings: **0**
+- Warnings: **1**
 
 ## Public HTTP checks
 - OK: https://dbc44mys4b-glitch.github.io/ — 200
@@ -14,6 +14,7 @@
 - OK: https://dbc44mys4b-glitch.github.io/explore-bucharest.html — 200
 - OK: https://dbc44mys4b-glitch.github.io/community.html — 200
 - OK: https://dbc44mys4b-glitch.github.io/assets/covers/community.jpg — 200
+- CHECK: https://dbc44mys4b-glitch.github.io/hospital-bucharest.html — 404
 - OK: https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html — 200
 - OK: https://dbc44mys4b-glitch.github.io/endocrinologist-bucharest.html — 200
 - OK: https://dbc44mys4b-glitch.github.io/buy-phone-bucharest.html — 200
@@ -24,4 +25,4 @@
 - None
 
 ## Warnings (first 60)
-- None
+- Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/hospital-bucharest.html (404)

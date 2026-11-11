@@ -1,10 +1,12 @@
 {
-  "checked_at_utc": "2026-11-10T09:58:01.674690+00:00",
+  "checked_at_utc": "2026-11-11T09:05:53.125710+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
-  "html_pages": 77,
-  "sitemap_urls": 77,
+  "html_pages": 78,
+  "sitemap_urls": 78,
   "issues": [],
-  "warnings": [],
+  "warnings": [
+    "Public URL unavailable during check: https://dbc44mys4b-glitch.github.io/hospital-bucharest.html (404)"
+  ],
   "public_http_checks": [
     {
       "url": "https://dbc44mys4b-glitch.github.io/",
@@ -40,6 +42,11 @@
       "url": "https://dbc44mys4b-glitch.github.io/assets/covers/community.jpg",
       "http_status": 200,
       "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/hospital-bucharest.html",
+      "http_status": 404,
+      "ok": false
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/phone-repair-bucharest.html",
@@ -292,6 +299,13 @@
       "title": "Медицина и здоровье в Бухаресте — советы и общение | BucharestUA",
       "description": "Врачи, клиники, аптеки, медицинская страховка. Telegram-сообщество BucharestUA.",
       "canonical": "https://dbc44mys4b-glitch.github.io/health.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "hospital-bucharest.html": {
+      "title": "Больницы Бухареста: как найти нужное отделение и обратиться за помощью | BucharestUA",
+      "description": "Поиск больницы зависит от цели: экстренная помощь, плановый специалист, обследование или госпитализация. Первым шагом определите срочность, а не ищите рейтин",
+      "canonical": "https://dbc44mys4b-glitch.github.io/hospital-bucharest.html",
       "h1_count": 1,
       "language": "ru"
     },

@@ -1,8 +1,15 @@
 {
-  "checked": "2026-11-10",
-  "new_photo_covers": [],
+  "checked": "2026-11-11",
+  "new_photo_covers": [
+    "hospital-bucharest"
+  ],
   "articles_enriched": [],
-  "photo_count": 6,
-  "warnings": [],
+  "photo_count": 7,
+  "warnings": [
+    {
+      "slug": "airport-otopeni-guide",
+      "problem": "No verified relevant freely licensed photo"
+    }
+  ],
   "note": "An article without a verified photo is published without an image; never substitute unlicensed material."
 }
