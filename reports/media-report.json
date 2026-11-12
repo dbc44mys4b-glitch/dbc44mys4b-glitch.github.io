@@ -1,7 +1,9 @@
 {
   "checked": "2026-11-12",
   "new_photo_covers": [],
-  "articles_enriched": [],
+  "articles_enriched": [
+    "massage-bucharest"
+  ],
   "photo_count": 9,
   "ai_illustration_count": 1,
   "warnings": [],
