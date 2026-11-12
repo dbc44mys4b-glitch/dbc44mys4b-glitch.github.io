@@ -148,7 +148,7 @@ def main():
         return
 
     sitemap = ROOT / "sitemap.xml"
-    content = sitemap.read_text(encoding="utf-8")
+    content = sitemap.read_text(encoding="utf-8").replace("\\n<url>", "\n<url>")
     ET.fromstring(content)
     for entry in entries:
         name = entry["slug"] + ".html"
@@ -237,7 +237,7 @@ def main():
         '<a href="index.html">Главная</a></div></footer></body></html>'
     ]
     (ROOT / "city-needs.html").write_text("\n".join(body) + "\n", encoding="utf-8")
-    sitemap_text = sitemap.read_text(encoding="utf-8")
+    sitemap_text = sitemap.read_text(encoding="utf-8").replace("\\n<url>", "\n<url>")
     url = BASE + "city-needs.html"
     if "<loc>" + url + "</loc>" not in sitemap_text:
         sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\n</urlset>")
@@ -303,7 +303,7 @@ def main():
         '<a href="' + TELEGRAM + '">Telegram ↗</a></div></footer></body></html>'
     ]
     (ROOT / "explore-bucharest.html").write_text("\n".join(explore_parts) + "\n", encoding="utf-8")
-    sitemap_text = sitemap.read_text(encoding="utf-8")
+    sitemap_text = sitemap.read_text(encoding="utf-8").replace("\\n<url>", "\n<url>")
     url = BASE + "explore-bucharest.html"
     if "<loc>" + url + "</loc>" not in sitemap_text:
         sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\n</urlset>")
