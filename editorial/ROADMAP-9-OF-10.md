@@ -61,3 +61,9 @@ For every article: (1) intent (2) unique local utility (3) verified official sou
 - GitHub content read confirmed the planned 2000-article editorial architecture exists at `editorial/AUTONOMOUS-EDITORIAL-2000.md`; this is documentation, not running agent software.
 - Public HTTP verification attempted for the massage URL but runtime DNS resolution failed. Do not claim this revision is live or Pages passed. Retry Pages/HTTP and independent QA on next run.
 - P02 remains blocked for new scheduled articles without actual independent source-backed review; publication gate must remain fail-closed. Next actionable work: inspect actual workflow and QA review schema, implement review production and test with a single article; separately source-rewrite massage guide.
+
+## Execution log · 2026-11-13 01:09 Europe/Bucharest
+- P10: committed a new **read-only** article metadata preflight at `scripts/audit_article_metadata.py` (commit `b8971daa3f113be879689f4549c3e342d90165fb`). It checks canonical/OG/JSON-LD description alignment, basic title/h1, Telegram CTA and image alt. It does **not** replace independent editorial QA and does not grant publication approval.
+- GitHub content API confirms the roadmap and current massage article are readable. Guessed workflow paths `.github/workflows/editorial.yml` and `.github/workflows/daily-editorial.yml` were absent; the real workflow path is not yet established. GitHub code search for `workflow_dispatch` and `qa-reviews` returned no matches; this is not proof no workflow exists.
+- Public article fetch attempted again but web retrieval failed; deployment of the latest changes and mobile rendering remain **unverified**.
+- Next: discover actual Actions workflow names and run preflight against repository content; inspect failures before integrating into CI. Independently source and rewrite massage article; do not waive QA gate.
