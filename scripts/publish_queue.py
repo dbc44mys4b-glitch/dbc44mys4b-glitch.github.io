@@ -126,6 +126,7 @@ def main():
         datetime.strptime(d, "%Y-%m-%d")
     today = datetime.now(ZoneInfo("Europe/Bucharest")).date().isoformat()
     new_pages = []
+    held_pages = []
     for entry in sorted(entries, key=lambda x: x["publish_date"]):
         slug = entry["slug"]
         if not re.fullmatch(r"[a-z0-9-]{5,90}", slug):
@@ -140,6 +141,7 @@ def main():
         review_path = ROOT / "editorial" / "qa-reviews" / (slug + ".json")
         if not review_path.is_file():
             print(f"HOLD: {slug}: independent QA record missing")
+            held_pages.append(slug)
             continue
         try:
             review = json.loads(review_path.read_text(encoding="utf-8"))
@@ -154,16 +156,19 @@ def main():
                 and all(isinstance(v, (int, float)) and not isinstance(v, bool) and 8 <= v <= 10 for v in scores.values())
                 and bool(review.get("evidence_urls"))
             )
-        except (ValueError, TypeError, OSError):
+        except (ValueError, TypeError, OSError, AttributeError):
+            # Malformed JSON shapes (list, scalar, scores as list) must HOLD, not crash the daily cycle.
             approved = False
         if not approved:
             print(f"HOLD: {slug}: QA record incomplete, stale or below 8/10")
+            held_pages.append(slug)
             continue
         # A local cover with verified attribution is required for publication.
         cover = covers.get(slug)
         problem = cover_problem(ROOT, slug, cover)
         if problem:
             print(f"HOLD: {slug}: {problem}")
+            held_pages.append(slug)
             continue
         html = decorate_html(build_page(entry), entry, cover)
         path.write_text(html, encoding="utf-8")
@@ -177,7 +182,11 @@ def main():
         if (ROOT / name).is_file():
             sitemap_pages[BASE + name] = today
     update_sitemaps(sitemap, sitemap_root, sitemap_pages)
-    print("Published: " + ", ".join(new_pages) if new_pages else "No queued article due for publication.")
+    print("Published: " + ", ".join(new_pages) if new_pages else "Published: none.")
+    if held_pages:
+        print(f"QA/MEDIA HOLD: {len(held_pages)} due article(s) blocked: " + ", ".join(held_pages))
+    elif not new_pages:
+        print("No eligible queued article due for publication.")
 
 
 def update_catalog(live):
