@@ -1,8 +1,8 @@
 {
-  "checked_at_utc": "2026-11-11T23:57:16.985409+00:00",
+  "checked_at_utc": "2026-11-12T15:06:49.792227+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
-  "html_pages": 84,
-  "sitemap_urls": 84,
+  "html_pages": 85,
+  "sitemap_urls": 85,
   "issues": [],
   "warnings": [],
   "public_http_checks": [
@@ -13,6 +13,11 @@
     },
     {
       "url": "https://dbc44mys4b-glitch.github.io/sitemap.xml",
+      "http_status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://dbc44mys4b-glitch.github.io/robots.txt",
       "http_status": 200,
       "ok": true
     },
@@ -91,11 +96,12 @@
     "url": "https://dbc44mys4b-glitch.github.io/sitemap.xml",
     "http_status": 200,
     "content_type": "application/xml",
-    "bytes": 9030,
+    "bytes": 9496,
+    "final_url": "https://dbc44mys4b-glitch.github.io/sitemap.xml",
     "remote_xml_valid": true,
-    "remote_urls": 81,
     "ok": true,
-    "note": "Googlebot-like request; not proof of a real Googlebot crawl."
+    "note": "Googlebot-like request; not proof of a real Googlebot crawl.",
+    "remote_urls": 85
   },
   "page_metadata": {
     "about.html": {
@@ -267,8 +273,8 @@
       "language": "en"
     },
     "en.html": {
-      "title": "BucharestUA — Bucharest Telegram Community | Housing, Jobs, Local Life",
-      "description": "Join the BucharestUA Telegram community in Bucharest, Romania. Explore housing, jobs, relocation, family life, local services, events and new friends.",
+      "title": "BucharestUA — Bucharest city magazine",
+      "description": "Stories, places, events and practical guides to living in Bucharest.",
       "canonical": "https://dbc44mys4b-glitch.github.io/en.html",
       "h1_count": 1,
       "language": "en"
@@ -505,8 +511,8 @@
       "language": "ro"
     },
     "ro.html": {
-      "title": "BucharestUA — comunitate Telegram București | Locuințe, locuri de muncă și viața în oraș",
-      "description": "Comunitatea BucharestUA din București: chirii, joburi, acte, familie, servicii, evenimente și cunoașterea oamenilor din oraș.",
+      "title": "BucharestUA — revistă urbană despre București",
+      "description": "Povești, locuri, evenimente și ghiduri utile despre viața în București.",
       "canonical": "https://dbc44mys4b-glitch.github.io/ro.html",
       "h1_count": 1,
       "language": "ro"
@@ -578,6 +584,13 @@
       "title": "Временная защита в Румынии: памятка украинцу | BucharestUA",
       "description": "Как проверить документы, статус, разрешение на проживание и куда обращаться в Бухаресте.",
       "canonical": "https://dbc44mys4b-glitch.github.io/temporary-protection-checklist.html",
+      "h1_count": 1,
+      "language": "ru"
+    },
+    "tennis-courts-bucharest.html": {
+      "title": "Где играть в теннис в Бухаресте: 7 кортов, детские школы, тренеры и ракетки | BucharestUA",
+      "description": "Теннис в Бухаресте: 7 кортов, детские секции, тренеры, магазины и перетяжка ракеток — Herăstrău, Pipera, Tineretului, Sector 6. Крытые корты, аренда, цены, ссылки и русскоязычные партнёры для игры.",
+      "canonical": "https://dbc44mys4b-glitch.github.io/tennis-courts-bucharest.html",
       "h1_count": 1,
       "language": "ru"
     },
@@ -659,8 +672,8 @@
       "language": "uk"
     },
     "uk.html": {
-      "title": "BucharestUA — чат Бухареста | Українці в Румунії, робота, житло, спілкування",
-      "description": "Українська спільнота в Бухаресті: житло, робота, документи, діти, події, послуги та знайомства у Telegram-чаті BucharestUA.",
+      "title": "BucharestUA — міське медіа Бухареста",
+      "description": "Історії, події, маршрути та практичні поради про життя в Бухаресті.",
       "canonical": "https://dbc44mys4b-glitch.github.io/uk.html",
       "h1_count": 1,
       "language": "uk"

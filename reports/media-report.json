@@ -1,10 +1,8 @@
 {
   "checked": "2026-11-12",
   "new_photo_covers": [],
-  "articles_enriched": [
-    "massage-bucharest"
-  ],
-  "photo_count": 9,
+  "articles_enriched": [],
+  "photo_count": 8,
   "ai_illustration_count": 1,
   "warnings": [],
   "note": "New articles require a licensed photo or a labeled original BucharestUA AI illustration."

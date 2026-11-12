@@ -2,13 +2,10 @@
   "checked_in_bucharest": "2026-11-12",
   "queue_size": 200,
   "published_articles": 9,
-  "approved_photo_assets": 9,
+  "approved_photo_assets": 8,
   "approved_ai_illustration_assets": 1,
   "community_cover_verified": true,
   "due_awaiting_review_or_photo": [],
-  "critical": [
-    "Photo attribution/license missing in cover caption: massage-bucharest",
-    "Visible cover or expected alt missing: massage-bucharest"
-  ],
+  "critical": [],
   "notices": []
 }

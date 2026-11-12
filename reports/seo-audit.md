@@ -1,14 +1,15 @@
 # BucharestUA daily SEO audit
 
-- UTC: 2026-11-11T23:57:16.985409+00:00
-- HTML pages: **84**
-- Sitemap URLs: **84**
+- UTC: 2026-11-12T15:06:49.792227+00:00
+- HTML pages: **85**
+- Sitemap URLs: **85**
 - Critical issues: **0**
 - Warnings: **0**
 
 ## Public HTTP checks
 - OK: https://dbc44mys4b-glitch.github.io/ — 200
 - OK: https://dbc44mys4b-glitch.github.io/sitemap.xml — 200
+- OK: https://dbc44mys4b-glitch.github.io/robots.txt — 200
 - OK: https://dbc44mys4b-glitch.github.io/russian-speaking-chat-bucharest.html — 200
 - OK: https://dbc44mys4b-glitch.github.io/city-needs.html — 200
 - OK: https://dbc44mys4b-glitch.github.io/explore-bucharest.html — 200
