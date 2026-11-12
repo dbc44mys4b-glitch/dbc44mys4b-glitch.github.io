@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-11-12T15:18:11.136390+00:00",
+  "checked_at_utc": "2026-11-12T15:21:26.804127+00:00",
   "site": "https://dbc44mys4b-glitch.github.io/",
   "html_pages": 86,
   "sitemap_urls": 86,
@@ -96,12 +96,12 @@
     "url": "https://dbc44mys4b-glitch.github.io/sitemap.xml",
     "http_status": 200,
     "content_type": "application/xml",
-    "bytes": 9496,
+    "bytes": 9620,
     "final_url": "https://dbc44mys4b-glitch.github.io/sitemap.xml",
     "remote_xml_valid": true,
     "ok": true,
     "note": "Googlebot-like request; not proof of a real Googlebot crawl.",
-    "remote_urls": 85
+    "remote_urls": 86
   },
   "page_metadata": {
     "about.html": {
