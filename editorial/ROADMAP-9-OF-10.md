@@ -1,5 +1,5 @@
 # BucharestUA · Roadmap to verified 9/10
-Updated: 2026-11-12. This is a tracked improvement program, **not** a claim that any score is already achieved.
+Updated: 2026-11-12 22:47 Europe/Bucharest. This is a tracked improvement program, **not** a claim that any score is already achieved.
 
 ## Rules
 - Scores are assigned only after independent evidence-based review. A target score is not a current score.
@@ -10,9 +10,9 @@ Updated: 2026-11-12. This is a tracked improvement program, **not** a claim that
 ## Work packages (ordered, with acceptance tests)
 | ID | Owner role | Work | Evidence / definition of done | Status |
 |---|---|---|---|---|
-| P00 | TECH | Stop recursive editorial triggers and report commits | workflow scheduled/manual, audits in Actions artifacts, Pages deploy succeeds | CODE CHANGED, VERIFY DEPLOY |
+| P00 | TECH | Stop recursive editorial triggers and report commits | workflow scheduled/manual, audits in Actions artifacts, Pages deploy succeeds | VERIFIED: Pages build succeeded for 183498d6 |
 | P01 | OPS | Prevent stale queue metadata from replacing hand-edited pages | edited titles/cover match homepage, catalog, RSS, OG; regression test | PARTIAL |
-| P02 | QA | Enforce independent review before scheduled publication | 10 scores, evidence, SHA fingerprint; missing review blocks | CODE CHANGED, VERIFY |
+| P02 | QA | Enforce independent review before scheduled publication | 10 scores, evidence, SHA fingerprint; missing review blocks | GATE HARDENED; independent reviews still missing |
 | P03 | EDITOR | Audit all published long-form articles | per-slug review with actionable findings in editorial/qa-reviews | TODO |
 | P04 | FACT | Rewrite massage guide | verified local providers, qualifications, price verification date, primary sources | TODO |
 | P05 | FACT | Rewrite children classes guide | verified clubs by age and area, registration details and source links | TODO |
@@ -48,3 +48,10 @@ For every article: (1) intent (2) unique local utility (3) verified official sou
 - hospital-bucharest.html (4/10)
 - first-month-bucharest-checklist.html (7/10; update catalog and photo attribution)
 - airport-otopeni-guide.html (8/10; revalidate changing transit facts)
+
+## Execution log · 2026-11-12 22:47 Europe/Bucharest
+- GitHub Actions API: Pages build completed successfully at commit `183498d6b` (this confirms build, not per-page visual QA).
+- Commit `1841c230ebc88eeb9b4ac6d59722d0e9b4313627`: publication QA parser now safely rejects malformed JSON review shapes rather than crashing; held due articles are reported explicitly, no longer mislabeled as 'no article due'.
+- P02 remains blocked for new articles until independent, source-backed reviews are actually recorded. No reviews or article approvals fabricated.
+- P04 massage article inspected: currently generic and not ready for a 9/10 editorial rating; requires verified local businesses, source citations, prices/qualification checks and substantive rewrite.
+- Next: P04 factual sourcing and rewrite; verify this commit's workflow/Pages run separately.
