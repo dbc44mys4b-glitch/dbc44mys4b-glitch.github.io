@@ -183,3 +183,13 @@ body:not(.media-site) article.prose .editor-note{color:#7a8388;font-size:12px}
 .media-site .m-translated-story section p{font-size:17px;line-height:1.8;color:#3a454c}
 .media-site .m-translated-story section a{text-decoration:underline;text-underline-offset:3px;color:#2e6398}
 @media(max-width:680px){.media-site .m-header-inner:has(.m-language-nav){gap:8px}.media-site .m-header-inner .m-language-nav{order:3;width:100%;justify-content:flex-start;margin:3px 0}.media-site .m-translated-story{margin:30px auto 60px}.media-site .m-translated-story h1{font-size:clamp(34px,9vw,46px)}.media-site .m-translated-story section p{font-size:16px}}
+
+/* Unified language switcher and editorial mobile QA */
+.media-site .m-language-nav{display:flex;gap:3px;align-items:center;border:1px solid #d6d9d8;padding:3px;margin-left:0;flex-shrink:0}
+.media-site .m-language-nav a{font-size:11px;font-weight:800;color:#4b5964;padding:7px 9px;min-width:31px;text-align:center}
+.media-site .m-language-nav a[aria-current="page"]{background:#263c4e;color:#fff}
+.media-site .m-language-nav a:hover{background:#e2e8eb;color:#1d3446}
+.media-site .m-language-nav a[aria-current="page"]:hover{background:#263c4e;color:#fff}
+@media(max-width:1100px){.media-site .m-header-inner{gap:15px}.media-site .m-navigation{gap:12px}.media-site .m-navigation a{font-size:12px}}
+@media(max-width:760px){.media-site .m-header-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand telegram" "links links" "langs langs";gap:8px 12px;padding:12px 0}.media-site .m-wordmark{grid-area:brand}.media-site .m-telegram{grid-area:telegram;justify-self:end;margin:0}.media-site .m-navigation{grid-area:links;order:unset;display:flex;overflow-x:auto;max-width:100%;gap:18px;padding:5px 0;margin:0}.media-site .m-language-nav{grid-area:langs;justify-self:start;margin:0}.media-site .m-header{position:relative}.media-site .m-intro{padding-top:30px}}
+@media(max-width:390px){.media-site .m-container,.media-site .m-header-inner{width:calc(100% - 28px)}.media-site .m-telegram{font-size:10px;padding:9px}.media-site .m-wordmark{font-size:18px}.media-site .m-intro h1{font-size:41px}}
