@@ -7,14 +7,13 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse, unquote
+from urllib.parse import urljoin, urlparse, unquote
 from urllib.request import Request, urlopen
+from sitemap import BASE, parse_sitemap, sitemap_locations, text_sitemap
 import json
-import posixpath
 import sys
 import xml.etree.ElementTree as ET
 
-BASE = "https://dbc44mys4b-glitch.github.io/"
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "reports"
 OUT.mkdir(exist_ok=True)
@@ -95,19 +94,26 @@ def diagnose_public_sitemap():
     })
     try:
         with urlopen(req, timeout=18) as response:
-            data = response.read(1_000_000)
-            content_type = response.headers.get("Content-Type", "")
-            root = ET.fromstring(data)
-            found = sum(1 for item in root.iter() if item.tag.endswith("loc"))
-            valid_root = root.tag == "{http://www.sitemaps.org/schemas/sitemap/0.9}urlset"
-            return {
+            data = response.read(52_428_801)
+            result = {
                 "url": url, "http_status": response.status,
-                "content_type": content_type, "bytes": len(data),
-                "remote_xml_valid": bool(valid_root), "remote_urls": found,
-                "ok": 200 <= response.status < 300 and valid_root,
+                "content_type": response.headers.get("Content-Type", ""), "bytes": len(data),
+                "final_url": response.geturl(), "remote_xml_valid": False, "ok": False,
                 "note": "Googlebot-like request; not proof of a real Googlebot crawl."
             }
-    except (HTTPError, URLError, TimeoutError, OSError, ET.ParseError) as error:
+            if len(data) > 52_428_800:
+                return {**result, "error": "Deployed sitemap exceeds 50 MB"}
+            try:
+                root = parse_sitemap(data)
+            except (ValueError, ET.ParseError) as error:
+                return {**result, "error": str(error)}
+            result.update(remote_xml_valid=True, remote_urls=len(root))
+            if response.status != 200 or response.geturl() != url:
+                return {**result, "error": "Sitemap does not return a direct HTTP 200"}
+            if response.headers.get_content_type() not in {"application/xml", "text/xml"}:
+                return {**result, "error": "Sitemap is not served as XML"}
+            return {**result, "ok": True}
+    except (HTTPError, URLError, TimeoutError, OSError) as error:
         return {"url": url, "ok": False, "error": str(error)[:350]}
 
 
@@ -163,14 +169,7 @@ def main():
                 continue
             if not parsed.path:
                 continue
-            if parsed.netloc:
-                target = path_for_url(href)
-            else:
-                target = posixpath.normpath(posixpath.join(page.parent.relative_to(ROOT).as_posix(), unquote(parsed.path)))
-                if target == ".":
-                    target = "index.html"
-                if target.endswith("/"):
-                    target += "index.html"
+            target = path_for_url(urljoin(BASE + page.name, href))
             if target and not (ROOT / target).is_file():
                 issues.append(f"{page.name}: broken internal link {href}")
 
@@ -180,19 +179,22 @@ def main():
 
     sitemap_urls = []
     try:
-        tree = ET.parse(ROOT / "sitemap.xml")
-        sitemap_urls = [n.text for n in tree.getroot().iter() if n.tag.endswith("loc") and n.text]
+        root = parse_sitemap((ROOT / "sitemap.xml").read_bytes())
+        sitemap_urls = sitemap_locations(root)
         for url in sitemap_urls:
             p = path_for_url(url)
-            if p is None:
-                warnings.append(f"External URL in sitemap: {url}")
-            elif not (ROOT / p).is_file():
+            if not (ROOT / p).is_file():
                 issues.append(f"Sitemap points to missing page: {url}")
+            elif info.get(p, {}).get("canonical") != url:
+                issues.append(f"Sitemap URL differs from page canonical: {url}")
         in_sitemap = {path_for_url(u) for u in sitemap_urls}
         for page in pages:
             if page.name not in in_sitemap:
                 warnings.append(f"{page.name}: absent from sitemap")
-    except Exception as e:
+        plain_path = ROOT / "sitemap.txt"
+        if not plain_path.is_file() or plain_path.read_text(encoding="utf-8") != text_sitemap(root):
+            issues.append("sitemap.txt does not match sitemap.xml")
+    except (OSError, ValueError, ET.ParseError) as e:
         issues.append(f"Cannot parse sitemap.xml: {e}")
 
     home = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -200,12 +202,15 @@ def main():
         issues.append("Main Telegram link missing from homepage")
     if '765918B6A3C148EF876365034C34DFEE' not in home:
         issues.append("Bing verification meta tag missing")
-    if "sitemap.xml" not in (ROOT / "robots.txt").read_text(encoding="utf-8"):
+    robots_lines = (ROOT / "robots.txt").read_text(encoding="utf-8").splitlines()
+    if not any(line.partition(":")[0].strip().lower() == "sitemap" and
+               line.partition(":")[2].strip() == BASE + "sitemap.xml" for line in robots_lines):
         warnings.append("robots.txt does not advertise sitemap.xml")
 
     urls_to_check = [
         BASE,
         BASE + "sitemap.xml",
+        BASE + "robots.txt",
         BASE + "russian-speaking-chat-bucharest.html",
         BASE + "city-needs.html",
         BASE + "explore-bucharest.html",

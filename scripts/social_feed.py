@@ -7,7 +7,7 @@ bot/admin connection and consent.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from email.utils import format_datetime
+from email.utils import format_datetime, parsedate_to_datetime
 from pathlib import Path
 import json
 import xml.etree.ElementTree as ET
@@ -43,7 +43,23 @@ def build_text(entry):
     )
 
 
+def rss_sort_key(item):
+    pub_date = item.findtext("pubDate")
+    dt = parsedate_to_datetime(pub_date) if pub_date else datetime.min
+    return dt.replace(tzinfo=dt.tzinfo or timezone.utc), item.findtext("link").removesuffix(".html")
+
+
 def create_rss(articles):
+    feed_path = ROOT / "feed.xml"
+    items = {}
+    if feed_path.is_file():
+        # Keep editorial items for published pages outside the scheduled queue.
+        published_urls = {BASE + page.name for page in ROOT.glob("*.html") if page.is_file()}
+        for item in ET.parse(feed_path).findall("./channel/item"):
+            url = item.findtext("link")
+            if url in published_urls:
+                items[url] = item
+
     rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
     for tag, text in [
@@ -54,8 +70,8 @@ def create_rss(articles):
         ("generator", "BucharestUA original editorial queue"),
     ]:
         ET.SubElement(channel, tag).text = text
-    for entry in articles[:40]:
-        item = ET.SubElement(channel, "item")
+    for entry in articles:
+        item = ET.Element("item")
         url = BASE + entry["slug"] + ".html"
         ET.SubElement(item, "title").text = entry["title"]
         ET.SubElement(item, "link").text = url
@@ -64,17 +80,21 @@ def create_rss(articles):
         dt = datetime.strptime(entry["publish_date"], "%Y-%m-%d").replace(tzinfo=timezone.utc)
         ET.SubElement(item, "pubDate").text = format_datetime(dt)
         ET.SubElement(item, "category").text = entry.get("category", "Городское медиа")
+        items[url] = item
+    latest_items = sorted(items.values(), key=rss_sort_key, reverse=True)[:40]
+    channel.extend(latest_items)
     ET.indent(rss, space="  ")
-    (ROOT / "feed.xml").write_text(
+    feed_path.write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n' +
         ET.tostring(rss, encoding="unicode") + "\n",
         encoding="utf-8"
     )
+    return len(latest_items)
 
 
 def main():
     articles = live_articles()
-    create_rss(articles)
+    rss_count = create_rss(articles)
     recent = articles[:14]
     data = [{
         "slug": e["slug"],
@@ -98,7 +118,7 @@ def main():
     for i, item in enumerate(data, 1):
         lines += ["## " + str(i) + ". " + item["title"], "", item["telegram_post"], "", "---", ""]
     (OUT / "telegram-drafts.md").write_text("\n".join(lines), encoding="utf-8")
-    print("Prepared Telegram drafts:", len(data), "RSS items:", min(len(articles), 40))
+    print("Prepared Telegram drafts:", len(data), "RSS items:", rss_count)
 
 
 if __name__ == "__main__":

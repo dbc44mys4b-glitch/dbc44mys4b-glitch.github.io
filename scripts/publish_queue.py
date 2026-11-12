@@ -9,12 +9,11 @@ from zoneinfo import ZoneInfo
 from html import escape
 from pathlib import Path
 from editorial_media import cover_problem, decorate_html
+from sitemap import BASE, parse_sitemap, update_sitemaps
 import json
 import re
-import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = "https://dbc44mys4b-glitch.github.io/"
 TELEGRAM = "https://t.me/bucharest_info"
 QUEUE = ROOT / "content-queue" / "articles.json"
 START = "<!-- BUCHARESTUA_EDITORIAL_START -->"
@@ -114,6 +113,8 @@ def build_page(entry):
 
 
 def main():
+    sitemap = ROOT / "sitemap.xml"
+    sitemap_root = parse_sitemap(sitemap.read_bytes())
     entries = json.loads(QUEUE.read_text(encoding="utf-8"))
     manifest_path = ROOT / "media/assigned-images.json"
     covers = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
@@ -143,27 +144,41 @@ def main():
         html = decorate_html(build_page(entry), entry, cover)
         path.write_text(html, encoding="utf-8")
         new_pages.append(path.name)
-    if not new_pages:
-        print("No queued article due for publication.")
-        return
+    live = [e for e in entries if (ROOT / (e["slug"] + ".html")).is_file()]
+    update_catalog(live)
+    if new_pages:
+        update_directories(live)
+    sitemap_pages = {BASE + e["slug"] + ".html": e["publish_date"] for e in live}
+    for name in ("city-needs.html", "explore-bucharest.html"):
+        if (ROOT / name).is_file():
+            sitemap_pages[BASE + name] = today
+    update_sitemaps(sitemap, sitemap_root, sitemap_pages)
+    print("Published: " + ", ".join(new_pages) if new_pages else "No queued article due for publication.")
 
-    sitemap = ROOT / "sitemap.xml"
-    content = sitemap.read_text(encoding="utf-8").replace("\\n<url>", "\n<url>")
-    ET.fromstring(content)
-    for entry in entries:
-        name = entry["slug"] + ".html"
-        if not (ROOT / name).exists():
-            continue
-        url = BASE + name
-        if "<loc>" + url + "</loc>" not in content:
-            line = "<url><loc>" + url + "</loc><lastmod>" + entry["publish_date"] + "</lastmod></url>"
-            content = content.replace("</urlset>", line + "\n</urlset>")
-    ET.fromstring(content)
-    sitemap.write_text(content, encoding="utf-8")
 
+def update_catalog(live):
     catalog = ROOT / "articles.html"
     current = catalog.read_text(encoding="utf-8")
-    live = [e for e in entries if (ROOT / (e["slug"] + ".html")).is_file()]
+    ordered = sorted(live, key=lambda x: (x["publish_date"], x["slug"]), reverse=True)
+    grid = '<div class="m-story-grid">'
+    if START in current and END in current:
+        before, block = current.split(START, 1)
+        block, after = block.split(END, 1)
+        if not block.startswith(grid):
+            raise ValueError("Could not find the article card grid in articles.html")
+        existing = re.findall(r'<a class="m-card\b[^"]*" href="([a-z0-9-]+\.html)"', block)
+    else:
+        anchor = '<section class="guide-panel"><h2>Документы</h2>'
+        if anchor not in current:
+            raise ValueError("Could not find insertion anchor in articles.html")
+        before, after = current.split(anchor, 1)
+        after = anchor + after
+        block = grid + "</div>"
+        existing = []
+
+    missing = [e for e in ordered if e["slug"] + ".html" not in existing]
+    if not missing:
+        return
     labels = {"airport-otopeni-guide": "ТРАНСПОРТ", "kids-classes-bucharest": "СЕМЬЯ", "sports-partners-bucharest": "СПОРТ", "massage-bucharest": "ГОРОДСКИЕ СЕРВИСЫ", "hospital-bucharest": "ЗДОРОВЬЕ"}
     def editorial_card(e, index):
         slug = e["slug"]
@@ -179,20 +194,13 @@ def main():
             visual = ('<span class="m-visual-label">' + text(label) + '</span><span class="m-visual-number">' + str(index + 1).zfill(2) + '</span>')
         return ('<a class="m-card" href="' + text(slug) + '.html"><div class="m-card-visual m-visual-' + str(index % 5) + '">' + visual + '</div>' +
                 '<div class="m-card-body"><span class="m-meta">' + text(label) + ' · ' + text(e["publish_date"]) + '</span><h3>' + text(e["title"]) + '</h3><p>' + text(e["description"][:145]) + '</p><span class="m-read">Читать историю ↗</span></div></a>')
-    ordered = sorted(live, key=lambda x: (x["publish_date"], x["slug"]), reverse=True)
-    cards = "".join(editorial_card(e, i) for i, e in enumerate(ordered))
-    block = START + '<div class="m-story-grid">' + cards + '</div>' + END
-    if START in current and END in current:
-        left = current.split(START, 1)[0]
-        right = current.split(END, 1)[1]
-        current = left + block + right
-    else:
-        anchor = '<section class="guide-panel"><h2>Документы</h2>'
-        if anchor not in current:
-            raise ValueError("Could not find insertion anchor in articles.html")
-        current = current.replace(anchor, block + anchor, 1)
-    catalog.write_text(current, encoding="utf-8")
+    cards = "".join(editorial_card(e, i) for i, e in enumerate(missing))
+    count = len(existing) + len(missing)
+    before = re.sub(r"(?<=<h2>Все публикации</h2><span>)\d+", str(count), before, count=1)
+    catalog.write_text(before + START + grid + cards + block[len(grid):] + END + after, encoding="utf-8")
 
+
+def update_directories(live):
     # A topical directory makes actual published guides discoverable without
     # exposing scheduled pages that do not exist yet.
     categories = {
@@ -237,12 +245,6 @@ def main():
         '<a href="index.html">Главная</a></div></footer></body></html>'
     ]
     (ROOT / "city-needs.html").write_text("\n".join(body) + "\n", encoding="utf-8")
-    sitemap_text = sitemap.read_text(encoding="utf-8").replace("\\n<url>", "\n<url>")
-    url = BASE + "city-needs.html"
-    if "<loc>" + url + "</loc>" not in sitemap_text:
-        sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\n</urlset>")
-        ET.fromstring(sitemap_text)
-        sitemap.write_text(sitemap_text, encoding="utf-8")
 
     # Maintain a dedicated leisure directory from actually published guides.
     # Future scheduled articles must never appear as broken links.
@@ -303,14 +305,6 @@ def main():
         '<a href="' + TELEGRAM + '">Telegram ↗</a></div></footer></body></html>'
     ]
     (ROOT / "explore-bucharest.html").write_text("\n".join(explore_parts) + "\n", encoding="utf-8")
-    sitemap_text = sitemap.read_text(encoding="utf-8").replace("\\n<url>", "\n<url>")
-    url = BASE + "explore-bucharest.html"
-    if "<loc>" + url + "</loc>" not in sitemap_text:
-        sitemap_text = sitemap_text.replace("</urlset>", "<url><loc>" + url + "</loc><lastmod>" + today + "</lastmod></url>\n</urlset>")
-        ET.fromstring(sitemap_text)
-        sitemap.write_text(sitemap_text, encoding="utf-8")
-
-    print("Published: " + ", ".join(new_pages))
 
 
 if __name__ == "__main__":

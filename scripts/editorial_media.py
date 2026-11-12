@@ -28,6 +28,7 @@ API = "https://commons.wikimedia.org/w/api.php"
 MAX_PER_RUN = 8
 AI_KIND = "ai_illustration"
 AI_CREDIT = "AI-иллюстрация BucharestUA"
+EDITORIAL_COVER_MARKER = "BUCHARESTUA_EDITORIAL_COVER"
 PHOTO_RIGHTS_FIELDS = ("license", "license_url", "source_url", "commons_title")
 JPEG_SIGNATURE = b"\xff\xd8\xff"
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
@@ -385,8 +386,14 @@ def main():
     used = {x.get("commons_title") for x in current.values() if isinstance(x, dict)}
     changes = []
     errors = []
+    editorial_covers = set()
     for entry in due:
         slug = entry["slug"]
+        page = ROOT / (slug + ".html")
+        # Keep an intentional text cover on an already published article.
+        if page.is_file() and f"<!-- {EDITORIAL_COVER_MARKER} -->" in page.read_text(encoding="utf-8"):
+            editorial_covers.add(slug)
+            continue
         cover = current.get(slug)
         if slug in current and (not isinstance(cover, dict) or cover.get("kind", "photo") != "photo"):
             problem = cover_problem(ROOT, slug, cover)
@@ -432,7 +439,7 @@ def main():
     for entry in due:
         slug = entry["slug"]
         path = ROOT / (slug + ".html")
-        if not path.is_file():
+        if slug in editorial_covers or not path.is_file():
             continue
         cover = current.get(slug)
         if cover_problem(ROOT, slug, cover):

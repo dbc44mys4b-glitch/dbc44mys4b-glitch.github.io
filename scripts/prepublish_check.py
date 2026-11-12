@@ -13,11 +13,13 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse, unquote
 from zoneinfo import ZoneInfo
-from editorial_media import AI_CREDIT, AI_KIND, cover_alt, cover_problem, cover_src
+from editorial_media import (
+    AI_CREDIT, AI_KIND, EDITORIAL_COVER_MARKER, cover_alt, cover_problem, cover_src,
+)
+from sitemap import parse_sitemap, sitemap_locations
 import json
 import re
 import sys
-import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://dbc44mys4b-glitch.github.io/"
@@ -43,6 +45,8 @@ class HTMLInspector(HTMLParser):
         self.cover_images = []
         self.cover_caption = ""
         self.cover_caption_links = []
+        self.editorial_cover = False
+        self.editorial_cover_label = ""
 
     def handle_starttag(self, tag, attributes):
         attrs = dict(attributes)
@@ -61,6 +65,9 @@ class HTMLInspector(HTMLParser):
                 self.meta[attrs["property"].lower()] = attrs.get("content", "")
         elif tag == "link" and attrs.get("rel", "").lower() == "canonical":
             self.canonical = attrs.get("href", "")
+        elif tag == "div" and "editorial-cover-fallback" in attrs.get("class", "").split():
+            if attrs.get("role") == "img":
+                self.editorial_cover_label = attrs.get("aria-label", "").strip()
         elif tag == "figure":
             self.in_cover = "journal-cover" in attrs.get("class", "").split()
         elif tag == "figcaption" and self.in_cover:
@@ -89,6 +96,10 @@ class HTMLInspector(HTMLParser):
         if self.in_cover_caption:
             self.cover_caption += data
 
+    def handle_comment(self, data):
+        if data.strip() == EDITORIAL_COVER_MARKER:
+            self.editorial_cover = True
+
 
 def inspect_html(path):
     p = HTMLInspector()
@@ -110,6 +121,15 @@ def local_target(src):
 
 
 def check_cover(parser, slug, cover):
+    if parser.editorial_cover:
+        if cover is not None or parser.cover_images or not parser.editorial_cover_label:
+            return [f"Invalid editorial text cover: {slug}"]
+        if (parser.meta.get("og:image") != BASE + "og-image.png"
+                or not parser.meta.get("og:image:alt", "").strip()
+                or not (ROOT / "og-image.png").is_file()):
+            return [f"Invalid site social preview for editorial text cover: {slug}"]
+        return []
+
     problem = cover_problem(ROOT, slug, cover)
     if problem:
         return [f"Invalid cover for {slug}: {problem}"]
@@ -149,8 +169,8 @@ def main():
         if number != 1:
             critical.append(f"Duplicate title in queue: {title}")
 
-    sitemap = ET.parse(ROOT / "sitemap.xml")
-    sitemap_urls = {el.text for el in sitemap.getroot().iter() if el.tag.endswith("loc")}
+    sitemap = parse_sitemap((ROOT / "sitemap.xml").read_bytes())
+    sitemap_urls = set(sitemap_locations(sitemap))
     if not (ROOT / "styles.css").is_file():
         critical.append("Global CSS missing")
     if TG not in (ROOT / "index.html").read_text(encoding="utf-8"):
