@@ -55,3 +55,9 @@ For every article: (1) intent (2) unique local utility (3) verified official sou
 - P02 remains blocked for new articles until independent, source-backed reviews are actually recorded. No reviews or article approvals fabricated.
 - P04 massage article inspected: currently generic and not ready for a 9/10 editorial rating; requires verified local businesses, source citations, prices/qualification checks and substantive rewrite.
 - Next: P04 factual sourcing and rewrite; verify this commit's workflow/Pages run separately.
+
+## Execution log · 2026-11-13 00:13 Europe/Bucharest
+- P04/P10: found visibly truncated `description` metadata in `massage-bucharest.html` (HTML meta, Open Graph and JSON-LD). Replaced all three with a complete, accurate description; commit `11e36440d1a2bb2445f97517367a960518456da7`. The article's editorial body was not rewritten or independently approved.
+- GitHub content read confirmed the planned 2000-article editorial architecture exists at `editorial/AUTONOMOUS-EDITORIAL-2000.md`; this is documentation, not running agent software.
+- Public HTTP verification attempted for the massage URL but runtime DNS resolution failed. Do not claim this revision is live or Pages passed. Retry Pages/HTTP and independent QA on next run.
+- P02 remains blocked for new scheduled articles without actual independent source-backed review; publication gate must remain fail-closed. Next actionable work: inspect actual workflow and QA review schema, implement review production and test with a single article; separately source-rewrite massage guide.
