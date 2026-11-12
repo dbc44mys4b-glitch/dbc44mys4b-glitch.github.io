@@ -135,6 +135,30 @@ def main():
         path = ROOT / (slug + ".html")
         if path.exists():
             continue
+        # Fail closed: require independent review of the exact queue entry.
+        import hashlib
+        review_path = ROOT / "editorial" / "qa-reviews" / (slug + ".json")
+        if not review_path.is_file():
+            print(f"HOLD: {slug}: independent QA record missing")
+            continue
+        try:
+            review = json.loads(review_path.read_text(encoding="utf-8"))
+            fingerprint = hashlib.sha256(json.dumps(entry, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+            scores = review.get("scores", {})
+            approved = (
+                review.get("slug") == slug
+                and review.get("verdict") == "PASS"
+                and review.get("content_sha256") == fingerprint
+                and review.get("reviewer") not in (None, "", "author", "production")
+                and len(scores) == 10
+                and all(isinstance(v, (int, float)) and not isinstance(v, bool) and 8 <= v <= 10 for v in scores.values())
+                and bool(review.get("evidence_urls"))
+            )
+        except (ValueError, TypeError, OSError):
+            approved = False
+        if not approved:
+            print(f"HOLD: {slug}: QA record incomplete, stale or below 8/10")
+            continue
         # A local cover with verified attribution is required for publication.
         cover = covers.get(slug)
         problem = cover_problem(ROOT, slug, cover)
