@@ -195,3 +195,17 @@ body:not(.media-site) article.prose .editor-note{color:#7a8388;font-size:12px}
 @media(max-width:390px){.media-site .m-container,.media-site .m-header-inner{width:calc(100% - 28px)}.media-site .m-telegram{font-size:10px;padding:9px}.media-site .m-wordmark{font-size:18px}.media-site .m-intro h1{font-size:41px}}
 
 .editorial-cover-fallback{min-height:260px;background:#e7eae4;color:#234c52;padding:45px;display:flex;flex-direction:column;justify-content:center;gap:13px;border-top:6px solid #446e71;margin:15px 0 30px}.editorial-cover-fallback span{font-size:11px;letter-spacing:.2em;font-weight:800}.editorial-cover-fallback strong{font:850 clamp(30px,5vw,55px)/1.1 Manrope,sans-serif;letter-spacing:-.05em}.editorial-cover-fallback small{font-size:15px;color:#5e7272}
+
+/* BucharestUA editorial links: unmistakable on mobile, accessible and consistent */
+.media-site article.prose a:not(.btn),
+.media-site .m-translated-story a:not(.btn),
+body:not(.media-site) article.prose a:not(.btn){color:#205e9b!important;text-decoration:underline!important;text-decoration-thickness:1.5px;text-underline-offset:3px;font-weight:650;overflow-wrap:anywhere}
+.media-site article.prose a:not(.btn):visited,
+.media-site .m-translated-story a:not(.btn):visited,
+body:not(.media-site) article.prose a:not(.btn):visited{color:#684d94!important}
+.media-site article.prose a:not(.btn):hover,
+.media-site .m-translated-story a:not(.btn):hover,
+body:not(.media-site) article.prose a:not(.btn):hover{color:#123e70!important;text-decoration-thickness:2.5px}
+.media-site article.prose a:focus-visible,
+.media-site .m-translated-story a:focus-visible,
+body:not(.media-site) article.prose a:focus-visible{outline:3px solid #e5a847;outline-offset:3px;border-radius:2px}
