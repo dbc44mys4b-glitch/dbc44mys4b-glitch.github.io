@@ -67,3 +67,10 @@ For every article: (1) intent (2) unique local utility (3) verified official sou
 - GitHub content API confirms the roadmap and current massage article are readable. Guessed workflow paths `.github/workflows/editorial.yml` and `.github/workflows/daily-editorial.yml` were absent; the real workflow path is not yet established. GitHub code search for `workflow_dispatch` and `qa-reviews` returned no matches; this is not proof no workflow exists.
 - Public article fetch attempted again but web retrieval failed; deployment of the latest changes and mobile rendering remain **unverified**.
 - Next: discover actual Actions workflow names and run preflight against repository content; inspect failures before integrating into CI. Independently source and rewrite massage article; do not waive QA gate.
+
+## Execution log · 2026-11-13 01:49 Europe/Bucharest
+- P10: added `tests/test_article_metadata.py` with seven focused regression cases for valid metadata, missing Telegram CTA, missing alt, absent/malformed JSON-LD, inconsistent descriptions and wrong canonical. Commit `a56454cbd8ef811cfcbbceb8811d13c158f9c013`; [source](https://github.com/dbc44mys4b-glitch/dbc44mys4b-glitch.github.io/blob/main/tests/test_article_metadata.py).
+- Tests were **committed but not executed** in this run; CI integration and test results remain unverified. These tests do not replace independent source-backed editorial QA.
+- Re-read live repository `massage-bucharest.html`: the body still has generic advice, and a text-only fallback cover. The article does not meet the desired local-source and original-image gate. No unsupported business names, prices or QA approvals added.
+- Workflow lookup for `.github/workflows/pages.yml` and `.github/workflows/editorial.yml` returned 404; these guessed paths do not establish actual Actions configuration. Pages status and public deployment not verified in this run.
+- Next: execute seven tests, fix failures, discover workflow by listing actual repository tree, and then independently source-rewrite massage guide. Keep fail-closed publication QA.
