@@ -179,6 +179,8 @@ def update_catalog(live):
     missing = [e for e in ordered if e["slug"] + ".html" not in existing]
     if not missing:
         return
+    # Existing articles can be manually revised; never re-render their cards from stale queue metadata.
+    # New cards are appended only. Editorial updates to existing cards must be explicit and reviewed.
     labels = {"airport-otopeni-guide": "ТРАНСПОРТ", "kids-classes-bucharest": "СЕМЬЯ", "sports-partners-bucharest": "СПОРТ", "massage-bucharest": "ГОРОДСКИЕ СЕРВИСЫ", "hospital-bucharest": "ЗДОРОВЬЕ"}
     def editorial_card(e, index):
         slug = e["slug"]
