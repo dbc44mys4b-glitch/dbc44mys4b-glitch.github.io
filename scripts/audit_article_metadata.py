@@ -44,7 +44,7 @@ class Page(HTMLParser):
         elif tag == "img":
             self.images.append(a)
         elif tag == "a":
-            self.telegram |= a.get("href", "").startswith("https://t.me/bucharest_info")
+            self.telegram |= (urlparse(a.get("href", "")).scheme == "https" and urlparse(a.get("href", "")).netloc == "t.me" and urlparse(a.get("href", "")).path.rstrip("/") == "/bucharest_info")
         elif tag == "script" and a.get("type") == "application/ld+json":
             self.in_ld = True
             self.ld_text = ""
