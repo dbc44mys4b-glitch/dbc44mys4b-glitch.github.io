@@ -60,6 +60,10 @@ class MetadataAuditTests(unittest.TestCase):
     def test_missing_alt_fails(self):
         self.assertTrue(any("missing alt" in x for x in self.check(html(image_alt=""))))
 
+    def test_og_image_https_without_hostname_fails(self):
+        body = html().replace("https://dbc44mys4b-glitch.github.io/og-image.png", "https:///og-image.png")
+        self.assertTrue(any("og:image must be" in x for x in self.check(body)))
+
     def test_missing_jsonld_fails(self):
         self.assertTrue(any("missing JSON-LD" in x for x in self.check(html(jsonld=False))))
 
