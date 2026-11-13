@@ -1,0 +1,34 @@
+name: Article metadata preflight tests
+
+on:
+  push:
+    paths:
+      - 'scripts/audit_article_metadata.py'
+      - 'tests/test_article_metadata.py'
+      - '.github/workflows/article-metadata-tests.yml'
+  pull_request:
+    paths:
+      - 'scripts/audit_article_metadata.py'
+      - 'tests/test_article_metadata.py'
+      - '.github/workflows/article-metadata-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: article-metadata-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run read-only metadata regression tests
+        run: python3 -m unittest discover -s tests -p 'test_article_metadata.py' -v
