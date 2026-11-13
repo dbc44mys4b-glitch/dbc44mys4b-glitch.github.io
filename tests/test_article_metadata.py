@@ -49,6 +49,10 @@ class MetadataAuditTests(unittest.TestCase):
     def test_missing_telegram_cta_fails(self):
         self.assertTrue(any("Telegram CTA" in x for x in self.check(html(telegram=False))))
 
+    def test_lookalike_telegram_url_does_not_count(self):
+        body = html().replace("https://t.me/bucharest_info", "https://t.me/bucharest_info_fake")
+        self.assertTrue(any("Telegram CTA" in x for x in self.check(body)))
+
     def test_missing_image_src_fails(self):
         body = html().replace('<img src="cover.png"', '<img')
         self.assertTrue(any("missing src" in x for x in self.check(body)))
