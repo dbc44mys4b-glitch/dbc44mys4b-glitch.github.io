@@ -96,7 +96,7 @@ def audit(path):
         src = img.get("src", "").strip()
         if not src:
             issues.append(f"img #{i}: missing src")
-        elif src.startswith("//") or urlparse(src).scheme.lower() in ("javascript", "data", "file"):
+        elif src.startswith("//") or (urlparse(src).scheme and (urlparse(src).scheme.lower() != "https" or not urlparse(src).hostname)):
             issues.append(f"img #{i}: unsafe or unverifiable src")
         if not img.get("alt", "").strip():
             issues.append(f"img #{i}: missing alt")
