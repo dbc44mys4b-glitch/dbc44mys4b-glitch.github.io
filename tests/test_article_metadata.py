@@ -38,6 +38,14 @@ class MetadataAuditTests(unittest.TestCase):
     def test_valid_page_passes_technical_preflight(self):
         self.assertEqual([], self.check(html()))
 
+    def test_duplicate_description_meta_fails(self):
+        body = html().replace('<meta name="description"', '<meta name="description" content="Duplicate"><meta name="description"', 1)
+        self.assertTrue(any("duplicate meta field: description" in x for x in self.check(body)))
+
+    def test_canonical_rel_multiple_tokens_passes(self):
+        body = html().replace('rel="canonical"', 'rel="alternate canonical"')
+        self.assertEqual([], self.check(body))
+
     def test_missing_telegram_cta_fails(self):
         self.assertTrue(any("Telegram CTA" in x for x in self.check(html(telegram=False))))
 
