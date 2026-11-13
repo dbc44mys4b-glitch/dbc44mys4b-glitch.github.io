@@ -1,0 +1,47 @@
+name: BucharestUA public release smoke check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 5 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bucharestua-public-smoke
+  cancel-in-progress: true
+
+jobs:
+  public-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Check public site and priority article URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://dbc44mys4b-glitch.github.io"
+          paths=("/" "/sitemap.xml" "/massage-bucharest.html" "/kids-classes-bucharest.html" "/hospital-bucharest.html")
+          failures=0
+          for path in "${paths[@]}"; do
+            url="${base}${path}"
+            echo "::group::${url}"
+            if curl --fail --location --silent --show-error --retry 2 --retry-delay 2 --connect-timeout 10 --max-time 30 -o /tmp/bucharestua-response "${url}"; then
+              bytes=$(wc -c </tmp/bucharestua-response)
+              echo "PASS ${url} bytes=${bytes}"
+              if [ "${bytes}" -lt 100 ]; then
+                echo "::error::Suspiciously short response at ${url}"
+                failures=$((failures+1))
+              fi
+            else
+              echo "::error::Public URL unavailable: ${url}"
+              failures=$((failures+1))
+            fi
+            echo "::endgroup::"
+          done
+          if [ "${failures}" -gt 0 ]; then
+            echo "::error::${failures} public smoke checks failed"
+            exit 1
+          fi
+          echo "All public smoke checks passed. This is NOT editorial QA, Pages freshness verification, or proof of new publication."
