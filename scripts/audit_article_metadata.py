@@ -98,12 +98,28 @@ def audit(path):
         except json.JSONDecodeError as e:
             issues.append(f"JSON-LD #{i}: invalid JSON: {e}")
             continue
-        if isinstance(ld, dict) and ld.get("@type") == "Article":
-            article_found = True
-            if ld.get("mainEntityOfPage") != expected:
-                issues.append("Article JSON-LD mainEntityOfPage mismatch")
-            if ld.get("description") != p.meta.get("description"):
-                issues.append("Article JSON-LD description mismatch")
+        # Schema.org permits a top-level object, a list, or an @graph.
+        # Evaluate every Article node rather than accepting an unrelated object.
+        nodes = ld if isinstance(ld, list) else [ld]
+        for node in nodes:
+            if not isinstance(node, dict):
+                continue
+            graph = node.get("@graph", [])
+            candidates = graph if isinstance(graph, list) else []
+            for item in [node, *candidates]:
+                if not isinstance(item, dict):
+                    continue
+                types = item.get("@type", [])
+                types = [types] if isinstance(types, str) else types
+                if not isinstance(types, list) or not any(t in ("Article", "NewsArticle", "BlogPosting") for t in types):
+                    continue
+                article_found = True
+                main = item.get("mainEntityOfPage")
+                main_url = main.get("@id") if isinstance(main, dict) else main
+                if main_url != expected:
+                    issues.append("Article JSON-LD mainEntityOfPage mismatch")
+                if item.get("description") != p.meta.get("description"):
+                    issues.append("Article JSON-LD description mismatch")
     if p.scripts and not article_found:
         issues.append("missing Article JSON-LD")
     if p.meta.get("og:image") and not urlparse(p.meta["og:image"]).scheme == "https":
