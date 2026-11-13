@@ -23,7 +23,7 @@ Updated: 2026-11-12 22:47 Europe/Bucharest. This is a tracked improvement progra
 | P10 | SEO | Validate canonical, titles, sitemap, structured data, redirects | automated checks and sample manual inspection | PARTIAL |
 | P11 | LOC | RU/UA/RO/EN equivalence audit | translations complete, hreflang reciprocal, language switch keeps context | TODO |
 | P12 | NAV | Improve taxonomy and related-article links | topic clusters with no dead ends or orphan guides | TODO |
-| P13 | TRUST | Editorial transparency and corrections policy | named responsibility, sources, dated updates and correction log | TODO |
+| P13 | TRUST | Editorial transparency and corrections policy | named responsibility, sources, dated updates and correction log | PARTIAL: internal policy documented; public corrections route and actual log outstanding |
 | P14 | ANALYTICS | Search Console + click/conversion measurement | impressions, clicks, indexing, Telegram outbound events baseline | BLOCKED ON ACCESS/DATA |
 | P15 | GEO | AI discoverability evidence | cited answers and measured referrals, no invented rankings | TODO |
 | P16 | COMMUNITY | Improve Telegram CTAs without clickbait | tracked CTA events and useful natural placement | TODO |
@@ -98,3 +98,10 @@ For every article: (1) intent (2) unique local utility (3) verified official sou
 - This is read-only technical preflight, **not** independent editorial approval. P02 fail-closed QA unchanged. No new article approved or created.
 - Public URL [massage-bucharest.html](https://dbc44mys4b-glitch.github.io/massage-bucharest.html) was attempted through web retrieval but tool reported inaccessible; deployment, live HTTP status, mobile screenshots and CI outcome remain **unverified**. Authenticated source is readable; the massage guide still lacks local verified provider sources and rights-cleared image.
 - Next: verify actual Actions job and test result (the PR-filtered commit lookup cannot establish push-run status); independently source-rewrite P04, then image and separate QA; if sourcing blocked, advance to P05/P06. Do not equate a passing metadata test with article QA.
+
+
+## Execution log · 2026-11-13 07:08 Europe/Bucharest
+- Read the actual roadmap, metadata test workflow, audit script, and massage HTML through authenticated GitHub content API. Workflow exists at `.github/workflows/article-metadata-tests.yml` and calls ten unit tests plus a metadata preflight for the massage HTML; **workflow source inspection is not evidence that Actions ran successfully**.
+- P04 remains blocked for publication: massage guide still lacks named locally verified providers and a relevant rights-cleared image; the current text-based fallback and generic `og-image.png` are not a substitute. No claims, prices or business listings invented.
+- Advanced next independently actionable item P13: added [internal editorial standards and corrections policy](https://github.com/dbc44mys4b-glitch/dbc44mys4b-glitch.github.io/blob/main/editorial/EDITORIAL-STANDARDS-AND-CORRECTIONS.md), commit [`a0da2cc080ba06c68178672666d8cdf4ed9f70e0`](https://github.com/dbc44mys4b-glitch/dbc44mys4b-glitch.github.io/commit/a0da2cc080ba06c68178672666d8cdf4ed9f70e0). Covers primary-source rules, correction escalation, content hash reapproval, image licensing, commercial disclosures and privacy. This is an internal policy file, **not yet a public page or a verified monitored corrections channel**.
+- No new article QA pass, public deployment, Pages status, mobile screenshot or analytics measurement claimed this run. Next: confirm actual Actions job status using an endpoint that lists push runs; complete source-backed P04/P05/P06 and visual QA; create verified public corrections route before marking P13 done.
