@@ -19,6 +19,7 @@ class Page(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.meta = {}
+        self.meta_duplicates = []
         self.links = []
         self.images = []
         self.scripts = []
@@ -34,7 +35,10 @@ class Page(HTMLParser):
         if tag == "meta":
             key = a.get("name") or a.get("property")
             if key:
-                self.meta[key.lower()] = a.get("content", "")
+                normalized = key.lower()
+                if normalized in self.meta:
+                    self.meta_duplicates.append(normalized)
+                self.meta[normalized] = a.get("content", "")
         elif tag == "link":
             self.links.append(a)
         elif tag == "img":
@@ -70,7 +74,9 @@ def audit(path):
     except (OSError, UnicodeError) as e:
         return [f"read error: {e}"]
     expected = BASE + path.name
-    canonical = [x.get("href", "") for x in p.links if x.get("rel", "").lower() == "canonical"]
+    for key in p.meta_duplicates:
+        issues.append(f"duplicate meta field: {key}")
+    canonical = [x.get("href", "") for x in p.links if "canonical" in x.get("rel", "").lower().split()]
     if canonical != [expected]:
         issues.append(f"canonical mismatch: {canonical!r}, expected {expected}")
     if len(p.title.strip()) < 20:
