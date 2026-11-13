@@ -74,3 +74,9 @@ For every article: (1) intent (2) unique local utility (3) verified official sou
 - Re-read live repository `massage-bucharest.html`: the body still has generic advice, and a text-only fallback cover. The article does not meet the desired local-source and original-image gate. No unsupported business names, prices or QA approvals added.
 - Workflow lookup for `.github/workflows/pages.yml` and `.github/workflows/editorial.yml` returned 404; these guessed paths do not establish actual Actions configuration. Pages status and public deployment not verified in this run.
 - Next: execute seven tests, fix failures, discover workflow by listing actual repository tree, and then independently source-rewrite massage guide. Keep fail-closed publication QA.
+
+## Execution log · 2026-11-13 03:20 Europe/Bucharest
+- P10: source inspection found a genuine fail-open **technical metadata** gap: any valid JSON-LD object (even WebSite rather than Article) was accepted as long as JSON-LD existed. Fixed the preflight to require an Article JSON-LD object; commit `e5f48774fae2dec1a1dde8dc4bacbf36893534e4`.
+- Added regression `test_non_article_jsonld_fails` in `tests/test_article_metadata.py`; commit `aba7287300cba7f54694cf3d6e700cec2d341812`. Total defined focused test cases now eight, **not yet confirmed passing**.
+- Attempted a shallow Git clone to run tests, but this execution environment failed DNS resolution for github.com. Therefore no actual test-run result or deployment verification is claimed. Source code and test were read/updated through authenticated GitHub contents API.
+- Editorial QA remains fail-closed; this technical audit never approves articles. P04 massage rewrite, rights-cleared imagery and independent source-backed review remain open. Next: run tests in a GitHub Actions job or an environment with repository access; verify Pages deployment and audit public page. No new article published in this run.
