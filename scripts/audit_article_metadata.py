@@ -130,8 +130,10 @@ def audit(path):
                     issues.append("Article JSON-LD description mismatch")
     if p.scripts and not article_found:
         issues.append("missing Article JSON-LD")
-    if p.meta.get("og:image") and not urlparse(p.meta["og:image"]).scheme == "https":
-        issues.append("og:image must be HTTPS")
+    if p.meta.get("og:image"):
+        og_image = urlparse(p.meta["og:image"])
+        if og_image.scheme != "https" or not og_image.hostname:
+            issues.append("og:image must be an absolute HTTPS URL with a hostname")
     return issues
 
 def main():
