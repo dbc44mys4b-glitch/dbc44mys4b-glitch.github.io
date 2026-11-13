@@ -49,6 +49,10 @@ class MetadataAuditTests(unittest.TestCase):
     def test_missing_telegram_cta_fails(self):
         self.assertTrue(any("Telegram CTA" in x for x in self.check(html(telegram=False))))
 
+    def test_missing_image_src_fails(self):
+        body = html().replace('<img src="cover.png"', '<img')
+        self.assertTrue(any("missing src" in x for x in self.check(body)))
+
     def test_missing_alt_fails(self):
         self.assertTrue(any("missing alt" in x for x in self.check(html(image_alt=""))))
 
