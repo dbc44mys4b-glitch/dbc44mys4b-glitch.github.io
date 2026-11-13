@@ -93,6 +93,8 @@ def audit(path):
     if not p.telegram:
         issues.append("missing community Telegram CTA")
     for i, img in enumerate(p.images, 1):
+        if not img.get("src", "").strip():
+            issues.append(f"img #{i}: missing src")
         if not img.get("alt", "").strip():
             issues.append(f"img #{i}: missing alt")
     if not p.scripts:
