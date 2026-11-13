@@ -59,6 +59,31 @@ class MetadataAuditTests(unittest.TestCase):
         body = html().replace('"@type":"Article"', '"@type":"WebSite"')
         self.assertTrue(any("missing Article JSON-LD" in x for x in self.check(body)))
 
+    def test_graph_article_passes(self):
+        body = html().replace(
+            '"@context":"https://schema.org","@type":"Article",',
+            '"@context":"https://schema.org","@graph":[{"@type":"WebSite"},'
+            '{"@type":["Article","CreativeWork"],'
+        ).replace(
+            '"description":"Practical guide for Bucharest residents."}</script>',
+            '"description":"Practical guide for Bucharest residents."}]}</script>',
+        )
+        self.assertEqual([], self.check(body))
+
+    def test_graph_wrong_article_url_fails(self):
+        body = html().replace(
+            '"@context":"https://schema.org","@type":"Article",',
+            '"@context":"https://schema.org","@graph":[{"@type":"WebSite"},'
+            '{"@type":"Article",',
+        ).replace(
+            '"mainEntityOfPage":"https://dbc44mys4b-glitch.github.io/sample.html"',
+            '"mainEntityOfPage":"https://example.org/wrong"',
+        ).replace(
+            '"description":"Practical guide for Bucharest residents."}</script>',
+            '"description":"Practical guide for Bucharest residents."}]}</script>',
+        )
+        self.assertTrue(any("mainEntityOfPage mismatch" in x for x in self.check(body)))
+
     def test_malformed_jsonld_fails(self):
         body = html().replace('"@context":"https://schema.org"', '"@context":INVALID')
         self.assertTrue(any("invalid JSON" in x for x in self.check(body)))
