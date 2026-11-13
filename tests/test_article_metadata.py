@@ -55,6 +55,10 @@ class MetadataAuditTests(unittest.TestCase):
         body = html().replace('rel="canonical" href="https://dbc44mys4b-glitch.github.io/sample.html"', 'rel="canonical" href="https://example.org/wrong"')
         self.assertTrue(any("canonical mismatch" in x for x in self.check(body)))
 
+    def test_non_article_jsonld_fails(self):
+        body = html().replace('"@type":"Article"', '"@type":"WebSite"')
+        self.assertTrue(any("missing Article JSON-LD" in x for x in self.check(body)))
+
     def test_malformed_jsonld_fails(self):
         body = html().replace('"@context":"https://schema.org"', '"@context":INVALID')
         self.assertTrue(any("invalid JSON" in x for x in self.check(body)))
