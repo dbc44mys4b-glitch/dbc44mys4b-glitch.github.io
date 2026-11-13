@@ -63,6 +63,12 @@ class MetadataAuditTests(unittest.TestCase):
                 body = html().replace('src="cover.png"', f'src="{src}"')
                 self.assertTrue(any("unsafe or unverifiable src" in x for x in self.check(body)))
 
+    def test_insecure_or_hostless_absolute_image_src_fails(self):
+        for src in ("http://example.org/cover.png", "https:///cover.png", "ftp://example.org/cover.png"):
+            with self.subTest(src=src):
+                body = html().replace('src="cover.png"', f'src="{src}"')
+                self.assertTrue(any("unsafe or unverifiable src" in x for x in self.check(body)))
+
     def test_missing_alt_fails(self):
         self.assertTrue(any("missing alt" in x for x in self.check(html(image_alt=""))))
 
