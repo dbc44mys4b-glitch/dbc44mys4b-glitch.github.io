@@ -5,11 +5,13 @@ on:
     paths:
       - 'scripts/audit_article_metadata.py'
       - 'tests/test_article_metadata.py'
+      - 'massage-bucharest.html'
       - '.github/workflows/article-metadata-tests.yml'
   pull_request:
     paths:
       - 'scripts/audit_article_metadata.py'
       - 'tests/test_article_metadata.py'
+      - 'massage-bucharest.html'
       - '.github/workflows/article-metadata-tests.yml'
   workflow_dispatch:
 
@@ -32,3 +34,5 @@ jobs:
           python-version: '3.12'
       - name: Run read-only metadata regression tests
         run: python3 -m unittest discover -s tests -p 'test_article_metadata.py' -v
+      - name: Audit massage article metadata (not editorial QA)
+        run: python3 scripts/audit_article_metadata.py massage-bucharest.html
