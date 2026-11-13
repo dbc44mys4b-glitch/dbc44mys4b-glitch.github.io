@@ -91,6 +91,7 @@ def audit(path):
             issues.append(f"img #{i}: missing alt")
     if not p.scripts:
         issues.append("missing JSON-LD")
+    article_found = False
     for i, raw in enumerate(p.scripts, 1):
         try:
             ld = json.loads(raw)
@@ -98,10 +99,13 @@ def audit(path):
             issues.append(f"JSON-LD #{i}: invalid JSON: {e}")
             continue
         if isinstance(ld, dict) and ld.get("@type") == "Article":
+            article_found = True
             if ld.get("mainEntityOfPage") != expected:
                 issues.append("Article JSON-LD mainEntityOfPage mismatch")
             if ld.get("description") != p.meta.get("description"):
                 issues.append("Article JSON-LD description mismatch")
+    if p.scripts and not article_found:
+        issues.append("missing Article JSON-LD")
     if p.meta.get("og:image") and not urlparse(p.meta["og:image"]).scheme == "https":
         issues.append("og:image must be HTTPS")
     return issues
