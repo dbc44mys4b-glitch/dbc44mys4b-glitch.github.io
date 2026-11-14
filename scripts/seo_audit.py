@@ -217,45 +217,12 @@ def main():
         BASE + "community.html",
         BASE + "assets/covers/community.jpg",
     ]
-    queue_path = ROOT / "content-queue" / "articles.json"
-    if queue_path.is_file():
-        try:
-            entries = json.loads(queue_path.read_text(encoding="utf-8"))
-            slugs = [item["slug"] for item in entries]
-            for slug, count in Counter(slugs).items():
-                if count > 1:
-                    issues.append(f"Duplicate slug in editorial queue: {slug}")
-            for title, count in Counter(item["title"] for item in entries).items():
-                if count > 1:
-                    issues.append(f"Duplicate headline in editorial queue: {title}")
-            for date, count in Counter(item["publish_date"] for item in entries).items():
-                if count < 2 or count > 3:
-                    warnings.append(f"Editorial calendar has {count} entries on {date}, expected 2–3")
-            for item in entries:
-                slug = item["slug"]
-                sections = item.get("sections", [])
-                if not sections or len(sections) < 3:
-                    warnings.append(f"{slug}: fewer than 3 content sections")
-                if len(item.get("intro", "")) < 100:
-                    warnings.append(f"{slug}: editorial introduction too short")
-                if len(item.get("description", "")) > 170:
-                    warnings.append(f"{slug}: meta description longer than 170 characters")
-                if item["publish_date"] >= "2026-12-09" and not item.get("sources"):
-                    warnings.append(f"{slug}: no linked research source")
-                for source in item.get("sources", []):
-                    if not source.get("url", "").startswith("https://"):
-                        issues.append(f"{slug}: non-HTTPS source URL")
-            # Keep HTTP monitoring bounded as the library grows: core URLs
-            # and the 12 most recently published entries, not every article.
-            live_entries = [
-                item for item in entries
-                if (ROOT / (item["slug"] + ".html")).is_file()
-            ]
-            latest = sorted(live_entries, key=lambda item: (item["publish_date"], item["slug"]), reverse=True)[:12]
-            for item in latest:
-                urls_to_check.append(BASE + item["slug"] + ".html")
-        except (ValueError, KeyError, TypeError) as e:
-            issues.append(f"Could not validate scheduled editorial queue: {e}")
+    releases = ROOT / "editorial/releases"
+    recent = sorted(
+        (json.loads(record.read_text(encoding="utf-8")) for record in releases.glob("*.json")),
+        key=lambda record: record["released_on"], reverse=True,
+    )[:12]
+    urls_to_check.extend(BASE + record["slug"] + ".html" for record in recent)
     web_checks = [check_web(url) for url in dict.fromkeys(urls_to_check)]
     for c in web_checks:
         if not c["ok"]:

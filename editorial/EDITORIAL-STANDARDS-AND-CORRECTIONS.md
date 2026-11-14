@@ -1,4 +1,7 @@
 # BucharestUA · Editorial standards, corrections and disclosures
+
+> Архив. Для новых статей и обновлений действует [редакционный процесс с одобрением владельца](WORKFLOW.md).
+
 Updated: 2026-11-13. This is the editorial operating policy, not a claim of independent certification.
 
 ## Editorial responsibility

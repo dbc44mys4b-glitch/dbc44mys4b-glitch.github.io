@@ -1,5 +1,7 @@
 # BucharestUA editorial SEO plan
 
+> Архив. Для новых статей и обновлений действует [редакционный процесс с одобрением владельца](editorial/WORKFLOW.md).
+
 Useful content first. No keyword stuffing, doorway pages, fake reviews, prices or doctors.
 
 - [Временная защита в Румынии: памятка украинцу](temporary-protection-checklist.html) (ru) — Как проверить документы, статус, разрешение на проживание и куда обращаться в Бухаресте.

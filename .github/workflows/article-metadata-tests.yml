@@ -1,30 +1,20 @@
-name: Article metadata preflight tests
+name: Article tooling tests
 
 on:
   push:
     paths:
-      - 'scripts/audit_article_metadata.py'
-      - 'tests/test_article_metadata.py'
-      - 'massage-bucharest.html'
-      - 'kids-classes-bucharest.html'
-      - 'hospital-bucharest.html'
+      - 'scripts/**'
+      - 'tests/**'
       - '.github/workflows/article-metadata-tests.yml'
   pull_request:
     paths:
-      - 'scripts/audit_article_metadata.py'
-      - 'tests/test_article_metadata.py'
-      - 'massage-bucharest.html'
-      - 'kids-classes-bucharest.html'
-      - 'hospital-bucharest.html'
+      - 'scripts/**'
+      - 'tests/**'
       - '.github/workflows/article-metadata-tests.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
-
-concurrency:
-  group: article-metadata-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   unittest:
@@ -32,14 +22,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run read-only metadata regression tests
-        run: python3 -m unittest discover -s tests -p 'test_article_metadata.py' -v
-      - name: Audit priority article metadata (not editorial QA)
-        run: |
-          python3 scripts/audit_article_metadata.py massage-bucharest.html
-          python3 scripts/audit_article_metadata.py kids-classes-bucharest.html
-          python3 scripts/audit_article_metadata.py hospital-bucharest.html
+      - run: python3 -m unittest discover -s tests -v

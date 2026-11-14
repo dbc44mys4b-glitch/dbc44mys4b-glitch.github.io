@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Strict local pre-publication validation for BucharestUA.
-
-Run after assembling HTML/media, BEFORE GitHub commit/push. Does not make
-network calls or mistake delayed GitHub Pages deployment for a broken page.
-Missing approved covers hold new articles in the queue.
-"""
+"""Validate one candidate locally or audit existing BucharestUA pages."""
 from __future__ import annotations
 
 from collections import Counter
@@ -16,16 +11,13 @@ from zoneinfo import ZoneInfo
 from editorial_media import (
     AI_CREDIT, AI_KIND, EDITORIAL_COVER_MARKER, cover_alt, cover_problem, cover_src,
 )
-from sitemap import parse_sitemap, sitemap_locations
+from sitemap import BASE, parse_sitemap, sitemap_locations
 import json
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = "https://dbc44mys4b-glitch.github.io/"
 TG = "https://t.me/bucharest_info"
 OUT = ROOT / "reports"
-OUT.mkdir(exist_ok=True)
 
 
 class HTMLInspector(HTMLParser):
@@ -109,18 +101,17 @@ def inspect_html(path):
 
 def local_target(src):
     parsed = urlparse(src)
-    if parsed.scheme in ("http", "https"):
-        if parsed.netloc != urlparse(BASE).netloc:
-            return None
-        value = parsed.path.lstrip("/")
-    else:
-        value = src.split("#", 1)[0].split("?", 1)[0].lstrip("/")
-    if value.startswith("../") or not value:
+    if parsed.scheme not in ("", "http", "https"):
         return None
-    return ROOT / unquote(value)
+    if parsed.netloc != urlparse(BASE).netloc and (parsed.scheme or parsed.netloc):
+        return None
+    value = unquote(parsed.path).lstrip("/")
+    if not value or ".." in Path(value).parts:
+        return None
+    return ROOT / value
 
 
-def check_cover(parser, slug, cover):
+def check_cover(parser, slug, cover, *, cover_root=ROOT):
     if parser.editorial_cover:
         if cover is not None or parser.cover_images or not parser.editorial_cover_label:
             return [f"Invalid editorial text cover: {slug}"]
@@ -130,7 +121,7 @@ def check_cover(parser, slug, cover):
             return [f"Invalid site social preview for editorial text cover: {slug}"]
         return []
 
-    problem = cover_problem(ROOT, slug, cover)
+    problem = cover_problem(cover_root, slug, cover)
     if problem:
         return [f"Invalid cover for {slug}: {problem}"]
 
@@ -155,6 +146,59 @@ def check_cover(parser, slug, cover):
     return errors
 
 
+def check_article_markup(parser, slug):
+    errors = []
+    if not parser.title_text.strip() or parser.h1 != 1 or not parser.meta.get("description", "").strip():
+        errors.append(f"Incomplete title/H1/description: {slug}")
+    if parser.h2 < 3:
+        errors.append(f"Article too thin (fewer than three sections): {slug}")
+    if parser.canonical != BASE + slug + ".html":
+        errors.append(f"Wrong canonical: {slug}")
+    if parser.html_lang != "ru":
+        errors.append(f"Missing or unexpected language: {slug}")
+    if not any(link.startswith("https://t.me/share/url?") for link in parser.links):
+        errors.append(f"Telegram share button missing: {slug}")
+    if not any(link.rstrip("/") == TG for link in parser.links):
+        errors.append(f"Join Telegram call-to-action missing: {slug}")
+    return errors
+
+
+def check_local_references(parser, slug, *, staged_cover=None):
+    errors = []
+    filename = slug + ".html"
+    for image in parser.images:
+        src = image.get("src", "")
+        target = local_target(src)
+        if target is None:
+            errors.append(f"Unapproved remote or unsafe image reference: {filename} -> {src}")
+        elif src != staged_cover and not target.is_file():
+            errors.append(f"Missing local image: {filename} -> {src}")
+        if not image.get("alt", "").strip():
+            errors.append(f"Missing image alt: {filename} -> {src}")
+    for href in parser.links:
+        parsed = urlparse(href)
+        if parsed.scheme not in ("", "http", "https") or not parsed.path.endswith(".html"):
+            continue
+        if parsed.netloc and parsed.netloc != urlparse(BASE).netloc:
+            continue
+        target = local_target(href)
+        if target is None or not target.is_file():
+            errors.append(f"Broken internal link: {filename} -> {href}")
+    return errors
+
+
+def check_article(parser, slug, cover, *, cover_root=ROOT) -> list[str]:
+    """Validate the selected candidate before its image enters the live tree."""
+    if parser.editorial_cover:
+        cover_errors = [f"An attributed photograph or original illustration is required: {slug}"]
+    else:
+        cover_errors = check_cover(parser, slug, cover, cover_root=cover_root)
+    staged_cover = None if cover_errors else cover_src(slug, cover)
+    return cover_errors + check_article_markup(parser, slug) + check_local_references(
+        parser, slug, staged_cover=staged_cover,
+    )
+
+
 def main():
     critical = []
     notices = []
@@ -177,33 +221,17 @@ def main():
         critical.append("Telegram destination absent from homepage")
 
     published = []
-    queued_due = []
     for entry in queue:
         slug = entry["slug"]
         path = ROOT / (slug + ".html")
-        if entry["publish_date"] > today and path.is_file():
-            critical.append(f"Article released before scheduled date: {slug}")
-        if not path.exists():
-            if entry["publish_date"] <= today:
-                queued_due.append(slug)
+        if not path.is_file():
             continue
         published.append(slug)
         parser = inspect_html(path)
         critical.extend(check_cover(parser, slug, manifests.get(slug)))
-        expected = BASE + slug + ".html"
-        if not parser.title_text.strip() or parser.h1 != 1 or not parser.meta.get("description"):
-            critical.append(f"Incomplete title/H1/description: {slug}")
-        if parser.h2 < 3:
-            critical.append(f"Article too thin (fewer than three sections): {slug}")
-        if parser.canonical != expected:
-            critical.append(f"Wrong canonical: {slug}")
-        if parser.html_lang != "ru":
-            critical.append(f"Missing or unexpected language: {slug}")
-        if not any("t.me/share/url?" in link for link in parser.links):
-            critical.append(f"Telegram share button missing: {slug}")
-        if not any(TG in link for link in parser.links):
-            critical.append(f"Join Telegram call-to-action missing: {slug}")
-        if expected not in sitemap_urls:
+        critical.extend(check_article_markup(parser, slug))
+        critical.extend(check_local_references(parser, slug))
+        if BASE + slug + ".html" not in sitemap_urls:
             critical.append(f"Published URL not in sitemap: {slug}")
         if len(entry.get("intro", "")) < 100:
             notices.append(f"Review short introduction before next editorial refresh: {slug}")
@@ -217,37 +245,12 @@ def main():
         parser = inspect_html(cfile)
         cover_errors = check_cover(parser, "community", manifests.get("community"))
         critical.extend(cover_errors)
+        critical.extend(check_local_references(parser, "community"))
         community_cover_verified = not cover_errors
         if TG not in parser.links:
             critical.append("Community Telegram destination missing")
         if BASE + "community.html" not in sitemap_urls:
             critical.append("Community missing from sitemap")
-
-    # Validate visible internal image paths and local navigation of current
-    # issue pages. Fail before deploying broken links, not after.
-    for slug in published + (["community"] if cfile.is_file() else []):
-        path = ROOT / (slug + ".html")
-        inspector = inspect_html(path)
-        for im in inspector.images:
-            src = im.get("src", "")
-            target = local_target(src)
-            if target is None:
-                critical.append(f"Unapproved remote or unsafe image reference: {path.name} -> {src}")
-            elif not target.is_file():
-                critical.append(f"Missing local image: {path.name} -> {src}")
-            if not im.get("alt", "").strip():
-                critical.append(f"Missing image alt: {path.name} -> {src}")
-        for href in inspector.links:
-            if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
-                continue
-            parsed = urlparse(href)
-            if parsed.netloc and parsed.netloc != urlparse(BASE).netloc:
-                continue
-            local = local_target(href)
-            if local is None:
-                continue
-            if href.endswith(".html") and not local.is_file():
-                critical.append(f"Broken internal link: {path.name} -> {href}")
 
     ai_count = sum(isinstance(cover, dict) and cover.get("kind") == AI_KIND for cover in manifests.values())
     photo_count = sum(isinstance(cover, dict) and cover.get("kind", "photo") == "photo"
@@ -256,20 +259,20 @@ def main():
         "checked_in_bucharest": today,
         "queue_size": len(queue),
         "published_articles": len(published),
-        "approved_photo_assets": photo_count,
-        "approved_ai_illustration_assets": ai_count,
+        "photo_assignments": photo_count,
+        "ai_illustration_assignments": ai_count,
         "community_cover_verified": community_cover_verified,
-        "due_awaiting_review_or_photo": queued_due,
+        "unpublished_queue_entries": len(queue) - len(published),
         "critical": sorted(set(critical)),
         "notices": sorted(set(notices)),
     }
+    OUT.mkdir(exist_ok=True)
     (OUT / "prepublish-check.json").write_text(
         json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    print("Pre-publish QA:", len(published), "articles;",
+    print("Site audit:", len(published), "published queue articles;",
           len(manifests), "cover assignments;",
-          len(critical), "critical failures;",
-          len(queued_due), "due articles held")
+          len(critical), "critical failures")
     if critical:
         for item in critical[:35]:
             print("FAIL:", item, file=sys.stderr)

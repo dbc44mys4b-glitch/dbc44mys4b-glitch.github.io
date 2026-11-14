@@ -1,4 +1,7 @@
 # BucharestUA · Roadmap to verified 9/10
+
+> Архив. Для новых статей и обновлений действует [редакционный процесс с одобрением владельца](WORKFLOW.md).
+
 Updated: 2026-11-12 22:47 Europe/Bucharest. This is a tracked improvement program, **not** a claim that any score is already achieved.
 
 ## Rules

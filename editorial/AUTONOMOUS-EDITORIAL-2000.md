@@ -1,4 +1,7 @@
 # BucharestUA · Autonomous editorial operating plan (v1)
+
+> Архив. Для новых статей и обновлений действует [редакционный процесс с одобрением владельца](WORKFLOW.md).
+
 Date: 2026-11-12. Status: **DESIGNED, NOT YET AUTOMATED OR VALIDATED**.
 
 ## Step 0 · editorial choice

@@ -1,0 +1,15 @@
+# Internal editorial files remain in GitHub and are excluded from the Pages build.
+exclude:
+  - README.md
+  - COMMUNITY-OPERATING-PLAN.md
+  - EDITORIAL-STANDARDS.md
+  - EDITORIAL_SEO_PLAN.md
+  - ПУБЛИКАЦИЯ_И_SEO.md
+  - content-queue/
+  - editorial/
+  - media/
+  - reports/
+  - research/
+  - scripts/
+  - social/
+  - tests/

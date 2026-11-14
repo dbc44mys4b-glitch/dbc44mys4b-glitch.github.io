@@ -1,21 +1,31 @@
 #!/usr/bin/env python3
-"""Publish only prewritten, reviewed BucharestUA editorial queue entries due today.
+"""Prepare and verify a single manually approved BucharestUA release."""
 
-This script uses no paid services, no LLM API, and never overwrites existing
-articles. Safe to rerun: no publish, sitemap or index changes when up-to-date.
-"""
-from datetime import datetime
-from zoneinfo import ZoneInfo
+import argparse
+from datetime import date, datetime
+from hashlib import sha256
 from html import escape
-from pathlib import Path
-from editorial_media import cover_problem, decorate_html
-from sitemap import BASE, parse_sitemap, update_sitemaps
 import json
+from pathlib import Path
 import re
+import shutil
+import sys
+from tempfile import TemporaryDirectory
+from urllib.parse import urlsplit
+import xml.etree.ElementTree as ET
+from urllib.request import urlopen
+from zoneinfo import ZoneInfo
+
+from editorial_media import AI_CREDIT, AI_KIND, cover_alt, cover_problem, cover_src, decorate_html
+from prepublish_check import HTMLInspector, check_article
+from sitemap import BASE, NS, parse_sitemap, update_sitemaps
+from social_feed import write_rss
 
 ROOT = Path(__file__).resolve().parents[1]
 TELEGRAM = "https://t.me/bucharest_info"
-QUEUE = ROOT / "content-queue" / "articles.json"
+QUEUE = ROOT / "content-queue/articles.json"
+RELEASES = Path("editorial/releases")
+MANIFEST = Path("media/assigned-images.json")
 START = "<!-- BUCHARESTUA_EDITORIAL_START -->"
 END = "<!-- BUCHARESTUA_EDITORIAL_END -->"
 
@@ -24,7 +34,7 @@ def text(x):
     return escape(str(x), quote=True)
 
 
-def build_page(entry):
+def build_page(entry, cover):
     slug = entry["slug"]
     title = entry["title"]
     desc = entry["description"]
@@ -33,7 +43,8 @@ def build_page(entry):
     schema = json.dumps({
         "@context": "https://schema.org", "@type": "Article",
         "headline": title, "description": desc, "inLanguage": "ru",
-        "datePublished": date, "dateModified": date,
+        "datePublished": date, "dateModified": entry.get("date_modified", date),
+        "image": BASE + cover_src(slug, cover),
         "mainEntityOfPage": url,
         "author": {"@type": "Organization", "name": "BucharestUA"},
         "publisher": {"@type": "Organization", "name": "BucharestUA", "url": BASE}
@@ -94,6 +105,7 @@ def build_page(entry):
         parts.append('<li><a href="' + text(href) + '">' + text(item["text"]) + '</a></li>')
     if entry.get("sources"):
         parts.append('</ul></section><section class="guide-panel"><h2>Где проверить актуальные сведения</h2><ul>')
+        parts.append('<li>Источники проверены ' + text(entry["fact_checked_on"]) + '.</li>')
         for source in entry["sources"]:
             address = source.get("url", "")
             if not address.startswith("https://"):
@@ -112,234 +124,251 @@ def build_page(entry):
     return "\n".join(parts) + "\n"
 
 
-def main():
-    sitemap = ROOT / "sitemap.xml"
-    sitemap_root = parse_sitemap(sitemap.read_bytes())
-    entries = json.loads(QUEUE.read_text(encoding="utf-8"))
-    manifest_path = ROOT / "media/assigned-images.json"
-    covers = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
-    slugs = [e["slug"] for e in entries]
-    if len(slugs) != len(set(slugs)):
-        raise ValueError("Editorial queue contains duplicate slugs")
-    dates = [e["publish_date"] for e in entries]
-    for d in dates:
-        datetime.strptime(d, "%Y-%m-%d")
-    today = datetime.now(ZoneInfo("Europe/Bucharest")).date().isoformat()
-    new_pages = []
-    held_pages = []
-    for entry in sorted(entries, key=lambda x: x["publish_date"]):
-        slug = entry["slug"]
-        if not re.fullmatch(r"[a-z0-9-]{5,90}", slug):
-            raise ValueError("Invalid slug: " + slug)
-        if entry["publish_date"] > today:
-            continue
-        path = ROOT / (slug + ".html")
-        if path.exists():
-            continue
-        # Fail closed: require independent review of the exact queue entry.
-        import hashlib
-        review_path = ROOT / "editorial" / "qa-reviews" / (slug + ".json")
-        if not review_path.is_file():
-            print(f"HOLD: {slug}: independent QA record missing")
-            held_pages.append(slug)
-            continue
-        try:
-            review = json.loads(review_path.read_text(encoding="utf-8"))
-            fingerprint = hashlib.sha256(json.dumps(entry, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-            scores = review.get("scores", {})
-            approved = (
-                review.get("slug") == slug
-                and review.get("verdict") == "PASS"
-                and review.get("content_sha256") == fingerprint
-                and review.get("reviewer") not in (None, "", "author", "production")
-                and len(scores) == 10
-                and all(isinstance(v, (int, float)) and not isinstance(v, bool) and 8 <= v <= 10 for v in scores.values())
-                and bool(review.get("evidence_urls"))
-            )
-        except (ValueError, TypeError, OSError, AttributeError):
-            # Malformed JSON shapes (list, scalar, scores as list) must HOLD, not crash the daily cycle.
-            approved = False
-        if not approved:
-            print(f"HOLD: {slug}: QA record incomplete, stale or below 8/10")
-            held_pages.append(slug)
-            continue
-        # A local cover with verified attribution is required for publication.
-        cover = covers.get(slug)
-        problem = cover_problem(ROOT, slug, cover)
-        if problem:
-            print(f"HOLD: {slug}: {problem}")
-            held_pages.append(slug)
-            continue
-        html = decorate_html(build_page(entry), entry, cover)
-        path.write_text(html, encoding="utf-8")
-        new_pages.append(path.name)
-    live = [e for e in entries if (ROOT / (e["slug"] + ".html")).is_file()]
-    update_catalog(live)
-    if new_pages:
-        update_directories(live)
-    sitemap_pages = {BASE + e["slug"] + ".html": e["publish_date"] for e in live}
-    for name in ("city-needs.html", "explore-bucharest.html"):
-        if (ROOT / name).is_file():
-            sitemap_pages[BASE + name] = today
-    update_sitemaps(sitemap, sitemap_root, sitemap_pages)
-    print("Published: " + ", ".join(new_pages) if new_pages else "Published: none.")
-    if held_pages:
-        print(f"QA/MEDIA HOLD: {len(held_pages)} due article(s) blocked: " + ", ".join(held_pages))
-    elif not new_pages:
-        print("No eligible queued article due for publication.")
+def required_text(value, field):
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field}: expected nonempty text")
+    return value
 
 
-def update_catalog(live):
-    catalog = ROOT / "articles.html"
-    current = catalog.read_text(encoding="utf-8")
-    ordered = sorted(live, key=lambda x: (x["publish_date"], x["slug"]), reverse=True)
+def iso_date(value, field):
+    try:
+        parsed = date.fromisoformat(required_text(value, field))
+    except ValueError as error:
+        raise ValueError(f"{field}: expected YYYY-MM-DD") from error
+    if parsed.isoformat() != value:
+        raise ValueError(f"{field}: expected YYYY-MM-DD")
+    return parsed
+
+
+def prepare(draft, staging, today):
+    entry = json.loads(draft.read_text(encoding="utf-8"))
+    if not isinstance(entry, dict):
+        raise ValueError("Draft must be a JSON object")
+    for field in ("slug", "title", "description", "intro", "category", "image"):
+        required_text(entry.get(field), field)
+    slug = entry["slug"]
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)+", slug) or not 5 <= len(slug) <= 90:
+        raise ValueError("Invalid article slug")
+    page = f"{slug}.html"
+    site_path = ROOT / page
+    old_page = site_path.read_bytes() if site_path.is_file() else None
+    published = iso_date(entry.get("publish_date"), "publish_date")
+    checked = iso_date(entry.get("fact_checked_on"), "fact_checked_on")
+    modified = iso_date(entry.get("date_modified", entry["publish_date"]), "date_modified")
+    if not checked <= modified or not published <= modified or checked > today:
+        raise ValueError("Publication, revision or fact-check dates are inconsistent")
+    if old_page is not None:
+        if "date_modified" not in entry:
+            raise ValueError("Existing page: review as a revision and specify date_modified")
+        catalog = (ROOT / "articles.html").read_text(encoding="utf-8")
+        if f'href="{page}"' not in catalog:
+            raise ValueError("Existing URL is outside the article catalog")
+    elif "date_modified" in entry:
+        raise ValueError("New articles use publish_date only")
+
+    sections = entry.get("sections")
+    if not isinstance(sections, list) or len(sections) < 3:
+        raise ValueError("At least three substantive sections are required")
+    for section in sections:
+        if not isinstance(section, dict):
+            raise ValueError("Each section must be a JSON object")
+        required_text(section.get("heading"), "section heading")
+        paragraphs = section.get("paragraphs", [])
+        bullets = section.get("bullets", [])
+        if not isinstance(paragraphs, list) or not isinstance(bullets, list) or not (paragraphs or bullets):
+            raise ValueError("Each section needs paragraphs or bullets")
+        for item in paragraphs + bullets:
+            required_text(item, "paragraph or bullet")
+
+    sources = entry.get("sources")
+    if not isinstance(sources, list) or not sources:
+        raise ValueError("At least one verified primary source is required")
+    for source in sources:
+        if not isinstance(source, dict):
+            raise ValueError("Each source must be a JSON object")
+        required_text(source.get("label"), "source label")
+        link = required_text(source.get("url"), "source URL")
+        parsed = urlsplit(link)
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or any(c.isspace() for c in link):
+            raise ValueError("Source URL must be a valid HTTPS address")
+
+    cover = entry.get("cover")
+    if not isinstance(cover, dict):
+        raise ValueError("A rights-cleared cover is required")
+    image = Path(entry["image"])
+    if image.is_absolute():
+        raise ValueError("Use an image path relative to the draft")
+    source_image = (draft.parent / image).resolve()
+    if not source_image.is_relative_to(draft.parent):
+        raise ValueError("Keep the image beside the draft or in a subdirectory")
+    cover_path = Path(cover_src(slug, cover))
+    staged_image = staging / cover_path
+    staged_image.parent.mkdir(parents=True)
+    shutil.copyfile(source_image, staged_image)
+    problem = cover_problem(staging, slug, cover)
+    if problem:
+        raise ValueError(problem)
+
+    html = decorate_html(build_page(entry, cover), entry, cover)
+    parser = HTMLInspector()
+    parser.feed(html)
+    errors = check_article(parser, slug, cover, cover_root=staging)
+    if errors:
+        raise ValueError("\n".join(errors))
+
+    fingerprint = sha256(json.dumps({
+        "entry": entry,
+        "html_sha256": sha256(html.encode("utf-8")).hexdigest(),
+        "image_sha256": sha256(staged_image.read_bytes()).hexdigest(),
+        "replaces_sha256": sha256(old_page).hexdigest() if old_page is not None else None,
+    }, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    (staging / page).write_text(html, encoding="utf-8")
+    return entry, cover, fingerprint
+
+
+def write_catalog(output, entry, cover):
+    path = ROOT / "articles.html"
+    before, cards = path.read_text(encoding="utf-8").split(START, 1)
+    cards, after = cards.split(END, 1)
     grid = '<div class="m-story-grid">'
-    if START in current and END in current:
-        before, block = current.split(START, 1)
-        block, after = block.split(END, 1)
-        if not block.startswith(grid):
-            raise ValueError("Could not find the article card grid in articles.html")
-        existing = re.findall(r'<a class="m-card\b[^"]*" href="([a-z0-9-]+\.html)"', block)
-    else:
-        anchor = '<section class="guide-panel"><h2>Документы</h2>'
-        if anchor not in current:
-            raise ValueError("Could not find insertion anchor in articles.html")
-        before, after = current.split(anchor, 1)
-        after = anchor + after
-        block = grid + "</div>"
-        existing = []
-
-    missing = [e for e in ordered if e["slug"] + ".html" not in existing]
-    if not missing:
-        return
-    # Existing articles can be manually revised; never re-render their cards from stale queue metadata.
-    # New cards are appended only. Editorial updates to existing cards must be explicit and reviewed.
-    labels = {"airport-otopeni-guide": "ТРАНСПОРТ", "kids-classes-bucharest": "СЕМЬЯ", "sports-partners-bucharest": "СПОРТ", "massage-bucharest": "ГОРОДСКИЕ СЕРВИСЫ", "hospital-bucharest": "ЗДОРОВЬЕ"}
-    def editorial_card(e, index):
-        slug = e["slug"]
-        label = labels.get(slug, e.get("category", "ГОРОД"))
-        # Only use photographs that passed topic-specific visual review.
-        # A license check alone cannot establish that a photograph is relevant.
-        approved = {"kids-classes-bucharest", "sports-partners-bucharest", "hospital-bucharest",
-                    "auto-service-bucharest", "phone-repair-bucharest",
-                    "buy-phone-bucharest", "endocrinologist-bucharest"}
-        if slug in approved and (ROOT / "assets" / "covers" / (slug + ".jpg")).is_file():
-            visual = '<img src="assets/covers/' + text(slug) + '.jpg" alt="' + text(label) + ': тематическое фото" loading="lazy">'
-        else:
-            visual = ('<span class="m-visual-label">' + text(label) + '</span><span class="m-visual-number">' + str(index + 1).zfill(2) + '</span>')
-        return ('<a class="m-card" href="' + text(slug) + '.html"><div class="m-card-visual m-visual-' + str(index % 5) + '">' + visual + '</div>' +
-                '<div class="m-card-body"><span class="m-meta">' + text(label) + ' · ' + text(e["publish_date"]) + '</span><h3>' + text(e["title"]) + '</h3><p>' + text(e["description"][:145]) + '</p><span class="m-read">Читать историю ↗</span></div></a>')
-    cards = "".join(editorial_card(e, i) for i, e in enumerate(missing))
-    count = len(existing) + len(missing)
-    before = re.sub(r"(?<=<h2>Все публикации</h2><span>)\d+", str(count), before, count=1)
-    catalog.write_text(before + START + grid + cards + block[len(grid):] + END + after, encoding="utf-8")
+    if not cards.startswith(grid):
+        raise ValueError("Article card grid missing")
+    slug = entry["slug"]
+    credit = (AI_CREDIT if cover.get("kind") == AI_KIND
+              else cover["author"] + " · " + cover["license"])
+    card = (
+        f'<a class="m-card" href="{slug}.html"><div class="m-card-visual m-visual-0">'
+        f'<img src="{cover_src(slug, cover)}" alt="{text(cover_alt(cover))}" loading="lazy">'
+        f'<span class="m-image-credit">{text(credit)}</span></div>'
+        f'<div class="m-card-body"><span class="m-meta">{text(entry["category"])} · '
+        f'{entry["publish_date"]}</span><h3>{text(entry["title"])}</h3>'
+        f'<p>{text(entry["description"])}</p><span class="m-read">Читать историю ↗</span></div></a>'
+    )
+    existing = re.compile(r'<a class="m-card\b[^"]*" href="' + re.escape(slug) + r'\.html">.*?</a>', re.S)
+    cards, count = existing.subn(lambda _: card, cards)
+    if count > 1:
+        raise ValueError("Duplicate cards for the selected article")
+    if count == 0:
+        cards = grid + card + cards[len(grid):]
+        total = len(re.findall(r'<a class="m-card\b', cards))
+        before = re.sub(r"(?<=<h2>Все публикации</h2><span>)\d+", str(total), before, count=1)
+    (output / path.name).write_text(before + START + cards + END + after, encoding="utf-8")
 
 
-def update_directories(live):
-    # A topical directory makes actual published guides discoverable without
-    # exposing scheduled pages that do not exist yet.
-    categories = {
-        "Районы и соседи": [], "Автомобили и транспорт": [],
-        "Врачи и здоровье": [], "Семья и дети": [],
-        "Техника, покупки и связь": [], "Дом и бытовые услуги": [],
-        "Работа, документы и деньги": [], "Отдых и знакомства": []
-    }
-    for e in live:
-        cat = e.get("category", "Отдых и знакомства")
-        categories.setdefault(cat, []).append(e)
-    body = [
-        '<!doctype html><html lang="ru"><head><meta charset="utf-8">',
-        '<meta name="viewport" content="width=device-width,initial-scale=1">',
-        '<title>Услуги и жизнь в Бухаресте: городской справочник | BucharestUA</title>',
-        '<meta name="description" content="Где найти врача, СТО, мастера, кружок, сервис телефона и соседей в Бухаресте: тематический справочник с вопросами и подсказками.">',
-        '<link rel="canonical" href="' + BASE + 'city-needs.html">',
-        '<link rel="stylesheet" href="styles.css"><link rel="icon" href="favicon.svg">',
-        '</head><body><header class="site-header"><nav class="wrap nav">',
-        '<a class="logo" href="index.html"><span class="brand-icon">✦</span> BUCHARESTUA</a>',
-        '<div class="navlinks"><a href="community.html">Сообщество</a><a href="guides.html">Справочник</a><a href="articles.html">Статьи</a></div>',
-        '<a class="cta-small" href="' + TELEGRAM + '">Наш Telegram ↗</a></nav></header>',
-        '<main><div class="wrap guide-layout"><div class="guide-hero">',
-        '<span class="kicker">ГОРОДСКАЯ ЖИЗНЬ · БУХАРЕСТ И ИЛФОВ</span>',
-        '<h1>Нужен врач, мастер, ремонт авто или компания по району?</h1>',
-        '<p>Собрали практические путеводители по повседневным запросам. Выбирайте тему, проверяйте варианты и спрашивайте жителей города в BucharestUA. Мы не продаём услуги и не гарантируем рекомендации участников.</p>',
-        '<a class="btn btn-primary" href="' + TELEGRAM + '">Задать вопрос в Telegram ↗</a>',
-        '</div>'
-    ]
-    for category, items in categories.items():
-        if not items:
-            continue
-        body.append('<section class="guide-panel"><h2>' + text(category) + '</h2><div class="guide-links">')
-        for e in sorted(items, key=lambda x: x["title"]):
-            body.append('<a class="guide-link" href="' + text(e["slug"]) + '.html"><strong>' + text(e["title"]) + ' →</strong><span>' + text(e["description"]) + '</span></a>')
-        body.append('</div></section>')
-    body += [
-        '<section class="guide-panel"><h2>Не нашли тему?</h2>',
-        '<p>Уточните район, бюджет и желаемый язык общения. Для медицинских, юридических и других важных решений проверяйте квалификацию и первоисточники.</p>',
-        '<a class="btn btn-primary" href="' + TELEGRAM + '">Спросить жителей Бухареста ↗</a></section>',
-        '</div></main><footer><div class="wrap footer-inner"><strong>BucharestUA</strong>',
-        '<a href="index.html">Главная</a></div></footer></body></html>'
-    ]
-    (ROOT / "city-needs.html").write_text("\n".join(body) + "\n", encoding="utf-8")
+def write_json(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    # Maintain a dedicated leisure directory from actually published guides.
-    # Future scheduled articles must never appear as broken links.
-    leisure_categories = [
-        "Маршруты", "Куда сходить", "Музеи и история",
-        "Семья и дети", "Отдых за городом", "Еда и культура"
-    ]
-    leisure = [e for e in live if e.get("category") in leisure_categories]
-    explore_parts = [
-        '<!doctype html><html lang="ru"><head><meta charset="utf-8">',
-        '<meta name="viewport" content="width=device-width,initial-scale=1">',
-        '<title>Что посмотреть в Бухаресте: маршруты, места и выходные | BucharestUA</title>',
-        '<meta name="description" content="Бухарест для своих: прогулки на день и выходные, музеи, парки, отдых с детьми, поездки в горы и рестораны. Оригинальные маршруты и советы жителей.">',
-        '<link rel="canonical" href="' + BASE + 'explore-bucharest.html">',
-        '<meta property="og:type" content="website">',
-        '<meta property="og:title" content="Бухарест: куда сходить и чем заняться | BucharestUA">',
-        '<meta property="og:url" content="' + BASE + 'explore-bucharest.html">',
-        '<link rel="stylesheet" href="styles.css"><link rel="icon" href="favicon.svg">',
-        '</head><body><header class="site-header"><nav class="wrap nav">',
-        '<a class="logo" href="index.html"><span class="brand-icon">✦</span> BUCHARESTUA</a>',
-        '<div class="navlinks"><a href="community.html">Сообщество</a><a href="city-needs.html">Услуги и районы</a>',
-        '<a href="articles.html">Все статьи</a><a href="index.html">Главная</a></div>',
-        '<a class="cta-small" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Telegram ↗</a></nav></header>',
-        '<main><div class="wrap guide-layout"><div class="guide-hero">',
-        '<span class="kicker">BUCHARESTUA · ПРОГУЛКИ И ОТКРЫТИЯ</span>',
-        '<h1>Бухарест, в котором хочется задержаться</h1>',
-        '<p>Не очередной список красивых фасадов: маршруты по настроению, небольшие музеи, выходные с детьми, гастрономия и поездки по Румынии. Выбирайте программу, учитывайте сезон и делитесь опытом с городским сообществом.</p>',
-        '<a class="btn btn-primary" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Спросить местных в Telegram ↗</a>',
-        '</div>',
-        '<section class="guide-panel"><h2>С чего начать знакомство с городом</h2>',
-        '<p>Если у вас только день, начните с исторического центра и Calea Victoriei. С детьми выберите музей или ближайший парк; для взрослой компании оставьте время на архитектуру и разговор. У музеев есть собственные расписания — проверяйте их перед визитом.</p>',
-        '<div class="guide-links"><a class="guide-link" href="family-activities-bucharest.html"><strong>Куда пойти с ребёнком →</strong><span>Простой семейный план, который можно изменить под погоду</span></a>',
-        '<a class="guide-link" href="sports.html"><strong>Спорт и прогулки →</strong><span>Город для активного досуга</span></a>',
-        '<a class="guide-link" href="events.html"><strong>Городские события →</strong><span>Где искать актуальную афишу и встречи</span></a></div></section>'
-    ]
-    for category in leisure_categories:
-        section = sorted(
-            [e for e in leisure if e.get("category") == category],
-            key=lambda e: (e["publish_date"], e["title"]), reverse=True
-        )
-        if not section:
-            continue
-        explore_parts.append('<section class="guide-panel"><h2>' + text(category) + '</h2>')
-        explore_parts.append('<div class="guide-links">')
-        for e in section:
-            explore_parts.append(
-                '<a class="guide-link" href="' + text(e["slug"]) + '.html">'
-                '<strong>' + text(e["title"]) + ' →</strong>'
-                '<span>' + text(e["description"]) + '</span></a>'
-            )
-        explore_parts.append('</div></section>')
-    explore_parts += [
-        '<section class="guide-panel"><h2>Не нашли подходящую идею?</h2>',
-        '<p>Спросите у жителей Бухареста, куда они ходят сами, а не только водят туристов. Перед поездкой проверяйте билеты, транспорт и время работы по официальным источникам.</p>',
-        '<a class="btn btn-primary" href="' + TELEGRAM + '" target="_blank" rel="noopener noreferrer">Обсудить выходные в BucharestUA ↗</a>',
-        '</section></div></main><footer><div class="wrap footer-inner">',
-        '<strong>BucharestUA · независимое городское сообщество</strong>',
-        '<a href="' + TELEGRAM + '">Telegram ↗</a></div></footer></body></html>'
-    ]
-    (ROOT / "explore-bucharest.html").write_text("\n".join(explore_parts) + "\n", encoding="utf-8")
+
+def write_release(staging, entry, cover, version, approval_ref, today):
+    slug = entry["slug"]
+    write_catalog(staging, entry, cover)
+    url = BASE + slug + ".html"
+    pages = parse_sitemap((ROOT / "sitemap.xml").read_bytes())
+    lastmod = entry.get("date_modified", entry["publish_date"])
+    for item in pages:
+        if item.findtext(NS + "loc") == url:
+            tag = item.find(NS + "lastmod")
+            if tag is None:
+                tag = ET.SubElement(item, NS + "lastmod")
+            tag.text = lastmod
+    # Starting from the validated source tree, always serialize both sitemap formats.
+    ET.register_namespace("", NS[1:-1])
+    sitemap = staging / "sitemap.xml"
+    sitemap.write_bytes(ET.tostring(pages, encoding="UTF-8", xml_declaration=True) + b"\n")
+    update_sitemaps(sitemap, pages, {url: lastmod})
+    write_rss(staging / "feed.xml", ROOT / "feed.xml", entry)
+    manifest = json.loads((ROOT / MANIFEST).read_text(encoding="utf-8"))
+    manifest[slug] = cover
+    write_json(staging / MANIFEST, manifest)
+    write_json(staging / RELEASES / (slug + ".json"), {
+        "slug": slug,
+        "version": version,
+        "approval_ref": approval_ref,
+        "fact_checked_on": entry["fact_checked_on"],
+        "released_on": today.isoformat(),
+        "page_sha256": sha256((staging / (slug + ".html")).read_bytes()).hexdigest(),
+        "image_sha256": sha256((staging / cover_src(slug, cover)).read_bytes()).hexdigest(),
+        "image_path": cover_src(slug, cover),
+    })
+
+
+def status():
+    archive = json.loads(QUEUE.read_text(encoding="utf-8"))
+    with_page = sum((ROOT / (item["slug"] + ".html")).is_file() for item in archive)
+    print(f"Историческая очередь: {len(archive)} тем, {len(archive) - with_page} без страницы в репозитории.")
+    print("Рабочие черновики, замечания и решения владельца ведутся в чате.")
+    for path in sorted((ROOT / RELEASES).glob("*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        print(f'{record["released_on"]} {record["slug"]} {record["version"][:12]} — есть запись выпуска; HTTP отдельно')
+
+
+def verify(slug):
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)+", slug):
+        raise ValueError("Invalid article slug")
+    record = json.loads((ROOT / RELEASES / (slug + ".json")).read_text(encoding="utf-8"))
+    for path, label, accept in [
+        (slug + ".html", "page_sha256", "text/html"),
+        (record["image_path"], "image_sha256", "image/"),
+    ]:
+        url = BASE + path
+        with urlopen(url, timeout=20) as response:
+            if response.status != 200 or response.url != url or not response.headers.get_content_type().startswith(accept):
+                raise ValueError(f"Unexpected public response: {url}")
+            if sha256(response.read()).hexdigest() != record[label]:
+                raise ValueError(f"Public content differs from the approved release: {url}")
+        print(f"HTTP 200, approved bytes: {url}")
+    with urlopen(BASE + "sitemap.xml", timeout=20) as response:
+        sitemap = parse_sitemap(response.read())
+        if response.status != 200 or BASE + slug + ".html" not in [item.findtext(NS + "loc") for item in sitemap]:
+            raise ValueError("Published URL missing from live sitemap")
+    print("URL present in public sitemap")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("status")
+    verification = commands.add_parser("verify")
+    verification.add_argument("slug")
+    for command in ("preview", "publish"):
+        action = commands.add_parser(command)
+        action.add_argument("draft", type=Path)
+        action.add_argument("--output", type=Path, required=True)
+        if command == "publish":
+            action.add_argument("--approved", required=True)
+            action.add_argument("--approval-ref", required=True)
+    args = parser.parse_args()
+    try:
+        if args.command == "status":
+            status()
+            return
+        if args.command == "verify":
+            verify(args.slug)
+            return
+        output = args.output.resolve()
+        if output.is_relative_to(ROOT) or output.exists():
+            raise ValueError("Output must be a new directory outside the site checkout")
+        today = datetime.now(ZoneInfo("Europe/Bucharest")).date()
+        with TemporaryDirectory(dir=output.parent) as temp:
+            staging = Path(temp) / "bundle"
+            entry, cover, version = prepare(args.draft.resolve(), staging, today)
+            if args.command == "publish":
+                approval_ref = required_text(args.approval_ref, "approval reference")
+                if args.approved != version:
+                    raise ValueError("Prepared text or cover differs from the version approved by the owner")
+                effective_date = entry.get("date_modified", entry["publish_date"])
+                if effective_date > today.isoformat():
+                    raise ValueError("The approved article date is still in the future in Bucharest")
+                write_release(staging, entry, cover, version, approval_ref, today)
+            else:
+                for name in ("styles.css", "favicon.svg"):
+                    shutil.copyfile(ROOT / name, staging / name)
+            staging.rename(output)
+        print(f'{entry["slug"]} {version}')
+        print(output)
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        parser.exit(1, f"Blocked: {error}\n")
 
 
 if __name__ == "__main__":
