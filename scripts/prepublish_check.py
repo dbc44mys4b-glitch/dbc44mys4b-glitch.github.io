@@ -139,9 +139,9 @@ def check_cover(parser, slug, cover, *, cover_root=ROOT):
         if caption != AI_CREDIT + "." or parser.cover_caption_links:
             errors.append(f"AI illustration credit missing or incorrect: {slug}")
     else:
-        required_links = {cover["source_url"], cover["license_url"]}
+        required_links = {cover[key] for key in ("source_url", "license_url") if cover.get(key)}
         if (not required_links.issubset(parser.cover_caption_links)
-                or cover["author"] not in caption or cover["license"] not in caption):
+                or cover["author"] not in caption or cover.get("license", "") not in caption):
             errors.append(f"Photo attribution/license missing in cover caption: {slug}")
     return errors
 

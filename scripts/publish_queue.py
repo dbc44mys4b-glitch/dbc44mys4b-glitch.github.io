@@ -9,119 +9,32 @@ import json
 from pathlib import Path
 import re
 import shutil
-import sys
 from tempfile import TemporaryDirectory
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 from zoneinfo import ZoneInfo
 
-from editorial_media import AI_CREDIT, AI_KIND, cover_alt, cover_problem, cover_src, decorate_html
+from audit_article_metadata import audit
+from editorial_article import build_page
+from editorial_home import write_home
+from editorial_media import cover_alt, cover_credit, cover_problem, cover_src, decorate_html, image_dimensions
 from prepublish_check import HTMLInspector, check_article
 from sitemap import BASE, NS, parse_sitemap, update_sitemaps
 from social_feed import write_rss
 
 ROOT = Path(__file__).resolve().parents[1]
-TELEGRAM = "https://t.me/bucharest_info"
 QUEUE = ROOT / "content-queue/articles.json"
 RELEASES = Path("editorial/releases")
 MANIFEST = Path("media/assigned-images.json")
 START = "<!-- BUCHARESTUA_EDITORIAL_START -->"
 END = "<!-- BUCHARESTUA_EDITORIAL_END -->"
+SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)+")
+STYLES = ("styles.css", "favicon.svg")
 
 
 def text(x):
     return escape(str(x), quote=True)
-
-
-def build_page(entry, cover):
-    slug = entry["slug"]
-    title = entry["title"]
-    desc = entry["description"]
-    url = BASE + slug + ".html"
-    date = entry["publish_date"]
-    schema = json.dumps({
-        "@context": "https://schema.org", "@type": "Article",
-        "headline": title, "description": desc, "inLanguage": "ru",
-        "datePublished": date, "dateModified": entry.get("date_modified", date),
-        "image": BASE + cover_src(slug, cover),
-        "mainEntityOfPage": url,
-        "author": {"@type": "Organization", "name": "BucharestUA"},
-        "publisher": {"@type": "Organization", "name": "BucharestUA", "url": BASE}
-    }, ensure_ascii=False).replace("</", "<\\/")
-    parts = [
-        '<!doctype html><html lang="ru"><head><meta charset="utf-8">',
-        '<meta name="viewport" content="width=device-width,initial-scale=1">',
-        '<title>' + text(title) + ' | BucharestUA</title>',
-        '<meta name="description" content="' + text(desc) + '">',
-        '<link rel="canonical" href="' + text(url) + '">',
-        '<meta property="og:type" content="article">',
-        '<meta property="og:title" content="' + text(title) + '">',
-        '<meta property="og:description" content="' + text(desc) + '">',
-        '<meta property="og:url" content="' + text(url) + '">',
-        '<link rel="stylesheet" href="styles.css"><link rel="icon" href="favicon.svg">',
-        '<script type="application/ld+json">' + schema + '</script></head><body>',
-        '<header class="site-header"><nav class="wrap nav" aria-label="Навигация">',
-        '<a class="logo" href="index.html"><span class="brand-icon">✦</span>BUCHARESTUA</a>',
-        '<div class="navlinks"><a href="articles.html">Статьи</a><a href="guides.html">Справочник</a>',
-        '<a href="about.html">О проекте</a></div>',
-        '<a class="cta-small" href="' + TELEGRAM + '" rel="noopener noreferrer" target="_blank">Telegram ↗</a>',
-        '</nav></header><main><div class="wrap guide-layout"><div class="guide-hero">',
-        '<span class="kicker">BUCHARESTUA · ГОРОДСКОЙ СПРАВОЧНИК</span>',
-        '<h1 style="font-size:clamp(32px,4.3vw,50px)">' + text(title) + '</h1>',
-        '<p style="font-size:17px;color:#536079;line-height:1.8">' + text(entry["intro"]) + '</p>',
-        '<a class="btn btn-primary" href="' + TELEGRAM + '" rel="noopener noreferrer" target="_blank">',
-        'Обсудить в Telegram ↗</a></div><article class="prose">',
-        '<p class="editor-note">BucharestUA · ' + text(date) + ' · Практический материал</p>'
-    ]
-    for sec in entry["sections"]:
-        parts.append('<section class="guide-panel"><h2>' + text(sec["heading"]) + '</h2>')
-        for p in sec.get("paragraphs", []):
-            if p.strip() == entry["intro"].strip():
-                continue
-            parts.append('<p>' + text(p) + '</p>')
-        bullets = sec.get("bullets", [])
-        if bullets:
-            parts.append('<ul>')
-            for bullet in bullets:
-                parts.append('<li>' + text(bullet) + '</li>')
-            parts.append('</ul>')
-        parts.append('</section>')
-    if entry.get("romanian_terms"):
-        parts.append('<section class="guide-panel"><h2>Как искать эту услугу по-румынски</h2>')
-        parts.append('<p>Для поиска на картах и общения с местными исполнителями могут пригодиться румынские названия. Используйте их вместе с вашим районом или ближайшей станцией метро; это подсказки, а не рейтинг поставщиков услуг.</p><ul>')
-        for term in entry["romanian_terms"]:
-            parts.append('<li lang="ro">' + text(term) + '</li>')
-        parts.append('</ul></section>')
-    parts += [
-        '<section class="guide-panel"><h2>Полезные материалы по теме</h2><ul>'
-    ]
-    for item in entry.get("related", []):
-        href = item["href"]
-        if not re.fullmatch(r"[a-z0-9-]+\.html", href):
-            raise ValueError("Only internal .html links are permitted in related")
-        if not (ROOT / href).is_file():
-            continue  # a future article must not become a broken link
-        parts.append('<li><a href="' + text(href) + '">' + text(item["text"]) + '</a></li>')
-    if entry.get("sources"):
-        parts.append('</ul></section><section class="guide-panel"><h2>Где проверить актуальные сведения</h2><ul>')
-        parts.append('<li>Источники проверены ' + text(entry["fact_checked_on"]) + '.</li>')
-        for source in entry["sources"]:
-            address = source.get("url", "")
-            if not address.startswith("https://"):
-                raise ValueError("Sources must use HTTPS URLs")
-            parts.append('<li><a href="' + text(address) + '" rel="noopener noreferrer" target="_blank">' + text(source["label"]) + '</a></li>')
-    parts += [
-        '</ul></section><section class="guide-panel"><h2>Спросить жителей Бухареста</h2>',
-        '<p>В BucharestUA обсуждают вопросы города и делятся личным опытом. Уточняйте условия, цены и рекомендации самостоятельно; не размещайте паспортные, банковские и другие чувствительные данные.</p>',
-        '<a class="btn btn-primary" href="' + TELEGRAM + '" rel="noopener noreferrer" target="_blank">',
-        'Открыть городской чат ↗</a></section>',
-        '<p><a href="articles.html">← К списку статей</a></p></article></div></main>',
-        '<footer><div class="wrap footer-inner"><strong>BucharestUA</strong>',
-        '<a href="' + TELEGRAM + '" rel="noopener noreferrer" target="_blank">Telegram ↗</a>',
-        '</div></footer></body></html>'
-    ]
-    return "\n".join(parts) + "\n"
 
 
 def required_text(value, field):
@@ -140,14 +53,14 @@ def iso_date(value, field):
     return parsed
 
 
-def prepare(draft, staging, today):
+def prepare(draft, staging, today, *, check_target=True):
     entry = json.loads(draft.read_text(encoding="utf-8"))
     if not isinstance(entry, dict):
         raise ValueError("Draft must be a JSON object")
     for field in ("slug", "title", "description", "intro", "category", "image"):
         required_text(entry.get(field), field)
     slug = entry["slug"]
-    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)+", slug) or not 5 <= len(slug) <= 90:
+    if not SLUG.fullmatch(slug) or not 5 <= len(slug) <= 90:
         raise ValueError("Invalid article slug")
     page = f"{slug}.html"
     site_path = ROOT / page
@@ -157,18 +70,28 @@ def prepare(draft, staging, today):
     modified = iso_date(entry.get("date_modified", entry["publish_date"]), "date_modified")
     if not checked <= modified or not published <= modified or checked > today:
         raise ValueError("Publication, revision or fact-check dates are inconsistent")
-    if old_page is not None:
+    if check_target and old_page is not None:
         if "date_modified" not in entry:
             raise ValueError("Existing page: review as a revision and specify date_modified")
         catalog = (ROOT / "articles.html").read_text(encoding="utf-8")
         if f'href="{page}"' not in catalog:
             raise ValueError("Existing URL is outside the article catalog")
-    elif "date_modified" in entry:
+        original = re.search(rb'"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})', old_page)
+        if original and original[1].decode() != entry["publish_date"]:
+            raise ValueError("Preserve the existing publication date for revisions")
+    elif check_target and "date_modified" in entry:
         raise ValueError("New articles use publish_date only")
 
+    kind = entry.get("type", "guide")
+    if kind not in ("guide", "news"):
+        raise ValueError("type: use guide or news")
+    if kind == "news":
+        iso_date(entry.get("event_date"), "event_date")
+        required_text(entry.get("event_context"), "event_context")
+    minimum = 1 if kind == "news" else 3
     sections = entry.get("sections")
-    if not isinstance(sections, list) or len(sections) < 3:
-        raise ValueError("At least three substantive sections are required")
+    if not isinstance(sections, list) or len(sections) < minimum:
+        raise ValueError(f"At least {minimum} substantive section(s) required for {kind}")
     for section in sections:
         if not isinstance(section, dict):
             raise ValueError("Each section must be a JSON object")
@@ -192,6 +115,14 @@ def prepare(draft, staging, today):
         if parsed.scheme != "https" or not parsed.hostname or parsed.username or any(c.isspace() for c in link):
             raise ValueError("Source URL must be a valid HTTPS address")
 
+    for term in entry.get("romanian_terms", []):
+        required_text(term, "Romanian term")
+    for item in entry.get("related", []):
+        href = required_text(item.get("href"), "related link")
+        required_text(item.get("text"), "related label")
+        if not re.fullmatch(r"[a-z0-9-]+\.html", href) or not (ROOT / href).is_file():
+            raise ValueError(f"Related link must point to an existing site page: {href}")
+
     cover = entry.get("cover")
     if not isinstance(cover, dict):
         raise ValueError("A rights-cleared cover is required")
@@ -205,14 +136,16 @@ def prepare(draft, staging, today):
     staged_image = staging / cover_path
     staged_image.parent.mkdir(parents=True)
     shutil.copyfile(source_image, staged_image)
-    problem = cover_problem(staging, slug, cover)
+    problem = cover_problem(staging, slug, cover, for_release=True)
     if problem:
         raise ValueError(problem)
 
-    html = decorate_html(build_page(entry, cover), entry, cover)
+    dimensions = image_dimensions(staged_image)
+    html = decorate_html(build_page(entry, cover), entry, cover, dimensions=dimensions)
     parser = HTMLInspector()
     parser.feed(html)
-    errors = check_article(parser, slug, cover, cover_root=staging)
+    (staging / page).write_text(html, encoding="utf-8")
+    errors = check_article(parser, slug, cover, cover_root=staging) + audit(staging / page)
     if errors:
         raise ValueError("\n".join(errors))
 
@@ -220,10 +153,10 @@ def prepare(draft, staging, today):
         "entry": entry,
         "html_sha256": sha256(html.encode("utf-8")).hexdigest(),
         "image_sha256": sha256(staged_image.read_bytes()).hexdigest(),
-        "replaces_sha256": sha256(old_page).hexdigest() if old_page is not None else None,
+        "assets_sha256": {name: sha256((ROOT / name).read_bytes()).hexdigest() for name in STYLES},
     }, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-    (staging / page).write_text(html, encoding="utf-8")
-    return entry, cover, fingerprint
+    replaced = sha256(old_page).hexdigest() if old_page is not None else None
+    return entry, cover, fingerprint, replaced
 
 
 def write_catalog(output, entry, cover):
@@ -234,13 +167,13 @@ def write_catalog(output, entry, cover):
     if not cards.startswith(grid):
         raise ValueError("Article card grid missing")
     slug = entry["slug"]
-    credit = (AI_CREDIT if cover.get("kind") == AI_KIND
-              else cover["author"] + " · " + cover["license"])
+    credit = cover_credit(cover)
+    category = "Новости · " + entry["category"] if entry.get("type") == "news" else entry["category"]
     card = (
         f'<a class="m-card" href="{slug}.html"><div class="m-card-visual m-visual-0">'
         f'<img src="{cover_src(slug, cover)}" alt="{text(cover_alt(cover))}" loading="lazy">'
         f'<span class="m-image-credit">{text(credit)}</span></div>'
-        f'<div class="m-card-body"><span class="m-meta">{text(entry["category"])} · '
+        f'<div class="m-card-body"><span class="m-meta">{text(category)} · '
         f'{entry["publish_date"]}</span><h3>{text(entry["title"])}</h3>'
         f'<p>{text(entry["description"])}</p><span class="m-read">Читать историю ↗</span></div></a>'
     )
@@ -253,6 +186,7 @@ def write_catalog(output, entry, cover):
         total = len(re.findall(r'<a class="m-card\b', cards))
         before = re.sub(r"(?<=<h2>Все публикации</h2><span>)\d+", str(total), before, count=1)
     (output / path.name).write_text(before + START + cards + END + after, encoding="utf-8")
+    return card
 
 
 def write_json(path, value):
@@ -262,7 +196,8 @@ def write_json(path, value):
 
 def write_release(staging, entry, cover, version, approval_ref, today):
     slug = entry["slug"]
-    write_catalog(staging, entry, cover)
+    card = write_catalog(staging, entry, cover)
+    write_home(ROOT, staging, slug, card)
     url = BASE + slug + ".html"
     pages = parse_sitemap((ROOT / "sitemap.xml").read_bytes())
     lastmod = entry.get("date_modified", entry["publish_date"])
@@ -279,12 +214,17 @@ def write_release(staging, entry, cover, version, approval_ref, today):
     update_sitemaps(sitemap, pages, {url: lastmod})
     write_rss(staging / "feed.xml", ROOT / "feed.xml", entry)
     manifest = json.loads((ROOT / MANIFEST).read_text(encoding="utf-8"))
-    manifest[slug] = cover
+    manifest[slug] = {key: cover[key] for key in (
+        "kind", "author", "alt", "license", "license_url", "source_url", "commons_title", "illustrative", "changes"
+    ) if key in cover}
+    if cover.get("permission"):
+        manifest[slug]["permission_recorded"] = True
     write_json(staging / MANIFEST, manifest)
     write_json(staging / RELEASES / (slug + ".json"), {
         "slug": slug,
         "version": version,
-        "approval_ref": approval_ref,
+        "approval_ref_sha256": sha256(approval_ref.encode("utf-8")).hexdigest(),
+        "type": entry.get("type", "guide"),
         "fact_checked_on": entry["fact_checked_on"],
         "released_on": today.isoformat(),
         "page_sha256": sha256((staging / (slug + ".html")).read_bytes()).hexdigest(),
@@ -293,18 +233,68 @@ def write_release(staging, entry, cover, version, approval_ref, today):
     })
 
 
-def status():
+def private_path(path):
+    resolved = path.resolve()
+    if resolved.is_relative_to(ROOT):
+        raise ValueError("Keep drafts, previews, decisions and release bundles outside the public checkout")
+    return resolved
+
+
+def review_record(entry, cover, version, replaced):
+    return {"slug": entry["slug"], "title": entry["title"], "type": entry.get("type", "guide"),
+            "version": version, "replaces_sha256": replaced, "fact_checked_on": entry["fact_checked_on"],
+            "sources": entry["sources"], "cover": cover}
+
+
+def status(workspace, today):
+    deployed = {}
+    for path in sorted((ROOT / RELEASES).glob("*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        deployed[record["slug"]] = record["version"]
+        print(f'{record["released_on"]} {record["slug"]} {record["version"][:12]} — есть запись выпуска; HTTP отдельно')
+    if workspace is not None:
+        if not workspace.is_dir():
+            raise ValueError("Approval workspace must be an existing directory")
+        print("Частная очередь согласования")
+        drafts = sorted(workspace.glob("*/draft.json"))
+        if not drafts:
+            print("Очередь пуста.")
+        for draft in drafts:
+            try:
+                with TemporaryDirectory() as temp:
+                    entry, cover, version, replaced = prepare(private_path(draft), Path(temp), today, check_target=False)
+                slug = entry["slug"]
+                if slug != draft.parent.name:
+                    raise ValueError("Workspace folder must match article slug")
+                decision = "В работе"
+                if deployed.get(slug) == version:
+                    print(f"{slug} {version[:12]} — В main · проверьте публичный URL")
+                    continue
+                current = review_record(entry, cover, version, replaced)
+                for review_path in sorted(draft.parent.glob("preview-*/review.json")):
+                    review = json.loads(private_path(review_path).read_text(encoding="utf-8"))
+                    if review["slug"] != slug:
+                        raise ValueError("Review slug does not match draft")
+                    if review == current:
+                        approval = review_path.with_name("approval.json")
+                        if approval.is_file():
+                            record = json.loads(private_path(approval).read_text(encoding="utf-8"))
+                            if record["version"] == version and record.get("approval_ref"):
+                                decision = "Одобрена · пакет выпуска готов"
+                                break
+                        decision = "На согласовании · отправьте предпросмотр или дождитесь ответа"
+                    elif decision == "В работе":
+                        decision = "Правки · нужен новый предпросмотр"
+                print(f"{slug} {version[:12]} — {decision}")
+            except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+                print(f"{draft.parent.name} — В работе · {error}")
     archive = json.loads(QUEUE.read_text(encoding="utf-8"))
     with_page = sum((ROOT / (item["slug"] + ".html")).is_file() for item in archive)
     print(f"Историческая очередь: {len(archive)} тем, {len(archive) - with_page} без страницы в репозитории.")
-    print("Рабочие черновики, замечания и решения владельца ведутся в чате.")
-    for path in sorted((ROOT / RELEASES).glob("*.json")):
-        record = json.loads(path.read_text(encoding="utf-8"))
-        print(f'{record["released_on"]} {record["slug"]} {record["version"][:12]} — есть запись выпуска; HTTP отдельно')
 
 
 def verify(slug):
-    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)+", slug):
+    if not SLUG.fullmatch(slug):
         raise ValueError("Invalid article slug")
     record = json.loads((ROOT / RELEASES / (slug + ".json")).read_text(encoding="utf-8"))
     for path, label, accept in [
@@ -328,7 +318,7 @@ def verify(slug):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("status")
+    commands.add_parser("status").add_argument("--workspace", type=Path)
     verification = commands.add_parser("verify")
     verification.add_argument("slug")
     for command in ("preview", "publish"):
@@ -336,38 +326,53 @@ def main():
         action.add_argument("draft", type=Path)
         action.add_argument("--output", type=Path, required=True)
         if command == "publish":
+            action.add_argument("--preview", type=Path, required=True)
             action.add_argument("--approved", required=True)
             action.add_argument("--approval-ref", required=True)
     args = parser.parse_args()
     try:
+        today = datetime.now(ZoneInfo("Europe/Bucharest")).date()
         if args.command == "status":
-            status()
+            status(private_path(args.workspace) if args.workspace else None, today)
             return
         if args.command == "verify":
             verify(args.slug)
             return
-        output = args.output.resolve()
-        if output.is_relative_to(ROOT) or output.exists():
-            raise ValueError("Output must be a new directory outside the site checkout")
-        today = datetime.now(ZoneInfo("Europe/Bucharest")).date()
+        output = private_path(args.output)
+        draft = private_path(args.draft)
+        if output.exists():
+            raise ValueError("Output must be a new directory")
         with TemporaryDirectory(dir=output.parent) as temp:
             staging = Path(temp) / "bundle"
-            entry, cover, version = prepare(args.draft.resolve(), staging, today)
+            entry, cover, version, replaced = prepare(draft, staging, today)
+            review = review_record(entry, cover, version, replaced)
             if args.command == "publish":
-                approval_ref = required_text(args.approval_ref, "approval reference")
-                if args.approved != version:
-                    raise ValueError("Prepared text or cover differs from the version approved by the owner")
+                approval_ref = required_text(args.approval_ref, "approval reference").strip()
+                preview = private_path(args.preview)
+                saved_review = json.loads(private_path(preview / "review.json").read_text(encoding="utf-8"))
+                if args.approved != version or saved_review != review:
+                    raise ValueError("Prepared article differs from the preview approved by the owner")
+                for name in (entry["slug"] + ".html", cover_src(entry["slug"], cover), *STYLES):
+                    expected = ROOT / name if name in STYLES else staging / name
+                    if (preview / name).read_bytes() != expected.read_bytes():
+                        raise ValueError(f"Approved preview differs from the prepared release: {name}")
                 effective_date = entry.get("date_modified", entry["publish_date"])
                 if effective_date > today.isoformat():
                     raise ValueError("The approved article date is still in the future in Bucharest")
                 write_release(staging, entry, cover, version, approval_ref, today)
             else:
-                for name in ("styles.css", "favicon.svg"):
+                for name in STYLES:
                     shutil.copyfile(ROOT / name, staging / name)
+                write_json(staging / "review.json", review)
             staging.rename(output)
+        if args.command == "publish":
+            with TemporaryDirectory(dir=preview) as temp:
+                approval = Path(temp) / "approval.json"
+                write_json(approval, {"version": version, "approval_ref": approval_ref})
+                approval.replace(preview / "approval.json")
         print(f'{entry["slug"]} {version}')
         print(output)
-    except (OSError, ValueError, KeyError, TypeError) as error:
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, ET.ParseError) as error:
         parser.exit(1, f"Blocked: {error}\n")
 
 

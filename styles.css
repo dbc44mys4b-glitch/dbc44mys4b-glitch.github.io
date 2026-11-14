@@ -209,3 +209,20 @@ body:not(.media-site) article.prose a:not(.btn):hover{color:#123e70!important;te
 .media-site article.prose a:focus-visible,
 .media-site .m-translated-story a:focus-visible,
 body:not(.media-site) article.prose a:focus-visible{outline:3px solid #e5a847;outline-offset:3px;border-radius:2px}
+
+/* Shared BucharestUA layout for new guides and news. */
+.editorial-story{background:#f7f5f0;color:#192631}
+.editorial-story .site-header{background:#f7f5f0;border-bottom:1px solid #d9dedf}
+.editorial-story .editorial-nav{flex-wrap:wrap;gap:6px 20px;min-height:64px}
+.editorial-nav .logo{margin-right:auto;font-size:21px}
+.editorial-nav a{display:inline-flex;align-items:center;min-height:44px;font-weight:700}
+.editorial-story .guide-layout{overflow-wrap:anywhere}
+.editorial-story .editorial-byline{font-size:14px;color:#45556b}
+.editorial-story .guide-hero>p{margin:0 0 18px}
+.editorial-story article.prose .journal-sharebar{margin:0 0 12px;align-items:center}
+.editorial-story .editorial-event{padding:13px 0;border-bottom:1px solid #d9dedf;font-size:15px}
+.editorial-story .editorial-event a,.editorial-story .editorial-sources a,.editorial-story .guide-panel li a{text-decoration:underline;text-underline-offset:3px}
+.editorial-story .editorial-footer-links{display:flex;flex-wrap:wrap;gap:4px 20px;margin-top:20px}
+.editorial-story .editorial-footer-links a{display:inline-flex;align-items:center;min-height:44px;font-weight:700;color:#294c78}
+.editorial-story footer{background:#192631;color:#e8ecee}
+@media(max-width:360px){.editorial-nav .logo{width:100%}}

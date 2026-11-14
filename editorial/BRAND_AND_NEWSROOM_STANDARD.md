@@ -6,15 +6,14 @@ Owner: BucharestUA editorial operation
 BucharestUA is an independent, premium, multilingual city publication for people living in and discovering Bucharest. Its voice is intelligent, lively, practical and humane. Do not claim to be the official or biggest Bucharest news source without evidence. Never fabricate a reporting team, interviews, ratings, facts or real-time coverage.
 
 ## Visual direction
-Editorial minimalism, quiet confidence, generous whitespace, refined typography, a restrained warm-neutral palette with muted blue accents. No cartoon skyline, fake photo, random gradient or enormous CTA. Headlines and genuine visual storytelling lead; Telegram is a secondary but visible conversion.
-Use one design system across homepage, feed, story, guide and localized pages. Design QA at 375, 390, 768, 1024 and 1440px; check overflow, tap targets, navigation, visual hierarchy, images, typography and Core Web Vitals.
+Use the warm-neutral palette, restrained blue accents and legible typography across the homepage, feed and articles. Let the headline and cover lead. Keep the Telegram link visible. Check overflow, tap targets, navigation and image framing in the shared layout on mobile and a wide screen.
 
 ## Article standards
 - 250–500 words for most stories; longer only when the subject needs it.
 - One strong, truthful hook and one specific reason to read.
 - No generic filler, repetitive template paragraphs or unverified superlatives.
 - Prefer real local details: addresses, neighborhoods, prices, dates, primary sources, useful maps and practical context.
-- News: timestamp of reporting and event, verified primary source, fresh angle, avoid speculation and duplication.
+- News: write a fresh account in your own words. Include the publication and event dates, a direct link to the primary source and the impact on people in Bucharest.
 - Events: confirmed dates, location, ticketing/price if known, organizer source; never recycle expired listings.
 - Separate reporting, opinion, sponsored content and illustration; no undisclosed paid endorsements.
 - Editorial review before publication; broken, thin, inaccurate or generic articles must be held for revision.
@@ -34,25 +33,9 @@ Use one design system across homepage, feed, story, guide and localized pages. D
 - Translation must preserve accuracy and read naturally to native speakers; localize search intent, not just keywords. Use Romanian terms when helpful. Avoid stuffing keywords or claiming search rankings.
 - Search engine and AI discovery: crawlable HTML, canonical, semantic headings, structured data matching real content, RSS, sitemap, internal links, honest author/publisher attribution and reputable citations.
 
-## Roles and workflow
-1. **News scout**: scan authoritative city sources for significant changes; timestamp and triage.
-2. **Editor-in-chief**: choose angle, commission article, prioritize urgent news.
-3. **Fact-checker**: verify dates, claims, sources and sensitive information.
-4. **Creative editor**: write distinctive headline, short lead and shareable teaser without deception.
-5. **Photo editor**: source or generate relevant, rights-cleared imagery; visual check.
-6. **Localization editor**: RU/UA/RO/EN complete, natural translations and language QA.
-7. **SEO/GEO analyst**: search intent, links, schema, indexing evidence, performance.
-8. **Brand director / design QA**: keep visual consistency and check responsive breakpoints.
+## Editorial review and approval
 
-These are responsibility roles within the existing automation unless separate working agents with independent execution are actually configured.
-
-## Release gate
-1. Story is accurate, current, concise and genuinely useful.
-2. Hero image is on-topic, high quality, rights-cleared and credited.
-3. The displayed language matches the entire article; hreflang references only published versions.
-4. Links, metadata, canonical, RSS, sitemap and Telegram CTA are correct.
-5. Mobile and desktop visual review passed.
-6. GitHub commit and public page HTTP verified before reporting 'published'.
+Use the [editorial workflow](WORKFLOW.md) for guides and news. Make one editorial pass covering facts, sources, rights, responsive layout and technical metadata. Send the owner the complete version with its cover and source record. Publish after explicit approval of that version and verify the public page, cover and sitemap after deployment.
 
 ## Escalation
 If an image or translation cannot be safely completed, do not fabricate. Log the blocker, continue other work and report only material problems. Do not claim a QA test was performed without evidence. Never overwrite verification tags or the Telegram destination.
