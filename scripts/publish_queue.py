@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import re
 import shutil
+import ssl
 from tempfile import TemporaryDirectory
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
@@ -293,7 +294,7 @@ def status(workspace, today):
     print(f"Историческая очередь: {len(archive)} тем, {len(archive) - with_page} без страницы в репозитории.")
 
 
-def verify(slug):
+def verify(slug, context):
     if not SLUG.fullmatch(slug):
         raise ValueError("Invalid article slug")
     record = json.loads((ROOT / RELEASES / (slug + ".json")).read_text(encoding="utf-8"))
@@ -302,13 +303,13 @@ def verify(slug):
         (record["image_path"], "image_sha256", "image/"),
     ]:
         url = BASE + path
-        with urlopen(url, timeout=20) as response:
+        with urlopen(url, timeout=20, context=context) as response:
             if response.status != 200 or response.url != url or not response.headers.get_content_type().startswith(accept):
                 raise ValueError(f"Unexpected public response: {url}")
             if sha256(response.read()).hexdigest() != record[label]:
                 raise ValueError(f"Public content differs from the approved release: {url}")
         print(f"HTTP 200, approved bytes: {url}")
-    with urlopen(BASE + "sitemap.xml", timeout=20) as response:
+    with urlopen(BASE + "sitemap.xml", timeout=20, context=context) as response:
         sitemap = parse_sitemap(response.read())
         if response.status != 200 or BASE + slug + ".html" not in [item.findtext(NS + "loc") for item in sitemap]:
             raise ValueError("Published URL missing from live sitemap")
@@ -321,6 +322,7 @@ def main():
     commands.add_parser("status").add_argument("--workspace", type=Path)
     verification = commands.add_parser("verify")
     verification.add_argument("slug")
+    verification.add_argument("--ca-file", type=Path, help="Optional path to a trusted CA bundle")
     for command in ("preview", "publish"):
         action = commands.add_parser(command)
         action.add_argument("draft", type=Path)
@@ -336,7 +338,11 @@ def main():
             status(private_path(args.workspace) if args.workspace else None, today)
             return
         if args.command == "verify":
-            verify(args.slug)
+            ca_file = args.ca_file
+            system_bundle = Path("/etc/ssl/cert.pem")
+            if ca_file is None and not ssl.get_default_verify_paths().cafile and system_bundle.is_file():
+                ca_file = system_bundle
+            verify(args.slug, ssl.create_default_context(cafile=ca_file))
             return
         output = private_path(args.output)
         draft = private_path(args.draft)
