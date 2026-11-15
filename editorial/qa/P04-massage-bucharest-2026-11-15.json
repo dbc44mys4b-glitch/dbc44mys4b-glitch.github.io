@@ -1,0 +1,28 @@
+{
+  "candidate": "editorial/candidates/P04-massage-bucharest.html",
+  "sha256": "8f9c0e7fdd585c59a41febc5cc8f10329ad99b743e276fa5862fab8d2f865494",
+  "reviewed_at": "2026-11-15",
+  "decision": "BLOCK",
+  "criteria": {
+    "source_facts_recency": "PARTIAL: verified 3 of 6 official price pages",
+    "accuracy": "BLOCK: remaining 3 require verification",
+    "local_utility": "PASS",
+    "clarity": "PASS",
+    "originality": "PASS",
+    "search_intent": "PASS",
+    "seo_metadata": "PASS with missing og:image",
+    "accessibility_mobile": "PASS",
+    "imagery_rights": "PASS: original SVG",
+    "cta_technical": "PASS"
+  },
+  "corrections": [
+    "Verify current official addresses and prices for Elisara, SIS Spa, TotalKinetic and correct discrepancies.",
+    "Replace abstract SVG with a clearly identified original massage-themed illustration and add distinct visual illustrations to venue cards, matching owner-approved visual layout.",
+    "Provide rights-cleared OG image and og:image metadata; inspect mobile rendered preview before owner re-approval."
+  ],
+  "sources": [
+    "https://goldenspa.ro/preturi/",
+    "https://www.kinetoprof.ro/preturi/",
+    "https://amritamasaj.ro/preturi"
+  ]
+}
