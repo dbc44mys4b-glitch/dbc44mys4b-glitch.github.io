@@ -1,0 +1,8 @@
+P04 massage-bucharest
+Status: READY_FOR_QA
+Candidate: editorial/candidates/P04-massage-bucharest.html
+SHA-256 UTF-8: f01d8fe489eb439117f130025c760a1d8eb2ba8e8c0142d0e5e5bb26ffdcb365
+Git blob: 06333be2efb4069754499f5b3205103dddafdf21
+Original social PNG: assets/massage-bucharest-social.png (Git blob c9769d2002910e54d1bb71686de63930a2797c1e)
+Editor commit: 84dc74d6c4b2454ae2d02c334e1cc84036860258
+Next run: independent QA only; confirm public OG asset HTTP status and candidate SHA before PASS. No release authorized yet.
