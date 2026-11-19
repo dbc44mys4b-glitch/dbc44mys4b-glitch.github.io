@@ -1,12 +1,12 @@
 {
-  "name": "LIFE OS — личный прогресс",
-  "short_name": "LIFE OS",
-  "description": "Приватный дневник и система роста — работает офлайн на iPhone",
+  "name": "MONTBLANC — путь к вершине",
+  "short_name": "MONTBLANC",
+  "description": "Личная экспедиция: от базового лагеря до своей вершины. Задачи, дневник, эксперименты, аналитика — приватно и офлайн.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f6f7fa",
-  "theme_color": "#f6f7fa",
+  "background_color": "#f5f7fc",
+  "theme_color": "#f5f7fc",
   "lang": "ru",
   "icons": [
     {

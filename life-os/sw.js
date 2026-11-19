@@ -1,6 +1,6 @@
 /* LIFE OS offline PWA: static shell only. Sensitive data is never cached here. */
-const CACHE = 'life-os-v5-shell-20261119';
-const ASSETS = ['./','./index.html','./app.js','./config.js','./styles.css','./apple-light.css','./favicon.svg','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./pwa.js'];
+const CACHE = 'life-os-v6-1-shell-20261119-montblanc';
+const ASSETS = ['./','./index.html','./app.js','./config.js','./styles.css','./apple-light.css','./favicon.svg','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./pwa.js','./mountain-hero.webp'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
 });
