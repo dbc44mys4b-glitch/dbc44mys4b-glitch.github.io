@@ -1,0 +1,43 @@
+name: MONTBLANC quality checks
+on:
+  push:
+    paths:
+      - 'life-os/**'
+      - '.github/workflows/montblanc-quality.yml'
+  pull_request:
+    paths:
+      - 'life-os/**'
+      - '.github/workflows/montblanc-quality.yml'
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check module syntax
+        run: node --check life-os/mission60.js && node --check life-os/challenge60.js
+      - name: Check application syntax
+        run: node --input-type=module --check < life-os/app.js
+      - name: Run 60-day regression tests
+        run: node --test life-os/tests/montblanc60.test.cjs life-os/tests/challenge60.test.cjs
+
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test runner
+        run: npm install --no-save playwright@1.56.1
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test real mobile 60-day challenge, unlocks and concise journal
+        run: node life-os/tests/browser-smoke.cjs
