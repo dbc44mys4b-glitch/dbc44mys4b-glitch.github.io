@@ -1,26 +1,34 @@
-/* LIFE OS offline PWA: static shell only. Sensitive data is never cached here. */
-const CACHE = 'life-os-v6-1-shell-20261119-montblanc';
-const ASSETS = ['./','./index.html','./app.js','./config.js','./styles.css','./apple-light.css','./favicon.svg','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./pwa.js','./mountain-hero.webp'];
-self.addEventListener('install',e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
+/* MONTBLANC 7.0 — offline app shell only; never cache private records or API calls. */
+const CACHE = 'montblanc-v14.0.1-visible-20261121';
+const ASSETS = ['./','./index.html','./app.js','./github-sync.js','./config.js','./styles.css','./mission60.css','./mission60.js','./challenge60.css','./challenge60.js','./apple-light.css','./favicon.svg','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png','./pwa.js','./mountain-hero.webp'];
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
 });
-self.addEventListener('activate',e=>{
-  e.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('life-os-')&&k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()]));
+self.addEventListener('activate',event=>{
+  event.waitUntil(Promise.all([
+    caches.keys().then(keys=>Promise.all(keys.filter(key=>(key.startsWith('life-os-')||key.startsWith('montblanc-'))&&key!==CACHE).map(key=>caches.delete(key)))),
+    self.clients.claim()
+  ]));
 });
-self.addEventListener('fetch',e=>{
-  const r=e.request;
-  if(r.method!=='GET')return;
-  const url=new URL(r.url);
-  if(url.origin!==self.location.origin)return;
-  const relative=url.pathname.slice(new URL(self.registration.scope).pathname.length);
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET')return;
+  const url=new URL(request.url);
+  if(url.origin!==self.location.origin)return; // Do not touch github.com, Supabase, or any remote API
+  const scopePath=new URL(self.registration.scope).pathname;
+  if(!url.pathname.startsWith(scopePath))return;
+  const relative=url.pathname.slice(scopePath.length);
   if(relative.startsWith('api/')||relative.startsWith('functions/')||relative.includes('auth'))return;
-  if(r.mode==='navigate'){
-    e.respondWith(fetch(r).catch(async()=>await caches.match('./index.html')||Response.error()));
+  if(request.mode==='navigate'){
+    event.respondWith(fetch(request).catch(()=>caches.match('./index.html').then(response=>response||Response.error())));
     return;
   }
-  if(!ASSETS.includes('./'+relative))return;
-  e.respondWith(fetch(r).then(res=>{
-    if(res.ok){const copy=res.clone();e.waitUntil(caches.open(CACHE).then(c=>c.put(r,copy)))}
-    return res;
-  }).catch(()=>caches.match(r)));
+  const canonical='./'+relative;
+  if(!ASSETS.includes(canonical))return;
+  // Ignore ?v=... on requests while keeping a stable offline cache key.
+  const canonicalUrl=new URL(canonical,self.registration.scope).href;
+  event.respondWith(fetch(request).then(response=>{
+    if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(canonicalUrl,copy)))}
+    return response;
+  }).catch(()=>caches.match(canonicalUrl).then(response=>response||Response.error())));
 });
